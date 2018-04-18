@@ -8,9 +8,8 @@
 /****************
 * include files *
 ****************/
-#include <graphics.h>
-#include <dos.h>
 #include "defs.h"
+#include "hack.h"
 
 /************************************
 * forward declaration of prototypes *
@@ -36,9 +35,6 @@ int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *inst
 	float vrp = -50.0;
 	int which_instance;
 
-	int loop;
-	int z, y;
-
 	/* set the mouse value of z */
 	mouse_z = vrp;
 
@@ -47,7 +43,7 @@ int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *inst
 	midy = (float) (getmaxy()/2);
 
 	/* now normalize the x and y coordinates */
-	pntx - ((float)mpos_x - midx) * (mouse_z / (-midx));
+	pntx = ((float)mpos_x - midx) * (mouse_z / (-midx));
 	/* reserve the polarity of y to make up when y is +re and down when y is -ve */
 	pnty = ((float)mpos_y - midy) * (mouse_z / (midy));
 	pntz = vrp;
@@ -56,7 +52,7 @@ int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *inst
 	/* now rotate the point around user */
 	rotate(&pntx, &pnty, &pntz, user.angx, user.angy, user.angz);
 	/* and translate it */
-	translate(&pntx, &pnty, &pntz, user.loox, user.locy, user. locz);
+	translate(&pntx, &pnty, &pntz, user.locx, user.locy, user. locz);
 
 	/* now create the vector from the user to the mouse point */
 	dx = pntx - user.locx;
@@ -64,7 +60,7 @@ int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *inst
 	dz = pntz - user.locz;
 
 	/* now we have the vector start to examine the points on the line checking whether any of them collide with an object start at t = 0.0 and continue past t = 1.0 */
-	for (t = O.O; t < 150.0; t += 0.01)
+	for (t = 0.0; t < 150.0; t += 0.01)
 	{
 		/* calculate a point along the line */
 		pntx = user.locx + (t * dx);
@@ -80,7 +76,7 @@ int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *inst
 			return (which_instance);
 		}
 	}
-	return (ERRDR);
+	return (ERROR);
 }
 
 /****************************************************************************
@@ -121,7 +117,7 @@ int check_col(float locx, float locy, float locz, struct instance *instanceptr, 
 	int loop;
 	int RESULT = OKAY;
 
-	for (loop = O; loop < no_instances; loop++)
+	for (loop = 0; loop < no_instances; loop++)
 	{
 		if (instanceptr[loop].solid == TRUE)
 		{
@@ -130,7 +126,7 @@ int check_col(float locx, float locy, float locz, struct instance *instanceptr, 
 			    ((locy+user.radius) >= instanceptr[loop].miny) &&
 			    ((locz+user.radius) >= instanceptr[loop].minz) &&
 			    ((locx-user.radius) <= instanceptr[loop].maxx) &&
-			    ((locy-user.radius} <= instanceptr[loop].maxy) &&
+			    ((locy-user.radius) <= instanceptr[loop].maxy) &&
 			    ((locz-user.radius) <= instanceptr[loop].maxz))
 			{
 				/* we have collided with the collision box */

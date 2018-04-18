@@ -8,11 +8,11 @@
 /****************
 * include files *
 ****************/
-#include <graphics.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "defs.h"
+#include "hack.h"
 
 #define X  0
 #define Y  1
@@ -29,7 +29,7 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz);
 /**********************************
 * external prototype declarations *
 **********************************/
-extern int error(char *errno, char *message, int line no);
+extern int error(const char *errno, const char *message, int line_no);
 extern void translate(float *pntx, float *pnty, float *pntz,
                         float trnx, float trny, float trnz);
 extern void rotate(float *pntx, float *pnty, float *pntz,
@@ -50,7 +50,7 @@ int screen_open(int mode)
         int gdriverx, gmod;
 
         /* make sure that mode is of a legal value between 0 and 4 */
-        if ((mode < O) && (mode > 4))
+        if ((mode < 0) && (mode > 4))
         {
                 printf("Try values:\n");
                 printf("\t0 -  320x200\n");
@@ -85,9 +85,9 @@ void check_graph_errors(void)
         int errorno;
 
         /* read in the result of last graphics operation */
-        errorno = graphresult()
+        errorno = graphresult();
         if (errorno != grOk)
-        (
+        {
                 error("0101", "Cannot set up graphics mode", 0);
                 printf("Graphics error: %s\n", grapherrormsg(errorno));
                 exit(1);
@@ -135,7 +135,7 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
                 /* reference to which instance */
                 depth_array[loop1][0] = loop1;
                 /* the distance away from the viewer we use pythagoras */
-                /* here we dont't need to find the square root as all distances ,/
+                /* here we dont't need to find the square root as all distances */
                 /* are still going to be relative */
                 hyp1 = abs(iptr[loop1].minx - user.locx)
                         + abs (iptr[loop1].miny - user.locy)
@@ -163,6 +163,7 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
                                 depth_array[loop2][1] = depth_array[loop2+1][1];
                                 depth_array[loop2+1][1] = tmp;
                         }
+				}
 
         /* set up the values for the middle of the screen */
         midx = getmaxx() / 2;
@@ -267,7 +268,7 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
                                 /* now get the second vertex of that edge */
                                 x2 = store[edge1][X];
                                 y2 = store[edge1][Y];
-                                Z2 = store[edge1][Z];
+                                z2 = store[edge1][Z];
                                 /* we need a third point to find the normal to the plane */
                                 /* so we'll get the end point of the second edge */
                                 edge1 = mptr[master_no].edge1[(poly_no[1])];
@@ -309,7 +310,7 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
                                         edge0 = mptr[master_no].edge0[(poly_no[1])];
                                         pre_array[2][X] = store[edge0][X];
                                         pre_array[2][Y] = store[edge0][Y];
-                                        pre array[2][Z] = store[edge0][Z];
+                                        pre_array[2][Z] = store[edge0][Z];
                                         /* we've already got the end point of the second edge so
                                            we store that also */
                                         pre_array[3][X] = x3;
@@ -345,9 +346,9 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
                                                 /* set the polysize value to 0 */
                                                 polyptr = 0;
                                                 /* fill the polyarray with values in post_array */
-                                                for (loop3 = 0s loop3 < no_points; loop3++)
+                                                for (loop3 = 0; loop3 < no_points; loop3++)
                                                 {
-                                                        X = post_array[loop3][X];
+                                                        x = post_array[loop3][X];
                                                         y = post_array[loop3][Y];
                                                         z = post_array[loop3][Z];
                                                         /* project onto a 2D monitor */
@@ -363,7 +364,7 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
 
                                                 no_points++;
                                                 /* firstly set the colour */
-                                                setfillstyle(SOLIDFiLL,
+                                                setfillstyle(SOLID_FILL,
                                                         iptr[tmp].poly_colour[loop2]);
                                                 setcolor(iptr[tmp].poly_colour[loop2]);
                                                 /* now draw the polygon */
@@ -390,7 +391,7 @@ int clipt(float denom, float num, float *tE, float *tL)
         if (denom > 0.0)
         {
                 /* value of t at the intersection */
-                t = hum / denom;
+                t = num / denom;
                 if (t > *tL)
                 {
                         /* if tE and tL crossover then prepare to reject line */
@@ -497,7 +498,7 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
                                 post_array[no_pnts][Z] = pre_array[loop+1][Z];
                         }
                         /* increment the number of points the final array has */
-                        no_pnts++
+                        no_pnts++;
                 }
         }
         /* return the value of the number of points */
@@ -535,7 +536,7 @@ int clip3d(float *xs, float *ys, float *zs,
                         if (clipt(dy-dz, 0.0-*ys+*zs, &tmin, &tmax) == TRUE)
                         {
                                 /* bottom part */
-                                if (clipt(0.0-dy-dz, *ys+*zs, &train, &tmax) == TRUE)
+                                if (clipt(0.0-dy-dz, *ys+*zs, &tmin, &tmax) == TRUE)
                                 {
                                         /* top part */
                                         /* if we get this far then part of the line

@@ -11,22 +11,23 @@
 ****************/
 #include <stdlib.h>
 #include <stdio.h>
-#include <conio.h>
 #include <math.h>
-#include <graphics.h>
 #include "defs.h"
+#include "hack.h"
+
 /*************************
 * prototype declarations *
 *************************/
-void main(int argc, char *argv[]);
+int main(int argc, char *argv[]);
+
 /************************
 * external declarations *
 ************************/
 extern int parse(char *filename);
-extern int error(char *errno, char *message, int line_no);
+extern int error(const char *errno, const char *message, int line_no);
 extern void remove_master(int no_objects);
-extern void remove_lnstance(int no_instances);
-extern void debug(char *string, int level);
+extern void remove_instance(int no_instances);
+extern void debug(const char *string, int level);
 extern void check_master(struct master *ptr, int no_rows);
 extern void check_instance(struct instance *ptr, int no_rows);
 extern int screen_open(int mode);
@@ -54,10 +55,11 @@ struct master *masterptr;
 struct instance *instanceptr;
 struct viewer user;
 void *fp;
+
 /************
 * functions *
 ************/
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
         float locx, locy, locz;
         float angle;
@@ -68,17 +70,17 @@ void main(int argc, char *argv[])
         int status;
         int x, y;
         int mpos_x, mpos_y;
-        /* set phase of implementation ,/
+        /* set phase of implementation */
         /* TEST: prints debug messages */
         /* FINAL: doesn't show any of the parsing */
         stage = FINAL;
         debug("START OF PROGRAM", 3);
         debug("main()", 1);
         /* set mode to a value of 0 - resolution 320x200 */
-        mode = O;
+        mode = 0;
         /* if there are more than 2 arguments then error */
         if (argc > 2)
-        (
+        {
                 error("0037", "Too many parameters", 0);
                 exit(0);
         }
@@ -107,7 +109,7 @@ void main(int argc, char *argv[])
                 /* set the value of c to a null value to begin with */
                 c = '\0';
                 while (c != 'Q')
-                (
+                {
                         /* get temporary values of position of user to check collision
                            with any object instances */
                         locx = user.locx;
@@ -137,7 +139,7 @@ void main(int argc, char *argv[])
                                         instance = hit_object(mpos_x, mpos_y, user, instanceptr, no_instances);
                                         /* if this is the second click on the same object then
                                            we run it */
-                                        if (instance == prey inst)
+                                        if (instance == prev_inst)
                                         {
                                                 /* first let's clear the pointer */
                                                 draw_pointer(mpos_x, mpos_y);
@@ -177,7 +179,7 @@ void main(int argc, char *argv[])
                                         /* now draw the pointer */
                                         draw_pointer(mpos_x, mpos_y);
                                 }
-                        )
+                        }
                         /* retrieve the value from the keyboard */
                         c = getch();
 
@@ -200,7 +202,7 @@ void main(int argc, char *argv[])
                                                 user.locz = locz;
                                         }
                                         break;
-                                )
+                                }
                                 case '2':
                                 {
                                         /* walk backwards */
@@ -210,14 +212,14 @@ void main(int argc, char *argv[])
                                         locz = locz + (2.5 * sin(angle / RADCONST));
                                         locx = locx + (2.5 * cos(angle / RADCONST));
                                         if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
-                                        (
+                                        {
                                                 /* if user hasn't collided with an object instance
                                                    then update the user's posltion */
                                                 user.locx = locx;
                                                 user.locz = locz;
                                         }
                                         break;
-                                )
+                                }
                                 case '6':
                                 {
                                         /* slide left */
@@ -229,38 +231,38 @@ void main(int argc, char *argv[])
                                                    then update the user's position */
                                                 user.locx = locx;
                                                 user.locz = locz;
-                                        )
+                                        }
                                         break;
-                                )
+                                }
                                 case '4':
-                                (
+                                {
                                         /* slide right */
                                         locz = locz - (2.5 * sin(user.angy / RADCONST));
                                         locx = locx - (2.5 * cos(user.angy / RADCONST));
                                         if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
-                                        (
+                                        {
                                                 /* if user hasn't colllded wlth an object instance
                                                    then update the user's position */
                                                 user.locx = locx;
                                                 user.locz = locz;
                                         }
                                         break;
-                                )
+                                }
                                 case '7':
-                                (
+                                {
                                         /* turn to the left */
                                         user.angy -= 2.5;
                                         if (user.angy < 0.0) user.angy = 360.0;
                                         break;
-                                )
+                                }
                                 case '9':
-                                (
+                                {
                                         /* turn to the right */
                                         user.angy += 2.5;
                                         if (user.angy > 360.0) user.angy = 0.0;
                                         break;
                                 }
-                        )
+                        }
                         /* draw the new image */
                         draw_image(masterptr, instanceptr, no_instances);
                 }
@@ -274,4 +276,6 @@ void main(int argc, char *argv[])
         remove_instance(no_instances);
 
         debug("END OF PROGRAM", 3);
+
+		return (OKAY);
 }

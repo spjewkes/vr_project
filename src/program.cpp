@@ -8,11 +8,10 @@
 /****************
 * include files *
 ****************/
-#include <dos.h>
-#include <process.h>
 #include <string.h>
 #include <stddef.h>
 #include "defs.h"
+#include "hack.h"
 
 /****************************************************************************
 * program() - this function looks at the string for a particular instance   *
@@ -37,17 +36,17 @@ void program(int instance, struct instance *ptr)
 
         /* if the string doesn't contain the string 'solid' then it must
            contain a program to execute */
-        if (strcmpi(path, "solid") != EQUAL)
+        if (strcmp(path, "solid") != EQUAL)
         {
                 /* first skip any blanks */
                 while ((*chptr == ' ') || (*chptr == '\t'))
                         chptr++;
 
                 /* now get the first word - which we assume to be the executable */
-                while ((*chptr == ' ') && (*chptr == '\t') && (*chptr != '\0'))
+                while ((*chptr != ' ') && (*chptr != '\t') && (*chptr != '\0'))
                         chptr++;
 
-                if (chptr != '\0')
+                if (*chptr != '\0')
                 {
                         /* then we may have some parameters to deal with */
                         /* first we want to put a null terminator after the executable's
@@ -58,7 +57,7 @@ void program(int instance, struct instance *ptr)
                         chptr = path;
 
                         /* now we start filling the array of char pointers */
-                        for (loop = 0; loop < MAXAKG-2; loop++)
+                        for (loop = 0; loop < MAXARG-2; loop++)
                         {
                                 /* skip any more blanks */
                                 while ((*chptr == ' ') || (*chptr == '\t'))
@@ -73,12 +72,12 @@ void program(int instance, struct instance *ptr)
                                 /* now we want to loop to pick up more parameters */
                                 while (flag == 0)
                                 {
-                                        switch (* chpt r)
+                                        switch (*chptr)
                                         {
                                                 case '\0':
                                                         /* the end of the array of characters */
                                                         if (inparam == FALSE)
-                                                                array[loop] = '\0';
+                                                                array[loop] = NULL;
 
                                                         /* terminate string */
                                                         *chptr++ = '\0';

@@ -8,7 +8,7 @@
 /****************
 * include files *
 ****************/
-#include <graphics.h>
+#include "hack.h"
 
 #define RED 0
 #define GREEN 1
@@ -83,7 +83,7 @@ void set_palette(int palette[][3])
 * function to create the palette needed by the virtual world program       *
 ***************************************************************************/
 void create_palette(void)
-(
+{
         /* first create the array to store the colour values */
         int palette[256][3];
 
@@ -95,10 +95,10 @@ void create_palette(void)
         /* block 0 - black */
         /* start colour */
         palette[0][RED] = 0;
-        palette(0][GREEN] = 0;
+        palette[0][GREEN] = 0;
         palette[0][BLUE] = 0;
         /* end colour */
-        palette[15][RED) = 32;
+        palette[15][RED] = 32;
         palette[15][GREEN] = 32;
         palette[15][BLUE] = 32;
         /* spread between them */
@@ -361,13 +361,13 @@ void check_palette(void)
 
         /* set the rate of change horizontally
            and vertically acrOsS the screen */
-        dx = germaxx() / 16;
+        dx = getmaxx() / 16;
         dy = getmaxy() / 16;
 
         /* set initial colour to zero */
-        colour = O;
-        for (loop1 = O; loop1 < 16; loop1++)
-                for (loop2 = O; loop2 < 16; loop2++)
+        colour = 0;
+        for (loop1 = 0; loop1 < 16; loop1++)
+                for (loop2 = 0; loop2 < 16; loop2++)
                 {
                         /* draw a coloured box */
                         setfillstyle(SOLID_FILL, colour++);

@@ -12,13 +12,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include "defs.h"
+#include "hack.h"
 
 /*************************
 * prototype declarations *
 *************************/
 int getline(void);
 void skip_garbage(void);
-int check(char *ptr);
+int check(const char *ptr);
 void getword(char *word);
 int getnum(void);
 float fgetnum(void);
@@ -27,8 +28,8 @@ int get_point(float *pntx, float *pnty, float *pntz);
 /*********************************************
 * forward declaration of external prototypes *
 *********************************************/
-extern int error(char *errno, char *message, int line_no);
-extern void debug(char *string, int level);
+extern int error(const char *errno, const char *message, int line_no);
+extern void debug(const char *string, int level);
 
 /*********************
 * external variables *
@@ -60,7 +61,7 @@ int getline(void)
                 return (EOF);
 
         lincnt++;
-        lineptr = O;
+        lineptr = 0;
         retcode = check("#");
         lineptr = 0;
 
@@ -104,7 +105,7 @@ void skip_garbage(void)
 *                    ERROR is there is a string but it does not match       *
 *                    BLANK if there is nothing in the LINE to match         *
 ****************************************************************************/
-int check(char *ptr)
+int check(const char *ptr)
 {
         debug("check()", 1);
 
@@ -207,12 +208,12 @@ int getstring(char *word)
 int getnum(void)
 {
         char numline[MAXLINE];
-        int tptr = O;
+        int tptr = 0;
 
         debug("getnum()", 1);
 
         while ((LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
-                lineptr++
+			lineptr++;
 
         if (LINE[lineptr] == '\n')
                 return (ERROR);
@@ -226,7 +227,7 @@ int getnum(void)
                 numline[tptr++] = LINE[lineptr++];
         }
 
-        numline[tptr] == '\0';
+        numline[tptr] = '\0';
 
         return (atoi(numline));
 }
@@ -323,9 +324,9 @@ void rotate(float *pntx, float *pnty, float *pntz,
 void scale(float *pntx, float *pnty, float *pntz,
         float sclx, float scly, float sclz)
 {
-        pntx *= sclx;
-        pnty *= scly;
-        pntz *= sclz;
+        *pntx *= sclx;
+        *pnty *= scly;
+        *pntz *= sclz;
 }
 
 /***************************************************************************
@@ -336,9 +337,9 @@ void scale(float *pntx, float *pnty, float *pntz,
 void translate(float *pntx, float *pnty, float *pntz,
                 float trnx, float trny, float trnz)
 {
-        pntx += trnx;
-        pnty += trny;
-        pntz += trnz;
+        *pntx += trnx;
+        *pnty += trny;
+        *pntz += trnz;
 }
 
 /***************************************************************************
@@ -354,7 +355,7 @@ void translation(struct instance *instanceptr, int instance_no,
         /* loop to translate the whole of an instance object */
         for (loop = 0; loop < instanceptr[instance_no].no_vertices; loop++)
         {
-                a = instanceptr[instance_no].xvert[loop];
+                x = instanceptr[instance_no].xvert[loop];
                 y = instanceptr[instance_no].yvert[loop];
                 z = instanceptr[instance_no].zvert[loop];
                 translate(&x, &y, &z, locx, locy, locz);
@@ -433,16 +434,16 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
                 /* we want to find the direction of the normal first */
                 /* so we know which light intensity to apply to the polygon */
                 /* get the two of the edges that build up the polygon */
-                polyno[0] = masterptr[master_no].poly0[loop];
-                polyno[1] = masterptr[master_no].poly1[loop];
+                poly_no[0] = masterptr[master_no].poly0[loop];
+                poly_no[1] = masterptr[master_no].poly1[loop];
 
                 /* now let's deal with the first edge */
                 edge0 = masterptr[master_no].edge0[poly_no[0]];
                 edge1 = masterptr[master_no].edge1[poly_no[0]];
                 /* get the first vertex of that edge */
-                x1 = instanceptr[instance_no].xvert[edgeO];
-                y1 = instanceptr[instance_no].yvert[edgeO];
-                z1 = instanceptr[instance_no].zvert[edgeO];
+                x1 = instanceptr[instance_no].xvert[edge0];
+                y1 = instanceptr[instance_no].yvert[edge0];
+                z1 = instanceptr[instance_no].zvert[edge0];
                 /* now get the second vertex of that edge */
                 x2 = instanceptr[instance_no].xvert[edge1];
                 y2 = instanceptr[instance_no].yvert[edge1];

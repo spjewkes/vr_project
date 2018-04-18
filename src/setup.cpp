@@ -8,15 +8,16 @@
 /****************
 * include files *
 ****************/
+#include <stdlib.h>
 #include "defs.h"
-#include <alloc.h>
+#include "hack.h"
 
 /*********************************************
 * forward declaration of external prototypes *
 *********************************************/
-extern int error(char *errno, char *message, int line_no);
-extern void warn(char *warnno, char *message, int line_no);
-extern void debug(char *string, int level);
+extern int error(const char *errno, const char *message, int line_no);
+extern void warn(const char *warnno, const char *message, int line_no);
+extern void debug(const char *string, int level);
 extern void rotate(float *pntx, float *pnty, float *pntz, float angx, float angy, float angz);
 extern void scale(float *pntx, float *pnty, float *pntz, float sclx, float scly, float sclz);
 
@@ -89,7 +90,7 @@ int init_master(int no_objects)
 ****************************************************************************/
 int init_instance(int no_instances)
 {
-        int loops;
+        int loop;
 
         debug("init_instance()", 1);
 
@@ -130,8 +131,7 @@ int init_instance(int no_instances)
                 /* set the default solidity of the object to false */
                 instanceptr[loop].solid = FALSE;
                 /* set up the default outcome string */
-                instanceptr[loop].outcome = (char *) malloc(sizeof(char));
-                instanceptr[loop].outcome = '\0';
+                instanceptr[loop].outcome = NULL;
         }
         return (OKAY);
 }
@@ -208,7 +208,7 @@ void remove_master(int no_objects)
                 for (loop = 0; loop < no_objects; loop++)
                 {
                         /* free the vertices array */
-                        if (masterptr[loop].no_vertices > O)
+                        if (masterptr[loop].no_vertices > 0)
                         {
                                 free(masterptr[loop].xvert);
                                 free(masterptr[loop].yvert);
@@ -250,7 +250,7 @@ void remove_instance(int no_instances)
                 warn("0003", "Nothing in memory to free", 0);
         else
         {
-                for (loop = 0; loop < no_instancess loop++)
+   		        for (loop = 0; loop < no_instances; loop++)
                 {
                         /* free the arrays of vertices */
                         if (instanceptr[loop].xvert != NULL)

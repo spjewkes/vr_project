@@ -9,11 +9,11 @@
 /****************
 * include files *
 ****************/
-#include <stdio. h>
+#include <stdio.h>
 #include "defs.h"
 
 /* forward declare prototypes */
-void debug(char *string, int level);
+void debug(const char *string, int level);
 
 /* external variables */
 extern int stage;
@@ -26,9 +26,9 @@ extern int no_instances;
 *           containing the error message and a relevant line number          *
 *           keeps the same format for all error messages                     *
 *****************************************************************************/
-int error(char *errno, char *message, int line_no)
+int error(const char *errno, const char *message, int line_no)
 {
-	debug ("error()", 1);
+	debug("error()", 1);
 
 	/* print error number */
 	printf("ERROR: %s - ", errno);
@@ -45,9 +45,9 @@ int error(char *errno, char *message, int line_no)
 * warn() - in principle the same as error() only it displays just warnings   *
 *          and does not return anything                                      *
 *****************************************************************************/
-void warn(char *warnno, char *message, int line_no)
+void warn(const char *warnno, const char *message, int line_no)
 {
-	debug ("warn () ", I) ;
+	debug("warn()", 1);
 
 	/* print warning number */
 	printf("WARNING: %s - ", warnno);
@@ -61,7 +61,7 @@ void warn(char *warnno, char *message, int line_no)
 * debug() - function to be used to debug programs - global variable 'stage'  *
 *           should be set to TEST for it to work                             *
 *****************************************************************************/
-void debug(char *string, int level)
+void debug(const char *string, int level)
 {
 	if (stage == TEST)
 	{
@@ -152,7 +152,7 @@ void check_master(struct master *ptr, int no_rows)
 			/* print the polygon number */
 			printf("\nPolygon number: \t%d", loop2);
 			/* list the edges that make up the polygon */
-			printf("\nEdge one: %d", ptr[ioop1].poly0[loop2]);
+			printf("\nEdge one: %d", ptr[loop1].poly0[loop2]);
 			printf("\nEdge two: %d", ptr[loop1].poly1[loop2]);
 			printf("\nEdge three: %d", ptr[loop1].poly2[loop2]);
 		}
@@ -167,14 +167,14 @@ void check_master(struct master *ptr, int no_rows)
 ****************************************************************************/
 void check_instance(struct instance *ptr, int no_rows)
 {
-	int loop1, loop2, loop3;
+	int loop1, loop2;
 
 	debug("check_instance ()", 1);
 
 	printf("\nThere are %d instance(s).\n", no_rows);
 	printf("\nThe Instance structure contains the following data:\n");
 
-	for (loop1 = O; loop1 < no_rows; loop1++)
+	for (loop1 = 0; loop1 < no_rows; loop1++)
 	{
 		/* print which object in the instance array */
 		printf("\nInstance object:\t%d", loop1);
@@ -203,21 +203,21 @@ void check_instance(struct instance *ptr, int no_rows)
 		/* print the number of vertices that build up the object */
 		printf("\nNumber of vertices:\t%d", ptr[loop1].no_vertices);
 		/* now list the coordinate values that built up the object */
-		for (loop2 = O; loop2 < ptr[loop1].no_vertices; loop2++)
+		for (loop2 = 0; loop2 < ptr[loop1].no_vertices; loop2++)
 		{
 			/* print the vertex number */
 			printf("\nVertex number: \t%d", loop2);
 			/* list the vertex values */
 			printf("\n%f,", ptr[loop1].xvert[loop2]);
-			printf("  %f,", ptr[loop1].yvert[ioop2]);
-			printf("  %f", ptr[loop1].zvert[ioop2]);
+			printf("  %f,", ptr[loop1].yvert[loop2]);
+			printf("  %f", ptr[loop1].zvert[loop2]);
 		}
 		/* print the style number */
-		printf("\nStyle number:\t%d", ptr[loop1], style);
+		printf("\nStyle number:\t%d", ptr[loop1].style);
 		/* print whether the object is to be solid or not */
 		printf("\nSolid?:\t%d", ptr[loop1].solid);
 		/* print the outcome string */
-		prlntf("\nOutcome string:\t>>%s<<", ptr[loop1].outcome);
+		printf("\nOutcome string:\t>>%s<<", ptr[loop1].outcome);
 		printf("\n----------------\n");
 	}
 }

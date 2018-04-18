@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "defs.h"
+#include "hack.h"
 
 /*************************
 * prototype declarations *
@@ -23,7 +24,7 @@ int process_instance(void);
 int process_user(void);
 int process_objects(int no_objects);
 int check_object_values(int object_no, int object_pos, int no_objects);
-int process_obsect_definition(int object_no);
+int process_object_definition(int object_no);
 int process_object_instances(int no_instances, int no_objects);
 int check_instance_values(int *col_set, int *spec_set, int *style_set,
                         int instance_pos, int no_instances, int master_no);
@@ -42,23 +43,23 @@ extern char *process_outcome(void);
 extern int process_style(int *style);
 extern int getline(void);
 extern void skip_garbage(void);
-extern int check(char *ptr);
+extern int check(const char *ptr);
 extern void getword(char *word);
 extern int getnum(void);
 extern float fgetnum(void);
 extern int get_point(float *pntx, float *pnty, float *pntz);
-extern int error(char *errno, char *message, int line no);
-extern void warn(char *warnno, char *message, int line_no);
-extern int init_master(int no objects);
+extern int error(const char *errno, const char *message, int line_no);
+extern void warn(const char *warnno, const char *message, int line_no);
+extern int init_master(int no_objects);
 extern int init_instance(int no_instances);
 extern void init_user(void);
-extern void debug(char *string, int level);
+extern void debug(const char *string, int level);
 extern void rotate(float *pntx, float *pnty, float *pntz,
                 float angx, float angy, float angz);
 extern void scale(float *pntx, float *pnty, float *pntz,
                 float sclx, float scly, float sclz);
 extern void translation(struct instance *instanceptr, int instance_no,
-                float locx, float 1ocy, float locz);
+                float locx, float locy, float locz);
 extern int set_colour(struct master *masterptr, struct instance *instanceptr,
                 int instance_no, int master_no, int colour,
                 float specularity);
@@ -70,7 +71,7 @@ extern int create_object_instance(struct master *masterptr,
                                 struct instance *instanceptr,
                                 int instance_no, int master_no);
 extern int process_sky(int *colour);
-extern int process_ground(int *colour)
+extern int process_ground(int *colour);
 
 /*********************
 * external variables *
@@ -107,7 +108,7 @@ int parse(char *filename)
         /* initialise the pointers */
         masterptr = NULL;
         instanceptr = NULL;
-        if (((FILE *)fp = fopen(filename, "r")) == NULL)
+        if ((fp = (FILE *)fopen(filename, "r")) == NULL)
         {
                 /* error if can't open file */
                 error("0001", "Error opening file", lincnt);
@@ -265,7 +266,7 @@ int process_instance(void)
                 if (process_object_instances(no_instances, no_masters) != OKAY)
                         RESULT = error("0013", "Error with instance object definitions", lincnt);
         }
-        else if (no instances < 0)
+        else if (no_instances < 0)
                 RESULT = error("0014", "The no instances is less than zero", lincnt);
         else if (no_instances == 0)
         {
@@ -305,46 +306,46 @@ int process_user(void)
         {
                 skip_garbage();
 
-        getword(word);
+				getword(word);
 
-        if (strcmp(word, "location") == EQUAL)
-        {
-                /* location command */
-                if (process_location(&user.locx, &user.locy, &user.locz) == ERROR)
+				if (strcmp(word, "location") == EQUAL)
+				{
+					/* location command */
+					if (process_location(&user.locx, &user.locy, &user.locz) == ERROR)
                         return (ERROR);
+				}
+				else if (strcmp(word, "direction") == EQUAL)
+				{
+					/* direction command */
+					if (process_direction(&user.angx, &user.angy, &user.angz) == ERROR)
+                        return (ERROR);
+				}
+				else if (strcmp (word, "radius") == EQUAL)
+				{
+					/* radius command */
+					if (process_radius(&user.radius) == ERROR)
+                        return (ERROR);
+				}
+				else if (strcmp(word, "sky") == EQUAL)
+				{
+					/* sky command */
+					if (process_sky(&user.sky) == ERROR)
+                        return (ERROR);
+				}
+				else if (strcmp(word, "ground") == EQUAL)
+				{
+					/* ground command */
+					if (process_ground(&user.ground) == ERROR)
+                        return (ERROR);
+				}
+				else if (strcmp(word, ".end_userdefs") == EQUAL)
+				{
+					/* end of user block */
+					return (OKAY);
+				}
+				else
+					return(error("0016", "Syntax error in block .userdefs", lincnt));
         }
-        else if (strcmp(word, "direction") == EQUAL)
-        {
-                /* direction command */
-                if (process_direction(&user.angx, &user.angy, &user.angz) == ERROR)
-                        return (ERROR);
-        }
-        else if (strcmp (word, "radius") == EQUAL)
-        {
-                /* radius command */
-                if (process_radius(&user.radius) == ERROR)
-                        return (ERROR);
-        )
-        else if (strcmp(word, "sky") == EQUAL)
-        {
-                /* sky command */
-                if (process_sky(&user.sky) == ERROR)
-                        return (ERROR);
-        }
-        else if (strcmp(word, "ground") == EQUAL)
-        {
-                /* ground command */
-                if (process_ground(&user.ground) == ERROR)
-                        return (ERROR);
-        }
-        else if (strcmp(word, ".end_userdefs") == EQUAL)
-        {
-                /* end of user block */
-                return (OKAY);
-        )
-        else
-                return(error("0016", "Syntax error in block .userdefs", lincnt));
-        )
 }
 
 /****************************************************************************
@@ -357,7 +358,7 @@ int process_objects(int no_objects)
         int loop, master_no;
         int RESULT = OKAY;
 
-        debug("process_objects()",1);
+        debug("process_objects()", 1);
 
         for (loop = 0; loop < no_objects; loop++)
         {
@@ -370,7 +371,7 @@ int process_objects(int no_objects)
                 if ((master_no = getnum()) == ERROR)
                         RESULT = error("0007", "Cannot parse number", lincnt);
 
-                if ((master no < 0) || (master_no > no_objects))
+                if ((master_no < 0) || (master_no > no_objects))
                         RESULT = error("0021", "The-master no is incorrect", lincnt);
 
                 skip_garbage();
@@ -401,7 +402,7 @@ int check_object_values(int object_no, int object_pos, int no_objects)
         float angx, angy, angz;
         float sclx, scly, sclz;
 
-        debug("check_object_values()",l);
+        debug("check_object_values()", 1);
 
         for EVER
         {
@@ -435,7 +436,7 @@ int check_object_values(int object_no, int object_pos, int no_objects)
                         {
                                 lineptr = 0;
                                 return (OKAY);
-                        )
+                        }
                         else
                                 return(error("0022", "Too many master no definitions", lincnt));
                 }
@@ -478,7 +479,7 @@ int process_object_definition(int object_no)
         if (check("=") != OKAY)
                 RESULT = error("0006", "Missing assignment symbol", lincnt);
 
-        if ((no vert = getnum()) == ERROR)
+        if ((no_vert = getnum()) == ERROR)
                 RESULT = error("0007", "Cannot parse number", lincnt);
 
         if (no_vert > 0)
@@ -513,7 +514,7 @@ int process_object_definition(int object_no)
                 /* get the values of the edges */
                 RESULT = process_edges(no_edge, object_no);
         }
-        else if (no edge < 0)
+        else if (no_edge < 0)
         {
                 /* generate an error if the no_edges value is illegal */
                 RESULT = error("0046", "Error with the no_edges command", lincnt);
@@ -558,7 +559,7 @@ int process_object_definition(int object_no)
 *                               of master objects described                 *
 ****************************************************************************/
 int process_object_instances(int no_instances, int no_objects)
-(
+{
         int loop, master_no;
         int RESULT = OKAY;
         int col_set, spec_set, style_set;
@@ -687,11 +688,11 @@ int check_instance_values(int *col_set, int *spec_set, int *style_set, int insta
                         instanceptr[instance_pos].outcome = string_ptr;
                         /* now we should check whether we want
                            the object to be solid or not */
-                        if (strcmpi(string_ptr, "") == EQUAL)
+                        if (strcmp(string_ptr, "") == EQUAL)
                                 instanceptr[instance_pos].solid = FALSE;
-                        else if (strcmpi(string_ptr, "ignore") == EQUAL)
+                        else if (strcmp(string_ptr, "ignore") == EQUAL)
                                 instanceptr[instance_pos].solid = FALSE;
-                        else if (strcmpi(string_ptr, "solid") == EQUAL)
+                        else if (strcmp(string_ptr, "solid") == EQUAL)
                                 instanceptr[instance_pos].solid = TRUE;
                         else
                                 instanceptr[instance_pos].solid = TRUE;
@@ -718,7 +719,7 @@ int check_instance_values(int *col_set, int *spec_set, int *style_set, int insta
                 }
                 else if (strcmp (word, ".end_instancedefs") == EQUAL)
                 {
-                        if ((instance pos+1) == no_instances)
+                        if ((instance_pos+1) == no_instances)
                         {
                                 /* set up the instance of the master object */
                                 if (create_object_instance(masterptr, instanceptr, instance_pos, master_no) == ERROR)
