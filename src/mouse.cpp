@@ -1,9 +1,11 @@
 /*******************************************
+*                                          *
 * ##   ##  ###  ## ##  #### #####     #### *
 * ### ### ## ## ## ## ##    ##       ##    *
 * ####### ## ## ## ## ##### ####     ##    *
 * ## # ## ## ## ## ##    ## ##       ##    *
 * ##   ##  ###   ###  ####  ##### ##  #### *
+*                                          *
 *******************************************/
 /****************
 * include files *
@@ -20,25 +22,25 @@
 *****************************************************************************/
 int mouse_info(int *x, int *y)
 {
-        // THIS WILL NEED COMPLETELY REWRITING SO COMMENT OUT FOR NOW
-        // union REGS regs;
-        // /* we want to call the BIOS function that tells us the physical
-        //    movement of the mouse pointer */
-        // regs.x.ax = 0x0b;
-        // /* interrupt call */
-        // int86(MOUSE, &regs, &regs);
-        // /* now load the returning values to the parameters */
-        // *x = regs.x.cx;
-        // *y = regs.x.dx;
-        // /* we want to call the BIOS function that tells us the button-press
-        //    information of the mouse */
-        // regs.x.ax = 0x03;
-        // /* interrupt call */
-        // int86(MOUSE, &regs, &regs);
-        // /* now return the button status */
-        (void)x;
-        (void)y;
-        return (0);
+	// THIS WILL NEED COMPLETELY REWRITING SO COMMENT OUT FOR NOW
+	// union REGS regs;
+	// /* we want to call the BIOS function that tells us the physical
+	//    movement of the mouse pointer */
+	// regs.x.ax = 0x0b;
+	// /* interrupt call */
+	// int86(MOUSE, &regs, &regs);
+	// /* now load the returning values to the parameters */
+	// *x = regs.x.cx;
+	// *y = regs.x.dx;
+	// /* we want to call the BIOS function that tells us the button-press
+	//    information of the mouse */
+	// regs.x.ax = 0x03;
+	// /* interrupt call */
+	// int86(MOUSE, &regs, &regs);
+	// /* now return the button status */
+	(void)x;
+	(void)y;
+	return (0);
 }
 
 /*****************************************************************************
@@ -48,15 +50,15 @@ int mouse_info(int *x, int *y)
 *****************************************************************************/
 void draw_pointer(int x, int y)
 {
-        /* set the mouse colour to white */
-        setcolor(WHITE);
-        /* set the drawing mode to XOR mode */
-        setwritemode(XOR_PUT);
-        /* now draw the mouse pointer */
-        line(x,y-MSIZE,x,y+MSIZE);
-        line(x-MSIZE,y,x+MSIZE,y);
-        /* now set the drawing mode back to normal */
-        setwritemode(COPY_PUT);
+	/* set the mouse colour to white */
+	setcolor(WHITE);
+	/* set the drawing mode to XOR mode */
+	setwritemode(XOR_PUT);
+	/* now draw the mouse pointer */
+	line(x,y-MSIZE,x,y+MSIZE);
+	line(x-MSIZE,y,x+MSIZE,y);
+	/* now set the drawing mode back to normal */
+	setwritemode(COPY_PUT);
 }
 
 /*****************************************************************************
@@ -67,12 +69,12 @@ void draw_pointer(int x, int y)
 *****************************************************************************/
 void check_pointer(int *x, int *y)
 {
-        /* the minimum x can be */
-        if (*x < 0+MSIZE) *x = 0+MSIZE;
-        /* the maximum x can be */
-        if (*x > getmaxx()-MSIZE) *x = getmaxx()-MSIZE;
-        /* the minimum y can be */
-        if (*y < 0+MSIZE) *y = 0+MSIZE;
-        /* the maximum y can be */
-        if (*y > getmaxy()-MSIZE) *y = getmaxy()-MSIZE;
+	/* the minimum x can be */
+	if (*x < 0+MSIZE) *x = 0+MSIZE;
+	/* the maximum x can be */
+	if (*x > getmaxx()-MSIZE) *x = getmaxx()-MSIZE;
+	/* the minimum y can be */
+	if (*y < 0+MSIZE) *y = 0+MSIZE;
+	/* the maximum y can be */
+	if (*y > getmaxy()-MSIZE) *y = getmaxy()-MSIZE;
 }

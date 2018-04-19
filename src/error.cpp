@@ -5,6 +5,7 @@
 * ####  ####  ####  ## ##  ####     ##    *
 * ##    ## ## ## ## ## ##  ## ##    ##    *
 * ##### ## ## ## ##  ###   ## ## ##  #### *
+*                                         *
 ******************************************/
 /****************
 * include files *
@@ -68,26 +69,26 @@ void debug(const char *string, int level)
 		/* print the debug message at a particular level */
 		switch (level)
 		{
-			case 1:
-			{
-				printf("Function: \"%s\"\n", string);
-				break;
-			}
-			case 2:
-			{
-				printf("\t%s\n", string);
-				break;
-			}
-			case 3:
-			{
-				printf("\t\t%s\n", string);
-				break;
-			}
-			default:
-			{
-				printf("\t\t\t%s\n", string);
-				break;
-			}
+		case 1:
+		{
+			printf("Function: \"%s\"\n", string);
+			break;
+		}
+		case 2:
+		{
+			printf("\t%s\n", string);
+			break;
+		}
+		case 3:
+		{
+			printf("\t\t%s\n", string);
+			break;
+		}
+		default:
+		{
+			printf("\t\t\t%s\n", string);
+			break;
+		}
 		}
 	}
 	else if (stage == FINAL)

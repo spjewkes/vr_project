@@ -18,12 +18,12 @@ struct KeyState
 class SDLException : public std::exception
 {
 public:
-	SDLException(const char *m) : mesg(m) {}
+SDLException(const char *m) : mesg(m) {}
 
 	virtual const char* what() const throw()
-		{
-			return mesg;
-		}
+	{
+		return mesg;
+	}
 
 private:
 	const char *mesg;
@@ -32,156 +32,156 @@ private:
 class SDLFramework
 {
 public:
-	SDLFramework(int width, int height) : w(width), h(height), m_mousePosX(0), m_mousePosY(0)
+SDLFramework(int width, int height) : w(width), h(height), m_mousePosX(0), m_mousePosY(0)
+	{
+		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
-			if (SDL_Init(SDL_INIT_VIDEO) < 0)
-			{
-				throw SDLException("Failed to init SDL");
-			}
-
-			window = SDL_CreateWindow( GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN );
-			if (!window)
-			{
-				throw SDLException("Failed to create SDL window");
-			}
-
-			renderer = SDL_CreateRenderer(window, -1, 0);
-			if (!renderer)
-			{
-				throw SDLException("Failed to create SDL renderer");
-			}
+			throw SDLException("Failed to init SDL");
 		}
+
+		window = SDL_CreateWindow( GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN );
+		if (!window)
+		{
+			throw SDLException("Failed to create SDL window");
+		}
+
+		renderer = SDL_CreateRenderer(window, -1, 0);
+		if (!renderer)
+		{
+			throw SDLException("Failed to create SDL renderer");
+		}
+	}
 
 	virtual bool OnCreate() = 0;
 	virtual bool OnUpdate(float elapsed_time) = 0;
 	virtual void OnDestroy() = 0;
 
 	void Start()
+	{
+		if (!OnCreate())
 		{
-			if (!OnCreate())
+			throw SDLException("Failed to create game framework");
+		}
+
+		bool quit = false;
+		SDL_Event e;
+
+		auto tp1 = chrono::system_clock::now();
+		auto tp2 = chrono::system_clock::now();
+
+		while (!quit)
+		{
+			for (int i=0; i<2; i++)
 			{
-				throw SDLException("Failed to create game framework");
+				m_mouse[i].bPressed = false;
+				m_mouse[i].bReleased = false;
+				m_mouse[i].bHeld = false;
 			}
-
-			bool quit = false;
-			SDL_Event e;
-
-			auto tp1 = chrono::system_clock::now();
-			auto tp2 = chrono::system_clock::now();
-
-			while (!quit)
-			{
-				for (int i=0; i<2; i++)
-				{
-					m_mouse[i].bPressed = false;
-					m_mouse[i].bReleased = false;
-					m_mouse[i].bHeld = false;
-				}
 			
-				while( SDL_PollEvent( &e ) != 0 )
+			while( SDL_PollEvent( &e ) != 0 )
+			{
+				switch(e.type)
 				{
-					switch(e.type)
-					{
-					case SDL_QUIT:
+				case SDL_QUIT:
+				{
+					quit = true;
+					break;
+				}
+				case SDL_KEYUP:
+				{
+					if ( e.key.keysym.sym == SDLK_ESCAPE )
 					{
 						quit = true;
-						break;
 					}
-					case SDL_KEYUP:
-					{
-						if ( e.key.keysym.sym == SDLK_ESCAPE )
-						{
-							quit = true;
-						}
-						break;
-					}
-					case SDL_MOUSEMOTION:
-					{
-						m_mousePosX = e.motion.x;
-						m_mousePosY = e.motion.y;
-						if (e.motion.state & SDL_BUTTON_LMASK)
-						{
-							m_mouse[0].bPressed = false;
-							m_mouse[0].bReleased = false;
-							m_mouse[0].bHeld = true;
-						}
-						if (e.motion.state & SDL_BUTTON_RMASK)
-						{
-							m_mouse[1].bPressed = false;
-							m_mouse[1].bReleased = false;
-							m_mouse[1].bHeld = true;
-						}
-						break;
-					}
-					case SDL_MOUSEBUTTONDOWN:
-					{
-						switch (e.button.button)
-						{
-						case SDL_BUTTON_LEFT:
-							m_mouse[0].bPressed = true;
-							m_mouse[0].bReleased = false;
-							m_mouse[0].bHeld = true;
-							break;
-						case SDL_BUTTON_RIGHT:
-							m_mouse[1].bPressed = true;
-							m_mouse[1].bReleased = false;
-							m_mouse[1].bHeld = true;
-							break;
-						}
-						break;
-					}
-					case SDL_MOUSEBUTTONUP:
-					{
-						switch (e.button.button)
-						{
-						case SDL_BUTTON_LEFT:
-							m_mouse[0].bPressed = false;
-							m_mouse[0].bReleased = true;
-							m_mouse[0].bHeld = false;
-							break;
-						case SDL_BUTTON_RIGHT:
-							m_mouse[1].bPressed = false;
-							m_mouse[1].bReleased = true;
-							m_mouse[1].bHeld = false;
-							break;
-						}
-						break;
-					}
-					}
+					break;
 				}
-				
-				tp2 = chrono::system_clock::now();
-				chrono::duration<float> elapsed_time = tp2 - tp1;
-				tp1 = tp2;
-
-				char title[256];
-				snprintf(title, 256, "%8.2f fps - %s", 1.0 / elapsed_time.count(), GetName());
-				SDL_SetWindowTitle(window, title);
-				
-				if (!OnUpdate(elapsed_time.count()))
+				case SDL_MOUSEMOTION:
 				{
-					throw SDLException("Failed on game update");
+					m_mousePosX = e.motion.x;
+					m_mousePosY = e.motion.y;
+					if (e.motion.state & SDL_BUTTON_LMASK)
+					{
+						m_mouse[0].bPressed = false;
+						m_mouse[0].bReleased = false;
+						m_mouse[0].bHeld = true;
+					}
+					if (e.motion.state & SDL_BUTTON_RMASK)
+					{
+						m_mouse[1].bPressed = false;
+						m_mouse[1].bReleased = false;
+						m_mouse[1].bHeld = true;
+					}
+					break;
 				}
+				case SDL_MOUSEBUTTONDOWN:
+				{
+					switch (e.button.button)
+					{
+					case SDL_BUTTON_LEFT:
+						m_mouse[0].bPressed = true;
+						m_mouse[0].bReleased = false;
+						m_mouse[0].bHeld = true;
+						break;
+					case SDL_BUTTON_RIGHT:
+						m_mouse[1].bPressed = true;
+						m_mouse[1].bReleased = false;
+						m_mouse[1].bHeld = true;
+						break;
+					}
+					break;
+				}
+				case SDL_MOUSEBUTTONUP:
+				{
+					switch (e.button.button)
+					{
+					case SDL_BUTTON_LEFT:
+						m_mouse[0].bPressed = false;
+						m_mouse[0].bReleased = true;
+						m_mouse[0].bHeld = false;
+						break;
+					case SDL_BUTTON_RIGHT:
+						m_mouse[1].bPressed = false;
+						m_mouse[1].bReleased = true;
+						m_mouse[1].bHeld = false;
+						break;
+					}
+					break;
+				}
+				}
+			}
+				
+			tp2 = chrono::system_clock::now();
+			chrono::duration<float> elapsed_time = tp2 - tp1;
+			tp1 = tp2;
 
-				SDL_RenderPresent(GetRenderer());
+			char title[256];
+			snprintf(title, 256, "%8.2f fps - %s", 1.0 / elapsed_time.count(), GetName());
+			SDL_SetWindowTitle(window, title);
+				
+			if (!OnUpdate(elapsed_time.count()))
+			{
+				throw SDLException("Failed on game update");
 			}
 
-			OnDestroy();
+			SDL_RenderPresent(GetRenderer());
 		}
+
+		OnDestroy();
+	}
 
 	virtual ~SDLFramework()
+	{
+		if (renderer)
 		{
-			if (renderer)
-			{
-				SDL_DestroyRenderer(renderer);
-			}
-			if (window)
-			{
-				SDL_DestroyWindow(window);
-			}
-
-			SDL_Quit();
+			SDL_DestroyRenderer(renderer);
 		}
+		if (window)
+		{
+			SDL_DestroyWindow(window);
+		}
+
+		SDL_Quit();
+	}
 
 protected:
 	virtual const char* GetName() { return "SDLFramework"; }
@@ -209,10 +209,10 @@ protected:
 		if (!r) return;
 
 		auto drawline = [&](int sx, int ex, int ny)
-		{
-			for (int i = sx; i < ex; i++)
-				SDL_RenderDrawPoint(GetRenderer(), i, ny);
-		};
+			{
+				for (int i = sx; i < ex; i++)
+					SDL_RenderDrawPoint(GetRenderer(), i, ny);
+			};
 
 		while (y >= x)
 		{

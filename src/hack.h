@@ -3,6 +3,8 @@
    want to iron out any other compiler faults from the initial scan of the
    listing. */
 
+#include <stdlib.h>
+
 static int getmaxx()
 {
 	return 800;
