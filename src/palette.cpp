@@ -10,6 +10,7 @@
 /****************
 * include files *
 ****************/
+#include "graphics.h"
 #include "hack.h"
 
 #define RED 0

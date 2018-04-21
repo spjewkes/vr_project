@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "graphics.h"
 #include "defs.h"
 #include "hack.h"
 

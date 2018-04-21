@@ -10,6 +10,7 @@
 /****************
 * include files *
 ****************/
+#include "graphics.h"
 #include "defs.h"
 #include "hack.h"
 
