@@ -11,9 +11,9 @@ The order of plan for updating this will be:
 * Tidy up formatting and create proper header files for each file
 * Start looking at moving code to a more object-oriented design
 * Improve renderer:
-.* Get rid of 256 color limit
-.* Improve shading of polygons
-.* Add Z-buffering
+  * Get rid of 256 color limit
+  * Improve shading of polygons
+  * Add Z-buffering
 * Improve collision detection
 * Get rid of spawning a process for interactions (this will probably limit the scope of what can be done but I think it will be for the better)
 * Replace config file with something more standard
