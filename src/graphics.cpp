@@ -35,6 +35,11 @@ void close_graphics()
     SDL_Quit();
 }
 
+void update_graphics()
+{
+	SDL_RenderPresent(g_renderer);
+}
+
 int getmaxx()
 {
 	return g_width;

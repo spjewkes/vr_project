@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 	/* check_instance(instanceptr, no_instances); */
 	/* now let's start the really interesting bit */
 	printf("\nPRESS ANY KEY TO ENTER ANOTHER WORLD...\n");
-	getch();
+	getchar();
 
 	/* open up the graphics screen */
 	if (screen_open(mode) == OKAY)
@@ -129,6 +129,12 @@ int main(int argc, char *argv[])
 			   to click on objects that they can see */
 			while (!kbhit())
 			{
+				SDL_Event event;
+				SDL_PollEvent(&event);
+				if (event.type == SDL_QUIT) {
+					break;
+				}
+
 				/* get the current information from the mouse */
 				status = mouse_info(&x, &y);
 				/* check to see if the left mouse button was pressed */
@@ -183,7 +189,7 @@ int main(int argc, char *argv[])
 				}
 			}
 			/* retrieve the value from the keyboard */
-			c = getch();
+			c = getchar();
 
 			/* now we see which key was pressed and act accordingly */
 			switch (c)
@@ -267,6 +273,8 @@ int main(int argc, char *argv[])
 			}
 			/* draw the new image */
 			draw_image(masterptr, instanceptr, no_instances);
+
+			update_graphics();
 		}
 		/* close the graphics screen */
 		close_graphics();

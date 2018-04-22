@@ -17,11 +17,6 @@ static void nosound()
 {
 }
 
-static int getch()
-{
-	return 0;
-}
-
 static int kbhit()
 {
 	return 0;
