@@ -24,7 +24,6 @@
 /************************************
 * forward declaration of prototypes *
 ************************************/
-void check_graph_errors(void);
 int clip3d(float *xs, float *ys, float *zs,
 		   float *xe, float *ye, float *ze, float minz);
 int clip3dpara(float pre_array[][3], float post_array[][3], float minz);
@@ -50,8 +49,6 @@ extern struct viewer user;
 ****************************************************************************/
 int screen_open(int mode)
 {
-	int gdriverx, gmod;
-
 	/* make sure that mode is of a legal value between 0 and 4 */
 	if ((mode < 0) && (mode > 4))
 	{
@@ -63,38 +60,41 @@ int screen_open(int mode)
 		printf("\t4 -  1024x768\n");
 		return(error("0100", "Illegal graphics mode", 0));
 	}
-	gmod = mode;
 
-	/* install a user written device driver */
-	gdriverx = installuserdriver("vesa", 0);
+	int width = 0;
+	int height = 0;
 
-	/* check for any installation errors */
-	check_graph_errors();
+	switch (mode)
+	{
+	case 0:
+		width = 320;
+		height = 200;
+		break;
+	case 1:
+		width = 640;
+		height = 400;
+		break;
+	case 2:
+		width = 640;
+		height = 480;
+		break;
+	case 3:
+		width = 800;
+		height = 600;
+		break;
+	case 4:
+		width = 1024;
+		height = 768;
+		break;
+	}
 
-	/* initialize graphics and local variables */
-	initgraph(&gdriverx, &gmod, "");
-
-	/* check for any initialization errors */
-	check_graph_errors();
+	int retcode = create_graphics(width, height);
+	if (retcode < 0)
+	{
+		return (ERROR);
+	}
 
 	return (OKAY);
-}
-
-/****************************************************************************
-* checkerrors() - function to check for and report any graphics errors      *
-****************************************************************************/
-void check_graph_errors(void)
-{
-	int errorno;
-
-	/* read in the result of last graphics operation */
-	errorno = graphresult();
-	if (errorno != grOk)
-	{
-		error("0101", "Cannot set up graphics mode", 0);
-		printf("Graphics error: %s\n", grapherrormsg(errorno));
-		exit(1);
-	}
 }
 
 /****************************************************************************

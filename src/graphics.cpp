@@ -1,36 +1,54 @@
 #include "graphics.h"
 
-int installuserdriver(const char *, int)
+static int g_width = 0;
+static int g_height = 0;
+static SDL_Window *g_window = NULL;
+static SDL_Renderer *g_renderer = NULL;
+
+int create_graphics(int width, int height)
 {
-	return 0;
+	int retcode = SDL_Init(SDL_INIT_VIDEO);
+	if (retcode < 0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
+		return retcode;
+	}
+
+	retcode = SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_MAXIMIZED, &g_window, &g_renderer);
+	if (retcode < 0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
+		return retcode;
+	}
+
+	g_width = width;
+	g_height = height;
+
+	return retcode;
 }
 
-void initgraph(int *, int *, const char *)
+void close_graphics()
 {
-}
+	SDL_DestroyRenderer(g_renderer);
+    SDL_DestroyWindow(g_window);
 
-void closegraph()
-{
-}
-
-int graphresult()
-{
-	return 0;
-}
-
-const char *grapherrormsg(int)
-{
-	return NULL;
+    SDL_Quit();
 }
 
 int getmaxx()
 {
-	return 800;
+	return g_width;
 }
 
 int getmaxy()
 {
-	return 600;
+	return g_height;
+}
+
+
+const char *grapherrormsg(int)
+{
+	return NULL;
 }
 
 void setcolor(int)

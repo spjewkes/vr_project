@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
 			draw_image(masterptr, instanceptr, no_instances);
 		}
 		/* close the graphics screen */
-		closegraph();
+		close_graphics();
 	}
 
 	/* free memory taken up by master objects */
