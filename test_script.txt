@@ -1,0 +1,402 @@
+#################
+# a test script #
+#################
+.userdefs
+location = 60.0 , 30.0 , 20.0
+direction = 0.0 , 0.0 , 0.0
+radius = 2.5
+sky = 150
+ground = 100
+.end_userdefs
+
+.masterdefs
+no_objects = 3
+
+#################
+# Define a cube #
+#################
+master_no = 1
+.objectdef
+        no_vertices = 8
+                1 = -1.0 ,  1.0 ,  1.0
+                2 =  1.0 ,  1.0 ,  1.0
+                3 = -1.0 , -1.0 ,  1.0
+                4 =  1.0 , -1.0 ,  1.0
+                5 =  1.0 ,  1.0 , -1.0
+                6 = -1.0 ,  1.0 , -1.0
+                7 =  1.0 , -1.0 , -1.0
+                8 = -1.0 , -1.0 , -1.0
+		no_edges = 18
+                1 = 1 , 2
+                2 = 2 , 4
+                3 = 4 , 3
+                4 = 2 , 5
+                5 = 5 , 7
+                6 = 7 , 4
+                7 = 5 , 6
+                8 = 6 , 8
+                9 = 8 , 7
+                10 = 6 , 1
+                11 = 1 , 3
+                12 = 3 , 8
+                13 = 6 , 5
+                14 = 5 , 2
+                15 = 2 , 1
+                16 = 3 , 4
+                17 = 4 , 7
+                18 = 7 , 8
+        no_polygons = 6
+                1 =  1 ,  2 ,  3
+                2 =  4 ,  5 ,  6
+                3 =  7 ,  8 ,  9
+                4 = 10 , 11 , 12
+                5 = 13 , 14 , 15
+                6 = 16 , 17 , 18
+.objectend
+        scale = 1.0 , 1.0 , 1.0
+
+##################
+# Define a plane #
+##################
+master_no = 2
+.objectdef
+        no_vertices = 4
+                1 = -1.0 ,  1.0 ,  0.0
+                2 =  1.0 ,  1.0 ,  0.0
+                3 =  1.0 , -1.0 ,  0.0
+                4 = -1.0 , -1.0 ,  0.0
+        no_edges = 6
+                1 = 1 , 2
+                2 = 2 , 3
+                3 = 3 , 4
+                4 = 4 , 3
+                5 = 3 , 2
+                6 = 2 , 1
+        no_polygons = 2
+                1 = 1 , 2 , 3
+                2 = 4 , 5 , 6
+.objectend
+        scale = 1.0 , 1.0 , 1.0
+
+########################
+# define a wedge shape #
+########################
+master_no = 3
+.objectdef
+        no_vertices = 6
+                1 = -1.0 ,  1.0 ,  1.0
+                2 =  1.0 ,  0.0 ,  1.0
+                3 = -1.0 , -1.0 ,  1.0
+                4 = -1.0 ,  1.0 , -1.0
+                5 =  1.0 ,  0.0 , -1.0
+                6 = -1.0 , -1.0 , -1.0
+        no_edges = 15
+                1 = 1 , 2
+                2 = 2 , 3
+                3 = 3 , 1
+                4 = 4 , 6
+                5 = 6 , 5
+                6 = 5 , 4
+                7 = 5 , 2
+                8 = 2 , 1
+                9 = 1 , 4
+                10 = 4 , 1
+                11 = 1 , 3
+                12 = 3 , 6
+                13 = 6 , 3
+                14 = 3 , 2
+                15 = 2 , 5
+        no_polygons = 5
+                1 = 1 , 2 , 3
+                2 = 4 , 5 , 6
+                3 = 7 , 8 , 9
+                4 = 10 , 11 , 12
+                5 = 13 , 14 , 15
+.objectend
+        scale = 1.0 , 1.0 , 1.0
+
+.end_masterdefs
+
+.instancedefs
+no_instances = 26
+
+###############################
+# build the walls of the room #
+###############################
+
+# part 1
+master_no = 2
+        location = 0.0 , 30.0 , -80.0
+        scale = 80.0 , 30.0 , 1.0
+        angle = 0.0 , 90.0 , 0.0
+        colour = DARKGREY
+        specularity = 50.0 %
+        style = SOLID
+        outcome = "solid"
+
+# part 2
+master_no = 2
+        location = 100.0 , 30.0 , -160.0
+        scale = 100.0 , 30.0 , 1.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = DARKGREY
+        specularity = 50.0 %
+        style = SOLID
+        outcome = "solid"
+
+# part 3
+master_no = 2
+        location = 200.0 , 30.0 , -80.0
+        scale = 80.0 , 30.0 , 1.0
+        angle = 0.0 , 90.0 , 0.0
+        colour = DARKGREY
+        specularity = 50.0 %
+        style = SOLID
+        outcome = "solid"
+
+# part 4
+master_no = 2
+        location = 140.0 , 30.0 , 0.0
+        scale = 60.0 , 30.0 , 1.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = DARKGREY
+        specularity = 50.0 %
+        style = SOLID
+        outcome = "solid"
+
+# part 5
+master_no = 2
+        location = 60.0 , 56.0 , 0.0
+        scale = 20.0 , 4.0 , 1.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = DARKGREY
+        specularity = 50.0 %
+        style = SOLID
+        outcome = "solid"
+
+# Part 6
+master_no = 2
+        location = 20.0 , 30.0 , 0.0
+        scale = 20.0 , 30.0 , 1.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = DARKGREY
+        specularity = 50.0 %
+        style = SOLID
+        outcome = "solid"
+
+#################
+# the cd player #
+#################
+# the stand
+master_no = 1
+        location = 142.0 , 8.0 , -130.0
+        scale = 14.0 , 8.0 , 10.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = LIGHTGREY
+        specularity = 70.0 %
+        style = SOLID
+        outcome = "solid"
+
+# the cd player
+master_no = 1
+        location = 142.0 , 22.0 , -130.0
+        scale = 14.0 , 6.0 , 6.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = BLACK
+        specularity = 90.0 %
+        style = SOLID
+        outcome = "solid"
+
+# the play button
+master_no = 3
+        location = 134.0 , 22.0 , -123.0
+        scale = 1.5 , 1.5 , 1.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = LIGHTGREEN
+        specularity = 100.0 %
+        style = SOLID
+        outcome = "CDP ALL /DD"
+
+# the stop button
+master_no = 1
+        location = 142.0 , 22.0 , -123.0
+        scale = 1.5 , 1.5 , 1.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = LIGHTRED
+        specularity = 100.0 %
+        style = SOLID
+        outcome = "CDP S /DD"
+
+# the eject button (part 1)
+master_no = 1
+        location = 150.0 , 22.0 , -123.0
+        scale = 1.5 , 0.5 , 1.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = YELLOW
+        specularity = 100.0 %
+        style = SOLID
+        outcome = "CDP E /DD"
+
+# the eject button (pact 2)
+master_no = 3
+        location = 150.0 , 23.5 , -123.0
+        scale = 0.5 , 1.5 , 1.0
+        angle = 0.0 , 0.0 , 270.0
+        colour = YELLOW
+        specularity = 100.0 %
+        style = SOLID
+        outcome = "CDP E /DD"
+
+# the eject button (part 3)
+master_no = 3
+        location = 150.0 , 20.5 , -123.0
+        scale = 0.5 , 1.5 , 1.0
+        angle = 0.0 , 0.0 , 90.0
+        colour = YELLOW
+        specularity = 100.0
+        style = SOLID
+        outcome = "CDP E /DD"
+
+#####################
+# the computer desk #
+#####################
+
+# the table top
+master_no = 1
+        location = 66.0 , 24.0 , -120.0
+        scale = 18.0 , 20.0 , 1.0
+        angle = 90.0 , 0.0 , 0.0
+        colour = BROWN
+        specularity = 55.0 %
+        style = SOLID
+        outcome = "solid"
+
+# the table leg (part 1)
+        master_no = 1
+        location = 46.0 , 13.0 , -125.0
+        scale = 18.0 , 13.0 , 1.0
+        angle = 0.0 , 90.0 , 0.0
+        colour = LIGHTGREY
+        specularity = 70.0 %
+        style = SOLID
+        outcome = "solid"
+
+# the table leg (part 2)
+        master_no = 1
+        location = 86.0 , 13.0 , -125.0
+        scale = 18.0 , 13.0 , 1.0
+        angle = 0.0 , 90.0 , 0.0
+        colour = LIGHTGREY
+        specularity = 70.0 %
+        style = SOLID
+        outcome = "solid"
+
+################
+# the computer #
+################
+
+# the base
+master_no = 1
+        location = 66.0 , 30.0 , -125.0
+        scale = 14.0 , 6.0 , 12.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = WHITE
+        specularity = 45.0 %
+        style = SOLID
+        outcome = "solid"
+
+# monitor stand
+master_no = 1
+        location = 66.0 , 38.0 , -126.0
+        scale = 6.0 , 1.0 , 6.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = WHITE
+        specularity = 45.0 %
+        style = SOLID
+        outcome = "solid"
+
+# monitor
+master_no = 1
+        location = 66.0 , 50.0 , -126.0
+        scale = 10.0 , 10.0 , 10.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = WHITE
+        specularity = 45.0 %
+        style = SOLID
+        outcome = "solid"
+
+# monitor screen
+master_no = 1
+        location = 66.0 , 50.0 , -116.0
+        scale = 8.5 , 8.0 , 1.0
+        angle = 0.0 , 0.0 , 0,O
+        colour = LIGHTGREY
+        specularity = 20.0 %
+        style = SOLID
+        outcome = "cat.exe greet.txt"
+
+# the keyboard
+master_no = 3
+        location = 66.0 , 25.0 , -104.0
+        scale = 4,0 , 1,0 , 10.0
+        angle = 0.0 , 90.0 , 0.0
+        colour = WHITE
+        specularity = 45.0 %
+        style = SOLID
+        outcome = "play.com hallelu.voc"
+
+#############
+# the chair #
+#############
+
+# the seat
+master_no = 1
+        location = 90.0 , 14.0 , -81.0
+        scale = 10.0 , 1,0 , 10.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = BLUE
+        specularity = 25.0 %
+        style = SOLID
+        outcome = "play.com bayoop.voc"
+
+# back of the chair (part 1)
+master_no = 1
+        location = 98.0 , 30.0 , -81.0
+        scale = 1.0 , 5,0 , 10.0
+        angle = 0.0 , 0.0 , 0,O
+        colour = BLUE
+        specularity = 25.0 %
+        style = SOLID
+        outcome = "play.oom bayoop.voc"
+
+# back of the chair (part 2)
+master_no = 1
+        location = 98.0 , 20.0 , -81.0
+        scale = 1.0 , 5.0 , 1,0
+        angle = 0.0 , 0.0 , 0.0
+        colour = DARKGREY
+        specularity = 85.0 %
+        style = SOLID
+        outcome = "play.com bayoop.voc"
+
+# chair base (pert 1)
+master_no = 3
+        location = 90.0 , 6.0 , -81.0
+        scale = 10.0 , 6.5 , 10.0
+        angle = 0.0 , 0.0 , 0.0
+        colour = DARKGREY
+        specularity = 50.0 %
+        style = WIREFRAME
+        outcome = "solid"
+
+# chair base (part 2)
+master_no = 3
+        location = 90.0 , 6.O , -81.0
+        scale = 10.0 , 6.5 , 10.0
+        angle = 0.0 , 180.0 , 0.0
+        colour = DARKGREY
+        specularity = 50.0 %
+        style = WIREFRAME
+        outcome = "solid"
+
+.end_instancedefs

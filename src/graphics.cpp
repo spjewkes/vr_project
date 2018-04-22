@@ -46,10 +46,6 @@ int getmaxy()
 }
 
 
-const char *grapherrormsg(int)
-{
-	return NULL;
-}
 
 void setcolor(int)
 {

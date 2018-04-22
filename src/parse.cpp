@@ -500,7 +500,7 @@ int process_object_definition(int object_no)
 	skip_garbage();
 
 	/* now retrieve the number of edges that make up the object */
-	if (check("no edges") != OKAY)
+	if (check("no_edges") != OKAY)
 		RESULT = error("0046", "Error with no_edges command", lincnt);
 
 	if (check("=") != OKAY)

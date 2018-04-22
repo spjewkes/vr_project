@@ -256,37 +256,37 @@ int process_colour(int *colour)
 	getword(word);
 
 	/* get the colour value from the colour command */
-	if ((strcmp(word, "black") == EQUAL) || (strcmp(word, "0") == EQUAL))
+	if ((strcmp(word, "BLACK") == EQUAL) || (strcmp(word, "0") == EQUAL))
 		*colour = 0;
-	else if ((strcmp(word, "blue") == EQUAL) || (strcmp(word, "1") == EQUAL))
+	else if ((strcmp(word, "BLUE") == EQUAL) || (strcmp(word, "1") == EQUAL))
 		*colour = 1;
-	else if ((strcmp(word, "green") == EQUAL) || (strcmp(word, "2") == EQUAL))
+	else if ((strcmp(word, "GREEN") == EQUAL) || (strcmp(word, "2") == EQUAL))
 		*colour = 2;
-	else if ((strcmp(word, "cyan") == EQUAL) || (strcmp(word, "3") == EQUAL))
+	else if ((strcmp(word, "CYAN") == EQUAL) || (strcmp(word, "3") == EQUAL))
 		*colour = 3;
-	else if ((strcmp(word, "red") == EQUAL) || (strcmp(word, "4") == EQUAL))
+	else if ((strcmp(word, "RED") == EQUAL) || (strcmp(word, "4") == EQUAL))
 		*colour = 4;
-	else if ((strcmp(word, "magenta") == EQUAL) || (strcmp(word, "5") == EQUAL))
+	else if ((strcmp(word, "MAGENTA") == EQUAL) || (strcmp(word, "5") == EQUAL))
 		*colour = 5;
-	else if ((strcmp(word, "brown") == EQUAL) || (strcmp(word, "6") == EQUAL))
+	else if ((strcmp(word, "BROWN") == EQUAL) || (strcmp(word, "6") == EQUAL))
 		*colour = 6;
-	else if ((strcmp(word, "lightgrey") == EQUAL) || (strcmp(word, "7") == EQUAL))
+	else if ((strcmp(word, "LIGHTGREY") == EQUAL) || (strcmp(word, "7") == EQUAL))
 		*colour = 7;
-	else if ((strcmp(word, "darkgrey") == EQUAL) || (strcmp(word, "8") == EQUAL))
+	else if ((strcmp(word, "DARKGREY") == EQUAL) || (strcmp(word, "8") == EQUAL))
 		*colour = 8;
-	else if ((strcmp(word, "lightblue") == EQUAL) || (strcmp(word, "9") == EQUAL))
+	else if ((strcmp(word, "LIGHTBLUE") == EQUAL) || (strcmp(word, "9") == EQUAL))
 		*colour = 9;
-	else if ((strcmp(word, "lightgreen") == EQUAL) || (strcmp(word, "10") == EQUAL))
+	else if ((strcmp(word, "LIGHTGREEN") == EQUAL) || (strcmp(word, "10") == EQUAL))
 		*colour = 10;
-	else if ((strcmp(word, "lightcyan") == EQUAL) || (strcmp(word, "11") == EQUAL))
+	else if ((strcmp(word, "LIGHTCYAN") == EQUAL) || (strcmp(word, "11") == EQUAL))
 		*colour = 11;
-	else if ((strcmp(word, "lightred") == EQUAL) || (strcmp(word, "12") == EQUAL))
+	else if ((strcmp(word, "LIGHTRED") == EQUAL) || (strcmp(word, "12") == EQUAL))
 		*colour = 12;
-	else if ((strcmp(word, "lightmagenta") == EQUAL) || (strcmp(word, "13") == EQUAL))
+	else if ((strcmp(word, "LIGHTMAGENTA") == EQUAL) || (strcmp(word, "13") == EQUAL))
 		*colour = 13;
-	else if ((strcmp(word, "yellow") == EQUAL) || (strcmp(word, "14") == EQUAL))
+	else if ((strcmp(word, "YELLOW") == EQUAL) || (strcmp(word, "14") == EQUAL))
 		*colour = 14;
-	else if ((strcmp(word, "white") == EQUAL) || (strcmp(word, "15") == EQUAL))
+	else if ((strcmp(word, "WHITE") == EQUAL) || (strcmp(word, "15") == EQUAL))
 		*colour = 15;
 	else
 		RESULT = error("0044", "Invalid colour value", lincnt);
