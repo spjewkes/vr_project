@@ -17,11 +17,6 @@ static void nosound()
 {
 }
 
-static int kbhit()
-{
-	return 0;
-}
-
 #define P_WAIT (0)
 
 static void spawnvp(int, char *, char *[])
