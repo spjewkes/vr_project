@@ -178,10 +178,10 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
 
 	/* before we draw the scene we want to draw the sky and the ground */
 	/* the sky */
-	setfillstyle(SOLID_FILL, user.sky);
+	setcolor(user.sky);
 	bar(0, 0, getmaxx(), midy);
 	/* the ground */
-	setfillstyle(SOLID_FILL, user.ground);
+	setcolor(user.ground);
 	bar(0, midy, getmaxx(), getmaxy());
 
 	for (loop1 = 0; loop1 < no_instances; loop1++)
@@ -367,8 +367,6 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
 
 						no_points++;
 						/* firstly set the colour */
-						setfillstyle(SOLID_FILL,
-									 iptr[tmp].poly_colour[loop2]);
 						setcolor(iptr[tmp].poly_colour[loop2]);
 						/* now draw the polygon */
 						fillpoly(no_points, polyarray);

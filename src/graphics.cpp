@@ -1,9 +1,13 @@
+#include <cassert>
+#include <algorithm>
 #include "graphics.h"
 
 static int g_width = 0;
 static int g_height = 0;
 static SDL_Window *g_window = NULL;
 static SDL_Renderer *g_renderer = NULL;
+
+static int g_palette[256][3];
 
 int create_graphics(int width, int height)
 {
@@ -50,33 +54,47 @@ int getmaxy()
 	return g_height;
 }
 
-
-
-void setcolor(int)
+void setcolor(int index)
 {
+	assert(index >= 0 && index < 256);
+	int retcode = SDL_SetRenderDrawColor(g_renderer, g_palette[index][0],
+										 g_palette[index][1], g_palette[index][2],
+										 SDL_ALPHA_OPAQUE);
+	assert(retcode == 0);
 }
 
-void line(int, int, int, int)
+void line(int x0, int y0, int x1, int y1)
 {
+	int retcode = SDL_RenderDrawLine(g_renderer, x0, y0, x1, y1);
+	assert(retcode == 0);
 }
 
-void setwritemode(int)
+void setrgbpalette(int index, int r, int g, int b)
 {
+	assert(index >= 0 && index < 256);
+	assert(r >= 0 && r < 256);
+	assert(g >= 0 && g < 256);
+	assert(b >= 0 && b < 256);
+	g_palette[index][0] = r;
+	g_palette[index][1] = g;
+	g_palette[index][2] = b;
 }
 
-void setrgbpalette(int, int, int, int)
+void bar(int x0, int y0, int x1, int y1)
 {
+	SDL_Rect rect = { std::min(x0, x1), std::min(y0, y1), abs(x0 - x1), abs(y0 - y1) };
+	int retcode = SDL_RenderFillRect(g_renderer, &rect);
+	assert(retcode == 0);
 }
 
-void setfillstyle(int, int)
+void fillpoly(int num_points, int *points)
 {
-}
-
-void bar(int, int, int, int)
-{
-}
-
-void fillpoly(int, int *)
-{
+	assert(num_points > 1);
+	int length = num_points * 2;
+	line(points[0], points[1], points[length-2], points[length-1]);
+	for (int i = 2; i < length; i += 2)
+	{
+		line(points[i-2], points[i-1], points[i], points[i+1]);
+	}
 }
 

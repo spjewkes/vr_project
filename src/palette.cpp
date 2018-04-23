@@ -373,7 +373,7 @@ void check_palette(void)
 		for (loop2 = 0; loop2 < 16; loop2++)
 		{
 			/* draw a coloured box */
-			setfillstyle(SOLID_FILL, colour++);
+			setcolor(colour++);
 			bar(loop2*dx, loop1*dy, loop2*dx+dx, loop1*dy+dy);
 		}
 }

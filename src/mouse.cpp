@@ -53,13 +53,9 @@ void draw_pointer(int x, int y)
 {
 	/* set the mouse colour to white */
 	setcolor(WHITE);
-	/* set the drawing mode to XOR mode */
-	setwritemode(XOR_PUT);
 	/* now draw the mouse pointer */
 	line(x,y-MSIZE,x,y+MSIZE);
 	line(x-MSIZE,y,x+MSIZE,y);
-	/* now set the drawing mode back to normal */
-	setwritemode(COPY_PUT);
 }
 
 /*****************************************************************************

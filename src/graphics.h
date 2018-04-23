@@ -17,12 +17,10 @@ void update_graphics();
 int getmaxx();
 int getmaxy();
 
-void setcolor(int);
-void line(int, int, int, int);
-void setwritemode(int);
-void setrgbpalette(int, int, int, int);
-void setfillstyle(int, int);
-void bar(int, int, int, int);
-void fillpoly(int, int *);
+void setcolor(int index);
+void line(int x0, int y0, int x1, int y1);
+void setrgbpalette(int index, int r, int g, int b);
+void bar(int x0, int y0, int x1, int y1);
+void fillpoly(int num_points, int *points);
 
 #endif // __GRAPHICS_H__
