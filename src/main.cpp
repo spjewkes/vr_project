@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <chrono>
 #include "graphics.h"
 #include "defs.h"
 #include "hack.h"
@@ -110,6 +111,9 @@ int main(int argc, char *argv[])
 		draw_image(masterptr, instanceptr, no_instances);
 		/* set the value of c to a null value to begin with */
 
+		auto tp1 = std::chrono::system_clock::now();
+		auto tp2 = std::chrono::system_clock::now();
+		std::chrono::duration<float> elapsed_time = tp2 - tp1;
 		bool quit = false;
 		
 		while (!quit)
@@ -193,16 +197,16 @@ int main(int argc, char *argv[])
 			else if (event.type == SDL_KEYDOWN)
 			{
 				/* now we see which key was pressed and act accordingly */
-				switch (event.key.keysym.sym)
+				switch (event.key.keysym.scancode)
 				{
-				case SDLK_8:
+				case SDL_SCANCODE_UP:
 				{
 					/* walk forward */
 					/* angle 0 is facing forwards so must decrement by 90 */
 					angle = user.angy + 90.0;
 					if (angle > 360.0) angle -= 360.0;
-					locz = locz - (2.5 * sin(angle / RADCONST));
-					locx = locx - (2.5 * cos(angle / RADCONST));
+					locz = locz - (25.0 * sin(angle / RADCONST) * elapsed_time.count());
+					locx = locx - (25.0 * cos(angle / RADCONST) * elapsed_time.count());
 					if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 					{
 						/* if user hasn't collided with an object instance
@@ -212,14 +216,14 @@ int main(int argc, char *argv[])
 					}
 					break;
 				}
-				case SDLK_2:
+				case SDL_SCANCODE_DOWN:
 				{
 					/* walk backwards */
 					/* angle 0 is facing forwards so nust increment by 90 */
 					angle = user.angy + 90.0;
 					if (angle > 360.0) angle -= 360.0;
-					locz = locz + (2.5 * sin(angle / RADCONST));
-					locx = locx + (2.5 * cos(angle / RADCONST));
+					locz = locz + (25.0 * sin(angle / RADCONST) * elapsed_time.count());
+					locx = locx + (25.0 * cos(angle / RADCONST) * elapsed_time.count());
 					if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 					{
 						/* if user hasn't collided with an object instance
@@ -229,11 +233,11 @@ int main(int argc, char *argv[])
 					}
 					break;
 				}
-				case SDLK_6:
+				case SDL_SCANCODE_Q:
 				{
 					/* slide left */
-					locz = locz + (2.5 * sin(user.angy / RADCONST));
-					locx = locx + (2.5 * cos(user.angy / RADCONST));
+					locz = locz - (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
+					locx = locx - (125.0 * cos(user.angy / RADCONST) * elapsed_time.count());
 					if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 					{
 						/* if user hasn't collided with an object instance
@@ -243,11 +247,11 @@ int main(int argc, char *argv[])
 					}
 					break;
 				}
-				case SDLK_4:
+				case SDL_SCANCODE_E:
 				{
 					/* slide right */
-					locz = locz - (2.5 * sin(user.angy / RADCONST));
-					locx = locx - (2.5 * cos(user.angy / RADCONST));
+					locz = locz + (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
+					locx = locx + (125.0 * cos(user.angy / RADCONST) * elapsed_time.count());
 					if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 					{
 						/* if user hasn't colllded wlth an object instance
@@ -257,21 +261,21 @@ int main(int argc, char *argv[])
 					}
 					break;
 				}
-				case SDLK_7:
+				case SDL_SCANCODE_LEFT:
 				{
 					/* turn to the left */
-					user.angy -= 2.5;
+					user.angy -= 2.5 * elapsed_time.count();
 					if (user.angy < 0.0) user.angy = 360.0;
 					break;
 				}
-				case SDLK_9:
+				case SDL_SCANCODE_RIGHT:
 				{
 					/* turn to the right */
-					user.angy += 2.5;
+					user.angy += 2.5 * elapsed_time.count();
 					if (user.angy > 360.0) user.angy = 0.0;
 					break;
 				}
-				case SDLK_ESCAPE:
+				case SDL_SCANCODE_ESCAPE:
 				{
 					quit = true;
 					break;
@@ -282,6 +286,10 @@ int main(int argc, char *argv[])
 			draw_image(masterptr, instanceptr, no_instances);
 
 			update_graphics();
+
+			tp2 = std::chrono::system_clock::now();
+			elapsed_time = tp2 - tp1;
+			tp1 = tp2;
 		}
 		/* close the graphics screen */
 		close_graphics();
