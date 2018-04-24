@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 	debug("START OF PROGRAM", 3);
 	debug("main()", 1);
 	/* set mode to a value of 0 - resolution 320x200 */
-	mode = 0;
+	mode = 4;
 	/* if there are more than 2 arguments then error */
 	if (argc > 2)
 	{
@@ -105,8 +105,6 @@ int main(int argc, char *argv[])
 	{
 		/* set the palette up */
 		create_palette();
-		/* check the contents of the palette */
-		/* check_palette();                  */
 		/* draw the initial position of all the objects */
 		draw_image(masterptr, instanceptr, no_instances);
 		/* set the value of c to a null value to begin with */
@@ -265,14 +263,14 @@ int main(int argc, char *argv[])
 				{
 					/* turn to the left */
 					user.angy -= 2.5 * elapsed_time.count();
-					if (user.angy < 0.0) user.angy = 360.0;
+					if (user.angy < 0.0) user.angy += 360.0;
 					break;
 				}
 				case SDL_SCANCODE_RIGHT:
 				{
 					/* turn to the right */
 					user.angy += 2.5 * elapsed_time.count();
-					if (user.angy > 360.0) user.angy = 0.0;
+					if (user.angy > 360.0) user.angy -= 360.0;
 					break;
 				}
 				case SDL_SCANCODE_ESCAPE:
@@ -284,6 +282,9 @@ int main(int argc, char *argv[])
 			}
 			/* draw the new image */
 			draw_image(masterptr, instanceptr, no_instances);
+
+			/* check the contents of the palette */
+			/* check_palette();                  */
 
 			update_graphics();
 
