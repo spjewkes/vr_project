@@ -262,14 +262,14 @@ int main(int argc, char *argv[])
 				case SDL_SCANCODE_LEFT:
 				{
 					/* turn to the left */
-					user.angy -= 2.5 * elapsed_time.count();
+					user.angy -= 25.0 * elapsed_time.count();
 					if (user.angy < 0.0) user.angy += 360.0;
 					break;
 				}
 				case SDL_SCANCODE_RIGHT:
 				{
 					/* turn to the right */
-					user.angy += 2.5 * elapsed_time.count();
+					user.angy += 25.0 * elapsed_time.count();
 					if (user.angy > 360.0) user.angy -= 360.0;
 					break;
 				}

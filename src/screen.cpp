@@ -204,9 +204,9 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
 			/* now normalise the points ready for the perspective
 			   projection */
 			x = x * ((2.0 * vrp) / (100.0 * (vrp+BACK)));
-			/* minus 2.0 here to make the y value correct
+			/* plus 2.0 here to make the y value correct
 			   i.e. -y - down and +y - up */
-			y = y * ((-2.0 * vrp) / (75.0 * (vrp+BACK)));
+			y = y * ((2.0 * vrp) / (75.0 * (vrp+BACK)));
 			z = z * (-1.0 / (vrp+BACK));
 			/* now store them in temporary instance space */
 			store[loop2][X] = x;
