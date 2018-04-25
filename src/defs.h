@@ -8,7 +8,7 @@
 *                                    *
 *************************************/
 
-#define RADCONST (6.28318530718)
+#define RADCONST (57.295779513082321)
 
 #define FALSE (0)
 #define TRUE  (!FALSE)
