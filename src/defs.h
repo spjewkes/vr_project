@@ -20,10 +20,10 @@
 #define MAXARG  (260)
 
 #define ERROR   (-1)
-#define OKAY    (0)
-#define BLANK   (1)
-#define COMMENT (2)
-#define OTHER   (3)
+#define OKAY    (1)
+#define BLANK   (2)
+#define COMMENT (3)
+#define OTHER   (4)
 
 #define EQUAL (0)
 
