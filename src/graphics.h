@@ -3,11 +3,7 @@
 #ifndef __GRAPHICS_H__
 #define __GRAPHICS_H__
 
-#define XOR_PUT  (0)
-#define COPY_PUT (1)
-#define SOLID_FILL (2)
-
-#define WHITE (1)
+#define WHITE (255)
 
 int create_graphics(int width, int height);
 void close_graphics();

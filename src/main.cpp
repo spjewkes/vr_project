@@ -114,6 +114,10 @@ int main(int argc, char *argv[])
 		std::chrono::duration<float> elapsed_time = tp2 - tp1;
 		bool quit = false;
 		
+		/* set the initial starting position of the mouse */
+		mpos_x = getmaxx() / 2;
+		mpos_y = getmaxy() / 2;
+
 		while (!quit)
 		{
 			SDL_Event event;
@@ -129,13 +133,6 @@ int main(int argc, char *argv[])
 			locx = user.locx;
 			locy = user.locy;
 			locz = user.locz;
-
-			/* set the initial starting position of the mouse */
-			mpos_x = getmaxx() / 2;
-			mpos_y = getmaxy() / 2;
-
-			/* now draw the pointer */
-			draw_pointer(mpos_x, mpos_y);
 
 			if (event.type == SDL_MOUSEMOTION)
 			{
@@ -282,6 +279,9 @@ int main(int argc, char *argv[])
 			}
 			/* draw the new image */
 			draw_image(masterptr, instanceptr, no_instances);
+
+			/* now draw the pointer */
+			draw_pointer(mpos_x, mpos_y);
 
 			/* check the contents of the palette */
 			/* check_palette();                  */
