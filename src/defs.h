@@ -34,6 +34,22 @@
 #define SOLID  (0)
 #define WFRAME (1)
 
+/*************************
+* Define Keyboard events *
+*************************/
+enum keyboard_state
+{
+	KEY_UP = 0,
+	KEY_DOWN,
+	KEY_LEFT,
+	KEY_RIGHT,
+	KEY_STRAFE_LEFT,
+	KEY_STRAFE_RIGHT,
+	KEY_QUIT,
+
+	KEY_MAX
+};
+
 /************************
 * Define user structure *
 ************************/

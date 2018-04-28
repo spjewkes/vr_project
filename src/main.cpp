@@ -118,165 +118,236 @@ int main(int argc, char *argv[])
 		mpos_x = getmaxx() / 2;
 		mpos_y = getmaxy() / 2;
 
+		SDL_Event event;
+
+		/* get temporary values of position of user to check collision
+		   with any object instances */
+		locx = user.locx;
+		locy = user.locy;
+		locz = user.locz;
+
+		bool key_state[keyboard_state::KEY_MAX];
+
 		while (!quit)
 		{
-			SDL_Event event;
-			SDL_PollEvent(&event);
-			if (event.type == SDL_QUIT)
+			if (SDL_PollEvent(&event))
 			{
-				quit = true;
-				continue;
-			}
-
-			/* get temporary values of position of user to check collision
-			   with any object instances */
-			locx = user.locx;
-			locy = user.locy;
-			locz = user.locz;
-
-			if (event.type == SDL_MOUSEMOTION)
-			{
-				/* get the current information from the mouse */
-				x = event.motion.xrel;
-				y = event.motion.yrel;
-
-				/* if the mouse has been moved then draw it's new position */
-				if ((x != 0) || (y != 0))
+				if (event.type == SDL_QUIT)
 				{
-					/* first wipe the old pointer - we simply redraw it
-					   with its original position using XOR mode */
-					draw_pointer(mpos_x, mpos_y) ;
-					/* now modify the positions of x and y */
-					mpos_x += x;
-					mpos_y += y;
+					quit = true;
+					continue;
+				}
+
+				if (event.type == SDL_MOUSEMOTION)
+				{
+					/* get the current information from the mouse */
+					mpos_x = event.motion.x;
+					mpos_y = event.motion.y;
+
 					/* now just check that the x and y values aren't
 					   out of range of the screen */
 					check_pointer(&mpos_x, &mpos_y);
-					/* now draw the pointer */
-					draw_pointer(mpos_x, mpos_y);
+				}
+				else if (event.type == SDL_MOUSEBUTTONUP)
+				{
+					/* check to see if the left mouse button was pressed */
+					if (event.button.button & SDL_BUTTON_LEFT)
+					{
+						/* see if we hit an objeot and act accordingly */
+						instance = hit_object(mpos_x, mpos_y, user, instanceptr, no_instances);
+						/* if this is the second click on the same object then
+						   we run it */
+						if (instance == prev_inst)
+						{
+							/* first let's clear the pointer */
+							draw_pointer(mpos_x, mpos_y);
+							/* now see if we can execute the program */
+							if (instance != ERROR)
+								program(instance, instanceptr);
+							/* draw the new image */
+							draw_image(masterptr, instanceptr, no_instances);
+							/* reset the palette - this takes care of any
+							   programs that may alter it */
+							create_palette();
+							/* finally redraw the pointer */
+							draw_pointer(mpos_x, mpos_y);
+							/* so that another double click is needed */
+							prev_inst = ERROR;
+						}
+						else
+						{
+							/* set previous instance to this one */
+							prev_inst = instance;
+						}
+					}
+				}
+				else if (event.type == SDL_KEYDOWN)
+				{
+					/* now we see which key was pressed and act accordingly */
+					switch (event.key.keysym.scancode)
+					{
+					case SDL_SCANCODE_UP:
+					{
+						key_state[keyboard_state::KEY_UP] = true;
+						break;
+					}
+					case SDL_SCANCODE_DOWN:
+					{
+						key_state[keyboard_state::KEY_DOWN] = true;
+						break;
+					}
+					case SDL_SCANCODE_Q:
+					{
+						key_state[keyboard_state::KEY_STRAFE_LEFT] = true;
+						break;
+					}
+					case SDL_SCANCODE_E:
+					{
+						key_state[keyboard_state::KEY_STRAFE_RIGHT] = true;
+						break;
+					}
+					case SDL_SCANCODE_LEFT:
+					{
+						key_state[keyboard_state::KEY_LEFT] = true;
+						break;
+					}
+					case SDL_SCANCODE_RIGHT:
+					{
+						key_state[keyboard_state::KEY_RIGHT] = true;
+						break;
+					}
+					case SDL_SCANCODE_ESCAPE:
+					{
+						key_state[keyboard_state::KEY_QUIT] = true;
+						break;
+					}
+					}
+				}
+				else if (event.type == SDL_KEYUP)
+				{
+					/* now we see which key was pressed and act accordingly */
+					switch (event.key.keysym.scancode)
+					{
+					case SDL_SCANCODE_UP:
+					{
+						key_state[keyboard_state::KEY_UP] = false;
+						break;
+					}
+					case SDL_SCANCODE_DOWN:
+					{
+						key_state[keyboard_state::KEY_DOWN] = false;
+						break;
+					}
+					case SDL_SCANCODE_Q:
+					{
+						key_state[keyboard_state::KEY_STRAFE_LEFT] = false;
+						break;
+					}
+					case SDL_SCANCODE_E:
+					{
+						key_state[keyboard_state::KEY_STRAFE_RIGHT] = false;
+						break;
+					}
+					case SDL_SCANCODE_LEFT:
+					{
+						key_state[keyboard_state::KEY_LEFT] = false;
+						break;
+					}
+					case SDL_SCANCODE_RIGHT:
+					{
+						key_state[keyboard_state::KEY_RIGHT] = false;
+						break;
+					}
+					case SDL_SCANCODE_ESCAPE:
+					{
+						key_state[keyboard_state::KEY_QUIT] = false;
+						break;
+					}
+					}
 				}
 			}
-			else if (event.type == SDL_MOUSEBUTTONUP)
+
+			if (key_state[keyboard_state::KEY_UP])
 			{
-				/* check to see if the left mouse button was pressed */
-				if (event.button.button & SDL_BUTTON_LEFT)
+				/* walk forward */
+				/* angle 0 is facing forwards so must decrement by 90 */
+				angle = user.angy + 90.0;
+				if (angle > 360.0) angle -= 360.0;
+				locz = locz - (25.0 * sin(angle / RADCONST) * elapsed_time.count());
+				locx = locx - (25.0 * cos(angle / RADCONST) * elapsed_time.count());
+				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 				{
-					/* see if we hit an objeot and act accordingly */
-					instance = hit_object(mpos_x, mpos_y, user, instanceptr, no_instances);
-					/* if this is the second click on the same object then
-					   we run it */
-					if (instance == prev_inst)
-					{
-						/* first let's clear the pointer */
-						draw_pointer(mpos_x, mpos_y);
-						/* now see if we can execute the program */
-						if (instance != ERROR)
-							program(instance, instanceptr);
-						/* draw the new image */
-						draw_image(masterptr, instanceptr, no_instances);
-						/* reset the palette - this takes care of any
-						   programs that may alter it */
-						create_palette();
-						/* finally redraw the pointer */
-						draw_pointer(mpos_x, mpos_y);
-						/* so that another double click is needed */
-						prev_inst = ERROR;
-					}
-					else
-					{
-						/* set previous instance to this one */
-						prev_inst = instance;
-					}
+					/* if user hasn't collided with an object instance
+					   then update the user's position */
+					user.locx = locx;
+					user.locz = locz;
 				}
 			}
-			else if (event.type == SDL_KEYDOWN)
+
+			if (key_state[keyboard_state::KEY_DOWN])
 			{
-				/* now we see which key was pressed and act accordingly */
-				switch (event.key.keysym.scancode)
+				/* walk backwards */
+				/* angle 0 is facing forwards so nust increment by 90 */
+				angle = user.angy + 90.0;
+				if (angle > 360.0) angle -= 360.0;
+				locz = locz + (25.0 * sin(angle / RADCONST) * elapsed_time.count());
+				locx = locx + (25.0 * cos(angle / RADCONST) * elapsed_time.count());
+				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 				{
-				case SDL_SCANCODE_UP:
-				{
-					/* walk forward */
-					/* angle 0 is facing forwards so must decrement by 90 */
-					angle = user.angy + 90.0;
-					if (angle > 360.0) angle -= 360.0;
-					locz = locz - (25.0 * sin(angle / RADCONST) * elapsed_time.count());
-					locx = locx - (25.0 * cos(angle / RADCONST) * elapsed_time.count());
-					if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
-					{
-						/* if user hasn't collided with an object instance
-						   then update the user's position */
-						user.locx = locx;
-						user.locz = locz;
-					}
-					break;
-				}
-				case SDL_SCANCODE_DOWN:
-				{
-					/* walk backwards */
-					/* angle 0 is facing forwards so nust increment by 90 */
-					angle = user.angy + 90.0;
-					if (angle > 360.0) angle -= 360.0;
-					locz = locz + (25.0 * sin(angle / RADCONST) * elapsed_time.count());
-					locx = locx + (25.0 * cos(angle / RADCONST) * elapsed_time.count());
-					if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
-					{
-						/* if user hasn't collided with an object instance
-						   then update the user's posltion */
-						user.locx = locx;
-						user.locz = locz;
-					}
-					break;
-				}
-				case SDL_SCANCODE_Q:
-				{
-					/* slide left */
-					locz = locz - (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
-					locx = locx - (125.0 * cos(user.angy / RADCONST) * elapsed_time.count());
-					if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
-					{
-						/* if user hasn't collided with an object instance
-						   then update the user's position */
-						user.locx = locx;
-						user.locz = locz;
-					}
-					break;
-				}
-				case SDL_SCANCODE_E:
-				{
-					/* slide right */
-					locz = locz + (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
-					locx = locx + (125.0 * cos(user.angy / RADCONST) * elapsed_time.count());
-					if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
-					{
-						/* if user hasn't colllded wlth an object instance
-						   then update the user's position */
-						user.locx = locx;
-						user.locz = locz;
-					}
-					break;
-				}
-				case SDL_SCANCODE_LEFT:
-				{
-					/* turn to the left */
-					user.angy -= 25.0 * elapsed_time.count();
-					if (user.angy < 0.0) user.angy += 360.0;
-					break;
-				}
-				case SDL_SCANCODE_RIGHT:
-				{
-					/* turn to the right */
-					user.angy += 25.0 * elapsed_time.count();
-					if (user.angy > 360.0) user.angy -= 360.0;
-					break;
-				}
-				case SDL_SCANCODE_ESCAPE:
-				{
-					quit = true;
-					break;
-				}
+					/* if user hasn't collided with an object instance
+					   then update the user's posltion */
+					user.locx = locx;
+					user.locz = locz;
 				}
 			}
+
+			if (key_state[keyboard_state::KEY_LEFT])
+			{
+				/* turn to the left */
+				user.angy -= 25.0 * elapsed_time.count();
+				if (user.angy < 0.0) user.angy += 360.0;
+			}
+
+			if (key_state[keyboard_state::KEY_RIGHT])
+			{
+				/* turn to the right */
+				user.angy += 25.0 * elapsed_time.count();
+				if (user.angy > 360.0) user.angy -= 360.0;
+			}
+
+			if (key_state[keyboard_state::KEY_STRAFE_LEFT])
+			{
+				/* slide left */
+				locz = locz - (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
+				locx = locx - (125.0 * cos(user.angy / RADCONST) * elapsed_time.count());
+				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
+				{
+					/* if user hasn't collided with an object instance
+					   then update the user's position */
+					user.locx = locx;
+					user.locz = locz;
+				}
+			}
+
+			if (key_state[keyboard_state::KEY_STRAFE_RIGHT])
+			{
+				/* slide right */
+				locz = locz + (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
+				locx = locx + (125.0 * cos(user.angy / RADCONST) * elapsed_time.count());
+				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
+				{
+					/* if user hasn't colllded wlth an object instance
+					   then update the user's position */
+					user.locx = locx;
+					user.locz = locz;
+				}
+			}
+
+			if (key_state[keyboard_state::KEY_QUIT])
+			{
+				quit = true;
+			}
+			
 			/* draw the new image */
 			draw_image(masterptr, instanceptr, no_instances);
 
