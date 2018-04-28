@@ -235,7 +235,7 @@ void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
 				y2 = store[edge1][Y];
 				z2 = store[edge1][Z];
 				/* set up the values ready for clipping */
-				if (clip3d(&x1, &y1, &z1, &x2, &y2,&z2, zmin) == OKAY)
+				if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin) == TRUE)
 				{
 					/* project onto a 2D monitor */
 					x1 = (((x1*-1.0)/z1) * midx) + midx;
@@ -526,27 +526,27 @@ int clip3d(float *xs, float *ys, float *zs,
 	dx = *xe - *xs;
 	dz = *ze - *zs;
 
-	if (clipt(0.0-dx-dz, *xs+*zs, &tmin, &tmax) == TRUE)
+	if (clipt(-dx-dz, *xs+*zs, &tmin, &tmax) == TRUE)
 	{
 		/* right side */
-		if (clipt(dx-dz, 0.0-*xs+*zs, &tmin, &tmax) == TRUE)
+		if (clipt(dx-dz, -*xs+*zs, &tmin, &tmax) == TRUE)
 		{
 			/* left side */
 			/* if we get this far then part of the line is in -z<=x<=z */
 			dy = *ye - *ys;
-			if (clipt(dy-dz, 0.0-*ys+*zs, &tmin, &tmax) == TRUE)
+			if (clipt(dy-dz, -*ys+*zs, &tmin, &tmax) == TRUE)
 			{
 				/* bottom part */
-				if (clipt(0.0-dy-dz, *ys+*zs, &tmin, &tmax) == TRUE)
+				if (clipt(-dy-dz, *ys+*zs, &tmin, &tmax) == TRUE)
 				{
 					/* top part */
 					/* if we get this far then part of the line
 					   is visible in: */
 					/* -z<=x<=z, -z<=y<=z */
-					if (clipt(0.0-dz, *zs-minz, &tmin, &tmax) == TRUE)
+					if (clipt(-dz, *zs-minz, &tmin, &tmax) == TRUE)
 					{
 						/* front plane */
-						if (clipt(dz, 0.0-*zs-400.0, &tmin, &tmax) == TRUE)
+						if (clipt(dz, -*zs-1.0, &tmin, &tmax) == TRUE)
 						{
 							/* back plane */
 							/* if we get this far then part of */
