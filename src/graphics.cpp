@@ -89,12 +89,19 @@ void bar(int x0, int y0, int x1, int y1)
 
 void fillpoly(int num_points, int *points)
 {
-	assert(num_points > 1);
+	assert(num_points > 2);
 	int length = num_points * 2;
-	line(points[0], points[1], points[length-2], points[length-1]);
 	for (int i = 2; i < length; i += 2)
 	{
-		line(points[i-2], points[i-1], points[i], points[i+1]);
+		drawtri(points[0], points[1],
+				points[i-2], points[i-1],
+				points[i], points[i+1]);
 	}
 }
 
+void drawtri(int x0, int y0, int x1, int y1, int x2, int y2)
+{
+	line(x0, y0, x1, y1);
+	line(x1, y1, x2, y2);
+	line(x2, y2, x0, y0);
+}

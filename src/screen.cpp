@@ -546,7 +546,7 @@ int clip3d(float *xs, float *ys, float *zs,
 					if (clipt(-dz, *zs-minz, &tmin, &tmax) == TRUE)
 					{
 						/* front plane */
-						if (clipt(dz, -*zs-1.0, &tmin, &tmax) == TRUE)
+						if (clipt(dz, -*zs-400.0, &tmin, &tmax) == TRUE)
 						{
 							/* back plane */
 							/* if we get this far then part of */
