@@ -8,6 +8,8 @@
 int create_graphics(int width, int height);
 void close_graphics();
 
+void update_title(float fps);
+
 void update_graphics();
 
 int getmaxx();

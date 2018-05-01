@@ -362,6 +362,8 @@ int main(int argc, char *argv[])
 			tp2 = std::chrono::system_clock::now();
 			elapsed_time = tp2 - tp1;
 			tp1 = tp2;
+
+			update_title(1.0f / elapsed_time.count());
 		}
 		/* close the graphics screen */
 		close_graphics();

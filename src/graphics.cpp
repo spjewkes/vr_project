@@ -39,6 +39,13 @@ void close_graphics()
     SDL_Quit();
 }
 
+void update_title(float fps)
+{
+	char title[256];
+	sprintf(title, "FPS: %4.2f", fps);
+	SDL_SetWindowTitle(g_window, title);
+}
+
 void update_graphics()
 {
 	SDL_RenderPresent(g_renderer);
