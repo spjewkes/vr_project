@@ -99,83 +99,84 @@ void fillpoly(int num_points, int *points)
 	}
 }
 
-void drawtri_sorted(int x0, int y0, int x1, int y1, int x2, int y2)
+void filltrapezoid(int y_top, int y_bottom, int x0_top, int x1_top, int x0_bottom, int x1_bottom)
 {
-	float dx0 = 0.0f;
-	float dx1 = 0.0f;
-	float dx2 = 0.0f;
-	
-	if ((y1-y0) > 0)
-		dx0 = static_cast<float>(x1 - x0) / static_cast<float>(y1 - y0);
-	if ((y2-y0) > 0)
-		dx1 = static_cast<float>(x2 - x0) / static_cast<float>(y2 - y0);
-	if ((y2-y1) > 0)
-		dx2 = static_cast<float>(x2 - x1) / static_cast<float>(y2 - y1);
+	float x0 = static_cast<float>(x0_top);
+	float dx0 = static_cast<float>(x0_bottom-x0_top)/static_cast<float>(y_bottom-y_top);
+	float x1 = static_cast<float>(x1_top);
+	float dx1 = static_cast<float>(x1_bottom-x1_top)/static_cast<float>(y_bottom-y_top);
 
-	float s_x = static_cast<float>(x0);
-	int s_y = y0;
-	float e_x = static_cast<float>(x0);
-	int e_y = y0;
-
-	if (dx0 > dx1)
+	for (int y=y_top; y<=y_bottom; y++)
 	{
-		for (; s_y < y1; s_y++, e_y++, s_x += dx1, e_x += dx0)
-			line(static_cast<int>(s_x), s_y, static_cast<int>(e_x), s_y);
-		e_x = static_cast<float>(x1);
-		e_y = y1;
-		for (; s_y <= y2; s_y++, e_y++, s_x += dx1, e_x += dx2)
-			line(static_cast<int>(s_x), s_y, static_cast<int>(e_x), s_y);
-	}
-	else
-	{
-		for (; s_y < y1; s_y++, e_y++, s_x += dx0, e_x += dx1)
-			line(static_cast<int>(s_x), s_y, static_cast<int>(e_x), s_y);
-		s_x = static_cast<float>(x1);
-		s_y = y1;
-		for (; s_y <= y2; s_y++, e_y++, s_x += dx2, e_x += dx1)
-			line(static_cast<int>(s_x), s_y, static_cast<int>(e_x), s_y);
+		line(static_cast<int>(x0), y, static_cast<int>(x1), y);
+		x0 += dx0;
+		x1 += dx1;
 	}
 }
 
 void drawtri(int x0, int y0, int x1, int y1, int x2, int y2)
 {
-	line(x0, y0, x1, y1);
-	line(x1, y1, x2, y2);
-	line(x2, y2, x0, y0);
+	int y[3];
+	int x[3];
 
-	/*
-	if (y0 > y1 && y0 > y2)
+	if (y0 <= y1 && y0 <= y2)
 	{
-		if (y1 > y2)
+		x[0] = x0;
+		y[0] = y0;
+		
+		if (y1 <= y2)
 		{
-			drawtri_sorted(x2, y2, x1, y1, x0, y0);
+			x[1] = x1; y[1] = y1; x[2] = x2; y[2] = y2;
 		}
 		else
 		{
-			drawtri_sorted(x1, y1, x2, y2, x0, y0);
+			x[1] = x2; y[1] = y2; x[2] = x1; y[2] = y1;
 		}
 	}
-	else if (y1 > y0 && y1 > y2)
+	else if (y1 <= y0 && y1 <= y2)
 	{
-		if (y0 > y2)
+		x[0] = x1;
+		y[0] = y1;
+		
+		if (y0 <= y2)
 		{
-			drawtri_sorted(x2, y2, x0, y0, x1, y1);
+			x[1] = x0; y[1] = y0; x[2] = x2; y[2] = y2;
 		}
 		else
 		{
-			drawtri_sorted(x0, y0, x2, y2, x1, y1);
+			x[1] = x2; y[1] = y2; x[2] = x0; y[2] = y0;
 		}
 	}
-	else if (y2 > y0 && y2 > y1)
+	else
 	{
-		if (y0 > y1)
+		x[0] = x2;
+		y[0] = y2;
+		
+		if (y0 <= y1)
 		{
-			drawtri_sorted(x1, y1, x0, y0, x2, y2);
+			x[1] = x0; y[1] = y0; x[2] = x1; y[2] = y1;
 		}
 		else
 		{
-			drawtri_sorted(x0, y0, x1, y1, x2, y2);
+			x[1] = x1; y[1] = y1; x[2] = x0; y[2] = y0;
 		}
 	}
-	*/
+
+	if (y[0] == y[1])
+	{
+		filltrapezoid(y[0], y[2], x[0], x[1], x[2], x[2]);
+	}
+	else if (y[1] == y[2])
+	{
+		filltrapezoid(y[0], y[1], x[0], x[0], x[1], x[2]);
+	}
+	else
+	{
+		float t = static_cast<float>(y[1] - y[0]) / static_cast<float>(y[2] - y[0]);
+		int new_x = x[0] + static_cast<int>(static_cast<float>(x[2] - x[0]) * t);
+
+		filltrapezoid(y[0], y[1], x[0], x[0], new_x, x[1]);
+		filltrapezoid(y[1], y[2], new_x, x[1], x[2], x[2]);
+
+	}
 }
