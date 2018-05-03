@@ -97,8 +97,7 @@ int main(int argc, char *argv[])
 	/* display the contents of the instance structure */
 	/* check_instance(instanceptr, no_instances); */
 	/* now let's start the really interesting bit */
-	printf("\nPRESS ANY KEY TO ENTER ANOTHER WORLD...\n");
-	getchar();
+	printf("\nENTERING ANOTHER WORLD...\n");
 
 	/* open up the graphics screen */
 	if (screen_open(mode) == OKAY)
@@ -126,7 +125,7 @@ int main(int argc, char *argv[])
 		locy = user.locy;
 		locz = user.locz;
 
-		bool key_state[keyboard_state::KEY_MAX];
+		bool key_state[keyboard_state::KEY_MAX] = { false };
 
 		while (!quit)
 		{
@@ -196,16 +195,6 @@ int main(int argc, char *argv[])
 						key_state[keyboard_state::KEY_DOWN] = true;
 						break;
 					}
-					case SDL_SCANCODE_Q:
-					{
-						key_state[keyboard_state::KEY_STRAFE_LEFT] = true;
-						break;
-					}
-					case SDL_SCANCODE_E:
-					{
-						key_state[keyboard_state::KEY_STRAFE_RIGHT] = true;
-						break;
-					}
 					case SDL_SCANCODE_LEFT:
 					{
 						key_state[keyboard_state::KEY_LEFT] = true;
@@ -214,6 +203,16 @@ int main(int argc, char *argv[])
 					case SDL_SCANCODE_RIGHT:
 					{
 						key_state[keyboard_state::KEY_RIGHT] = true;
+						break;
+					}
+					case SDL_SCANCODE_LALT:
+					{
+						key_state[keyboard_state::KEY_LALT] = true;
+						break;
+					}
+					case SDL_SCANCODE_LSHIFT:
+					{
+						key_state[keyboard_state::KEY_LSHIFT] = true;
 						break;
 					}
 					case SDL_SCANCODE_ESCAPE:
@@ -238,16 +237,6 @@ int main(int argc, char *argv[])
 						key_state[keyboard_state::KEY_DOWN] = false;
 						break;
 					}
-					case SDL_SCANCODE_Q:
-					{
-						key_state[keyboard_state::KEY_STRAFE_LEFT] = false;
-						break;
-					}
-					case SDL_SCANCODE_E:
-					{
-						key_state[keyboard_state::KEY_STRAFE_RIGHT] = false;
-						break;
-					}
 					case SDL_SCANCODE_LEFT:
 					{
 						key_state[keyboard_state::KEY_LEFT] = false;
@@ -256,6 +245,16 @@ int main(int argc, char *argv[])
 					case SDL_SCANCODE_RIGHT:
 					{
 						key_state[keyboard_state::KEY_RIGHT] = false;
+						break;
+					}
+					case SDL_SCANCODE_LALT:
+					{
+						key_state[keyboard_state::KEY_LALT] = false;
+						break;
+					}
+					case SDL_SCANCODE_LSHIFT:
+					{
+						key_state[keyboard_state::KEY_LSHIFT] = false;
 						break;
 					}
 					case SDL_SCANCODE_ESCAPE:
@@ -315,7 +314,7 @@ int main(int argc, char *argv[])
 				if (user.angy > 360.0) user.angy -= 360.0;
 			}
 
-			if (key_state[keyboard_state::KEY_STRAFE_LEFT])
+			if (key_state[keyboard_state::KEY_LEFT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide left */
 				locz = locz - (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
@@ -329,7 +328,7 @@ int main(int argc, char *argv[])
 				}
 			}
 
-			if (key_state[keyboard_state::KEY_STRAFE_RIGHT])
+			if (key_state[keyboard_state::KEY_RIGHT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide right */
 				locz = locz + (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
