@@ -34,6 +34,8 @@
 #define SOLID  (0)
 #define WFRAME (1)
 
+#define MOVE_SPEED (25.0f)
+
 /*************************
 * Define Keyboard events *
 *************************/

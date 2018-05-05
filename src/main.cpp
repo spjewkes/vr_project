@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
 		locz = user.locz;
 
 		bool key_state[keyboard_state::KEY_MAX] = { false };
+		float move;
 
 		while (!quit)
 		{
@@ -266,14 +267,23 @@ int main(int argc, char *argv[])
 				}
 			}
 
+			if (key_state[keyboard_state::KEY_LSHIFT])
+			{
+				move = MOVE_SPEED * 3.0f;
+			}
+			else
+			{
+				move = MOVE_SPEED;
+			}
+
 			if (key_state[keyboard_state::KEY_UP])
 			{
 				/* walk forward */
 				/* angle 0 is facing forwards so must decrement by 90 */
 				angle = user.angy + 90.0;
 				if (angle > 360.0) angle -= 360.0;
-				locz = locz - (25.0 * sin(angle / RADCONST) * elapsed_time.count());
-				locx = locx - (25.0 * cos(angle / RADCONST) * elapsed_time.count());
+				locz = locz - (move * sin(angle / RADCONST) * elapsed_time.count());
+				locx = locx - (move * cos(angle / RADCONST) * elapsed_time.count());
 				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
@@ -289,8 +299,8 @@ int main(int argc, char *argv[])
 				/* angle 0 is facing forwards so nust increment by 90 */
 				angle = user.angy + 90.0;
 				if (angle > 360.0) angle -= 360.0;
-				locz = locz + (25.0 * sin(angle / RADCONST) * elapsed_time.count());
-				locx = locx + (25.0 * cos(angle / RADCONST) * elapsed_time.count());
+				locz = locz + (move * sin(angle / RADCONST) * elapsed_time.count());
+				locx = locx + (move * cos(angle / RADCONST) * elapsed_time.count());
 				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
@@ -300,25 +310,11 @@ int main(int argc, char *argv[])
 				}
 			}
 
-			if (key_state[keyboard_state::KEY_LEFT])
-			{
-				/* turn to the left */
-				user.angy -= 25.0 * elapsed_time.count();
-				if (user.angy < 0.0) user.angy += 360.0;
-			}
-
-			if (key_state[keyboard_state::KEY_RIGHT])
-			{
-				/* turn to the right */
-				user.angy += 25.0 * elapsed_time.count();
-				if (user.angy > 360.0) user.angy -= 360.0;
-			}
-
 			if (key_state[keyboard_state::KEY_LEFT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide left */
-				locz = locz - (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
-				locx = locx - (125.0 * cos(user.angy / RADCONST) * elapsed_time.count());
+				locz = locz - (move * sin(user.angy / RADCONST) * elapsed_time.count());
+				locx = locx - (move * cos(user.angy / RADCONST) * elapsed_time.count());
 				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
@@ -327,12 +323,18 @@ int main(int argc, char *argv[])
 					user.locz = locz;
 				}
 			}
+			else if (key_state[keyboard_state::KEY_LEFT])
+			{
+				/* turn to the left */
+				user.angy -= move * elapsed_time.count();
+				if (user.angy < 0.0) user.angy += 360.0;
+			}
 
 			if (key_state[keyboard_state::KEY_RIGHT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide right */
-				locz = locz + (125.0 * sin(user.angy / RADCONST) * elapsed_time.count());
-				locx = locx + (125.0 * cos(user.angy / RADCONST) * elapsed_time.count());
+				locz = locz + (move * sin(user.angy / RADCONST) * elapsed_time.count());
+				locx = locx + (move * cos(user.angy / RADCONST) * elapsed_time.count());
 				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
 				{
 					/* if user hasn't colllded wlth an object instance
@@ -340,6 +342,12 @@ int main(int argc, char *argv[])
 					user.locx = locx;
 					user.locz = locz;
 				}
+			}
+			else if (key_state[keyboard_state::KEY_RIGHT])
+			{
+				/* turn to the right */
+				user.angy += move * elapsed_time.count();
+				if (user.angy > 360.0) user.angy -= 360.0;
 			}
 
 			if (key_state[keyboard_state::KEY_QUIT])
