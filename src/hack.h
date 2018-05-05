@@ -5,18 +5,6 @@
 
 #include <stdlib.h>
 
-static void sound(int)
-{
-}
-
-static void delay(int)
-{
-}
-
-static void nosound()
-{
-}
-
 #define P_WAIT (0)
 
 static void spawnvp(int, char *, char *[])

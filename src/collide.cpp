@@ -12,6 +12,7 @@
 ****************/
 #include "graphics.h"
 #include "defs.h"
+#include "sound.h"
 #include "hack.h"
 
 /************************************
@@ -134,9 +135,9 @@ int check_col(float locx, float locy, float locz, struct instance *instanceptr, 
 			{
 				/* we have collided with the collision box */
 				/* make a beep */
-				sound(48);
-				delay(250);
-				nosound();
+				start_blip();
+				play_blip();
+				stop_blip();
 				return(FALSE);
 			}
 		}

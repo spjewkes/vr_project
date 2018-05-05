@@ -15,6 +15,7 @@
 #include <math.h>
 #include <chrono>
 #include "graphics.h"
+#include "sound.h"
 #include "defs.h"
 #include "hack.h"
 
@@ -100,7 +101,7 @@ int main(int argc, char *argv[])
 	printf("\nENTERING ANOTHER WORLD...\n");
 
 	/* open up the graphics screen */
-	if (screen_open(mode) == OKAY)
+	if (init_audio() && screen_open(mode) == OKAY)
 	{
 		/* set the palette up */
 		create_palette();
@@ -372,8 +373,8 @@ int main(int argc, char *argv[])
 
 			update_title(1.0f / elapsed_time.count());
 		}
-		/* close the graphics screen */
 		close_graphics();
+		term_audio();
 	}
 
 	/* free memory taken up by master objects */

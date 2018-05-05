@@ -6,10 +6,10 @@ EXE=run_vr_project
 OBJ_DIR=obj
 SRC_DIR=src
 
-_DEPS=defs.h graphics.h hack.h
+_DEPS=defs.h graphics.h hack.h sound.h
 DEPS=$(patsubst %,$(SRC_DIR)/%,$(_DEPS))
 
-_OBJ=collide.o error.o graphics.o main.o mouse.o palette.o parse.o pcomnds.o pfuncs.o program.o screen.o setup.o
+_OBJ=collide.o error.o graphics.o main.o mouse.o palette.o parse.o pcomnds.o pfuncs.o program.o screen.o setup.o sound.o
 OBJ=$(patsubst %,$(OBJ_DIR)/%,$(_OBJ))
 
 OS := $(shell uname)
