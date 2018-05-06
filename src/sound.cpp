@@ -10,9 +10,8 @@ static SDL_AudioSpec wav_spec;
 static Uint32 play_pos;
 static Uint8 *data_pos;
 
-void audio_callback(void *userdata, Uint8 *stream, int _len)
+void audio_callback(void *, Uint8 *stream, int _len)
 {
-	
 	if (play_pos == 0)
 		return;
 

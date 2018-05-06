@@ -11,7 +11,6 @@
 * include files *
 ****************/
 #include "graphics.h"
-#include "hack.h"
 
 #define RED 0
 #define GREEN 1

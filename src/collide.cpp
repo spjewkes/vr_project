@@ -13,7 +13,6 @@
 #include "graphics.h"
 #include "defs.h"
 #include "sound.h"
-#include "hack.h"
 
 /************************************
 * forward declaration of prototypes *

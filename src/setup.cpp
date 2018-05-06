@@ -12,7 +12,6 @@
 ****************/
 #include <stdlib.h>
 #include "defs.h"
-#include "hack.h"
 
 /*********************************************
 * forward declaration of external prototypes *
@@ -271,7 +270,7 @@ void remove_instance(int no_instances)
 				free(instanceptr[loop].poly_colour);
 
 			/* free the outcome string */
-			if (instanceptr[loop].outcome != "")
+			if (instanceptr[loop].outcome != NULL)
 				free(instanceptr[loop].outcome);
 		}
 		/* now free the instance array structure completely */

@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include "graphics.h"
 #include "defs.h"
-#include "hack.h"
 
 /*****************************************************************************
 * mouse_info() - this function sends the offsets of the mouse position in    *

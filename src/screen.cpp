@@ -15,7 +15,6 @@
 #include <math.h>
 #include "graphics.h"
 #include "defs.h"
-#include "hack.h"
 
 #define X  0
 #define Y  1

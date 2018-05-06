@@ -13,7 +13,13 @@
 #include <string.h>
 #include <stddef.h>
 #include "defs.h"
-#include "hack.h"
+
+#define P_WAIT (0)
+
+void spawnvp(int, char *, char *[])
+{
+	/* NOT CURRENTLY IMPLEMENTED */
+}
 
 /****************************************************************************
 * program() - this function looks at the string for a particular instance   *

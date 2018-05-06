@@ -13,7 +13,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "defs.h"
-#include "hack.h"
 
 /*************************
 * prototype declarations *

@@ -17,7 +17,6 @@
 #include "graphics.h"
 #include "sound.h"
 #include "defs.h"
-#include "hack.h"
 
 /*************************
 * prototype declarations *
@@ -68,11 +67,8 @@ int main(int argc, char *argv[])
 	float locx, locy, locz;
 	float angle;
 	int mode, instance, prev_inst;
-	char c;
 
 	/* variables for the mouse */
-	int status;
-	int x, y;
 	int mpos_x, mpos_y;
 	/* set phase of implementation */
 	/* TEST: prints debug messages */
@@ -222,6 +218,11 @@ int main(int argc, char *argv[])
 						key_state[keyboard_state::KEY_QUIT] = true;
 						break;
 					}
+					default:
+					{
+						/* Do nothing */
+						break;
+					}
 					}
 				}
 				else if (event.type == SDL_KEYUP)
@@ -262,6 +263,11 @@ int main(int argc, char *argv[])
 					case SDL_SCANCODE_ESCAPE:
 					{
 						key_state[keyboard_state::KEY_QUIT] = false;
+						break;
+					}
+					default:
+					{
+						/* Do nothing */
 						break;
 					}
 					}

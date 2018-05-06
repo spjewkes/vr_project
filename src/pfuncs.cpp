@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "defs.h"
-#include "hack.h"
 
 /*************************
 * prototype declarations *
