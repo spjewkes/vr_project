@@ -36,6 +36,18 @@
 
 #define MOVE_SPEED (25.0f)
 
+/* External variables */
+extern int stage;
+extern int no_masters;
+extern int no_instances;
+extern char LINE[];
+extern int lincnt, lineptr, masterdef_processed;
+extern int no_masters, no_instances;
+extern struct master *masterptr;
+extern struct instance *instanceptr;
+extern struct viewer user;
+extern void *fp;
+
 /*************************
 * Define Keyboard events *
 *************************/

@@ -14,6 +14,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "defs.h"
+#include "error.h"
+#include "pcomnds.h"
+#include "pfuncs.h"
+#include "setup.h"
 
 /*************************
 * prototype declarations *
@@ -29,62 +33,6 @@ int process_object_definition(int object_no);
 int process_object_instances(int no_instances, int no_objects);
 int check_instance_values(int *col_set, int *spec_set, int *style_set,
 						  int instance_pos, int no_instances, int master_no);
-
-/**********************************
-* external prototype declarations *
-**********************************/
-extern int process_location(float *locx, float *locy, float *locz);
-extern int process_direction(float *angx, float *angy, float *angz);
-extern int process_radius(float *radius);
-extern int process_angle(float *angx, float *angy, float *angz);
-extern int process_scale(float *sclx, float *scly, float *sclz);
-extern int process_colour(int *colour);
-extern int process_specularity(float *specularity);
-extern char *process_outcome(void);
-extern int process_style(int *style);
-extern int getline(void);
-extern void skip_garbage(void);
-extern int check(const char *ptr);
-extern void getword(char *word);
-extern int getnum(void);
-extern float fgetnum(void);
-extern int get_point(float *pntx, float *pnty, float *pntz);
-extern int error(const char *errno, const char *message, int line_no);
-extern void warn(const char *warnno, const char *message, int line_no);
-extern int init_master(int no_objects);
-extern int init_instance(int no_instances);
-extern void init_user(void);
-extern void debug(const char *string, int level);
-extern void rotate(float *pntx, float *pnty, float *pntz,
-				   float angx, float angy, float angz);
-extern void scale(float *pntx, float *pnty, float *pntz,
-				  float sclx, float scly, float sclz);
-extern void translation(struct instance *instanceptr, int instance_no,
-						float locx, float locy, float locz);
-extern int set_colour(struct master *masterptr, struct instance *instanceptr,
-					  int instance_no, int master_no, int colour,
-					  float specularity);
-extern int process_verts(int no_vertices, int object_no);
-extern int process_edges(int no_edges, int object_no);
-extern int process_polys(int no_polygons, int object_no);
-extern void set_bound(struct instance *instanceptr, int instance_no);
-extern int create_object_instance(struct master *masterptr,
-								  struct instance *instanceptr,
-								  int instance_no, int master_no);
-extern int process_sky(int *colour);
-extern int process_ground(int *colour);
-
-/*********************
-* external variables *
-*********************/
-
-extern char LINE[];
-extern int lincnt, lineptr, masterdef_processed;
-extern int no_masters, no_instances;
-extern struct master *masterptr;
-extern struct instance *instanceptr;
-extern struct viewer user;
-extern void *fp;
 
 /****************************************************************************
 * parse() - main function to initiate the parsing of a text file for the    *

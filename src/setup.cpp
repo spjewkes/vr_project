@@ -12,23 +12,8 @@
 ****************/
 #include <stdlib.h>
 #include "defs.h"
-
-/*********************************************
-* forward declaration of external prototypes *
-*********************************************/
-extern int error(const char *errno, const char *message, int line_no);
-extern void warn(const char *warnno, const char *message, int line_no);
-extern void debug(const char *string, int level);
-extern void rotate(float *pntx, float *pnty, float *pntz, float angx, float angy, float angz);
-extern void scale(float *pntx, float *pnty, float *pntz, float sclx, float scly, float sclz);
-
-/************************************
-* declaration of external variables *
-************************************/
-extern struct master *masterptr;
-extern struct instance *instanceptr;
-extern struct viewer user;
-extern int lincnt;
+#include "error.h"
+#include "pfuncs.h"
 
 /*****************************************************************************
 * init_user() - initialises user variables                                   *

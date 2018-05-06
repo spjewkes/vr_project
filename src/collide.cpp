@@ -10,20 +10,15 @@
 /****************
 * include files *
 ****************/
-#include "graphics.h"
 #include "defs.h"
+#include "graphics.h"
+#include "pfuncs.h"
 #include "sound.h"
 
 /************************************
 * forward declaration of prototypes *
 ************************************/
 int collision(float locx, float locy, float locz, struct instance *instanceptr, int no_instances);
-
-/**********************************************
- * forward declaration of external prototypes *
- *********************************************/
-extern void rotate(float *pntx, float *pnty, float *pntz, float angx, float angy, float angz);
-extern void translate(float *pntx, float *pnty, float *pntz, float trnx, float trny, float trnz);
 
 /*****************************************************************************
 * hit_object() - function that is initially called to start checking for     *

@@ -13,6 +13,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "defs.h"
+#include "error.h"
+#include "pfuncs.h"
 
 /*************************
 * prototype declarations *
@@ -28,27 +30,6 @@ char *process_outcome(void);
 int process_style(int *style);
 int process_sky(int *colour);
 int process_ground(int *colour);
-
-/**********************************
-* external prototype declarations *
-**********************************/
-extern int error(const char *errno, const char *message, int line_no);
-extern int check(const char *ptr);
-extern float fgetnum(void);
-extern int getnum(void);
-extern void getword(char *word);
-extern void debug(const char *string, int level);
-extern void skip_garbage(void);
-extern int getstring(char *word);
-
-/*********************
-* external variables *
-*********************/
-extern char LINE[MAXLINE];
-extern int lincnt, lineptr, masterdef_processed;
-extern struct master *masterptr;
-extern struct instance *instanceptr;
-extern struct viewer user;
 
 /****************************************************************************
 * process_location() - process the command which defines the user obJect's  *

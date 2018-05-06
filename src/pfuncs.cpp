@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "defs.h"
+#include "error.h"
 
 /*************************
 * prototype declarations *
@@ -25,21 +26,6 @@ void getword(char *word);
 int getnum(void);
 float fgetnum(void);
 int get_point(float *pntx, float *pnty, float *pntz);
-
-/*********************************************
-* forward declaration of external prototypes *
-*********************************************/
-extern int error(const char *errno, const char *message, int line_no);
-extern void debug(const char *string, int level);
-
-/*********************
-* external variables *
-*********************/
-extern char LINE[];
-extern int lincnt, lineptr, masterdef_processed;
-extern void *fp;
-extern struct master *masterptr;
-extern struct instance *instanceptr;
 
 /****************************************************************************
 * getline() - function takes the next line from the file pointed to by '*fp'*

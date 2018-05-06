@@ -16,11 +16,6 @@
 /* forward declare prototypes */
 void debug(const char *string, int level);
 
-/* external variables */
-extern int stage;
-extern int no_masters;
-extern int no_instances;
-
 /*****************************************************************************
 * error() - all error messages come through here                             *
 *           simply pass in a string containing the error number, a string    *

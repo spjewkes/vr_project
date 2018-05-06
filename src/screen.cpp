@@ -13,8 +13,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "graphics.h"
 #include "defs.h"
+#include "error.h"
+#include "graphics.h"
+#include "pfuncs.h"
 
 #define X  0
 #define Y  1
@@ -26,20 +28,6 @@
 int clip3d(float *xs, float *ys, float *zs,
 		   float *xe, float *ye, float *ze, float minz);
 int clip3dpara(float pre_array[][3], float post_array[][3], float minz);
-
-/**********************************
-* external prototype declarations *
-**********************************/
-extern int error(const char *errno, const char *message, int line_no);
-extern void translate(float *pntx, float *pnty, float *pntz,
-					  float trnx, float trny, float trnz);
-extern void rotate(float *pntx, float *pnty, float *pntz,
-				   float angx, float angy, float angz);
-
-/************************************
-* declare external global variables *
-************************************/
-extern struct viewer user;
 
 /****************************************************************************
 * screen open() - function to open a graphics screen in 256 vesa mode       *
@@ -101,7 +89,7 @@ int screen_open(int mode)
 *                 rough graphical form just a brief check to see if the     *
 *                 values are being stored correctly                         *
 ****************************************************************************/
-void draw_image (struct master *mptr, struct instance *iptr, int no_instances)
+void draw_image(struct master *mptr, struct instance *iptr, int no_instances)
 {
 	int loop1, loop2, loop3;
 	int master_no;

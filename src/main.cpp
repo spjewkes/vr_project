@@ -14,35 +14,22 @@
 #include <stdio.h>
 #include <math.h>
 #include <chrono>
-#include "graphics.h"
-#include "sound.h"
+#include "collide.h"
 #include "defs.h"
+#include "error.h"
+#include "graphics.h"
+#include "mouse.h"
+#include "parse.h"
+#include "palette.h"
+#include "program.h"
+#include "screen.h"
+#include "setup.h"
+#include "sound.h"
 
 /*************************
 * prototype declarations *
 *************************/
 int main(int argc, char *argv[]);
-
-/************************
-* external declarations *
-************************/
-extern int parse(char *filename);
-extern int error(const char *errno, const char *message, int line_no);
-extern void remove_master(int no_objects);
-extern void remove_instance(int no_instances);
-extern void debug(const char *string, int level);
-extern void check_master(struct master *ptr, int no_rows);
-extern void check_instance(struct instance *ptr, int no_rows);
-extern int screen_open(int mode);
-extern void draw_image(struct master *mptr, struct instance *iptr, int no_instances);
-extern void create_palette(void);
-extern void check_palette(void);
-extern int check_col(float locx, float locy, float locz, struct instance *instanceptr, int no_instances, struct viewer user);
-extern int mouse_info(int *x, int *y);
-extern void draw_pointer(int x, int y);
-extern void check_pointer(int *x, int *y);
-extern int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *instanceptr, int no_instances);
-extern void program(int instance, struct instance *ptr);
 
 /*******************
 * global variables *
