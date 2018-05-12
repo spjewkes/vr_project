@@ -383,7 +383,7 @@ int process_style(int *style)
 /****************************************************************************
 * process_vertices() - process the object's vertices                        *
 ****************************************************************************/
-int process_verts(int no_vertices, int object_no)
+int process_verts(struct master* masterptr, int no_vertices, int object_no)
 {
 	int RESULT = OKAY;
 	int loop, vert_no;
@@ -442,7 +442,7 @@ int process_verts(int no_vertices, int object_no)
 /****************************************************************************
 * process_edges() - process the object's edges                              *
 ****************************************************************************/
-int process_edges(int no_edges, int object_no)
+int process_edges(struct master* masterptr, int no_edges, int object_no)
 {
 	int RESULT = OKAY;
 	int loop, edge_no, tmp;
@@ -507,7 +507,7 @@ int process_edges(int no_edges, int object_no)
 /****************************************************************************
 * process_polygons() - process the object's polygons                        *
 ****************************************************************************/
-int process_polys(int no_polygons, int object_no)
+int process_polys(struct master* masterptr, int no_polygons, int object_no)
 {
 	int RESULT = OKAY;
 	int loop, poly_no, tmp;

@@ -40,8 +40,6 @@
 extern int stage;
 extern char LINE[];
 extern int lincnt, lineptr;
-extern struct master *masterptr;
-extern struct instance *instanceptr;
 extern struct viewer user;
 extern void *fp;
 

@@ -10,9 +10,9 @@ int process_colour(int *colour);
 int process_specularity(float *specularity);
 char *process_outcome(void);
 int process_style(int *style);
-int process_verts(int no_vertices, int object_no);
-int process_edges(int no_edges, int object_no);
-int process_polys(int no_polygons, int object_no);
+int process_verts(struct master *masterptr, int no_vertices, int object_no);
+int process_edges(struct master *masterptr, int no_edges, int object_no);
+int process_polys(struct master *masterptr, int no_polygons, int object_no);
 int process_sky(int *colour);
 int process_ground(int *colour);
 

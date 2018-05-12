@@ -20,12 +20,18 @@
 #include "pfuncs.h"
 #include "setup.h"
 
-Parser::Parser() : masterdef_processed(false), no_masters(0), no_instances(0)
+Parser::Parser() : masterdef_processed(false), no_masters(0), no_instances(0),
+				   masterptr(NULL), instanceptr(NULL)
 {
 }
 
 Parser::~Parser()
 {
+	// free memory taken up by master objects
+	remove_master();
+	
+	// free memory taken up by instances
+	remove_instance();
 }
 
 /****************************************************************************
@@ -42,9 +48,6 @@ int Parser::parse(char *filename)
 	/* lincnt stores currently processed line */
 	lincnt = 0;
 
-	/* initialise the pointers */
-	masterptr = NULL;
-	instanceptr = NULL;
 	if ((fp = (FILE *)fopen(filename, "r")) == NULL)
 	{
 		/* error if can't open file */
@@ -72,6 +75,177 @@ int Parser::parse(char *filename)
 	/* close the open file */
 	fclose((FILE *)fp) ;
 	return (OKAY);
+}
+
+/*****************************************************************************
+ * init_master() - initialises the array which will store the master objects *
+ *****************************************************************************/
+int Parser::init_master()
+{
+	int loop;
+
+	debug("init_master()", 1);
+
+	/* create the space required for the master objects */
+	masterptr = (struct master *) malloc(sizeof(struct master) * no_masters);
+
+	if (masterptr == NULL)
+		return(error("O043", "Cannot allocate memory", 0));
+
+	for (loop = 0; loop < no_masters; loop++)
+	{
+		/* set all the object's scales to 1.0 */
+		masterptr[loop].scalex = 1.0;
+		masterptr[loop].scaley = 1.0;
+		masterptr[loop].scalez = 1.0;
+		/* set all the obJect's angles to 0.0 */
+		masterptr[loop].anglex = 0.0;
+		masterptr[loop].angley = 0.0;
+		masterptr[loop].anglez = 0.0;
+		/* set all the object's vertices, edges and polygons to 0 */
+		masterptr[loop].no_vertices = 0;
+		masterptr[loop].no_edges = 0;
+		masterptr[loop].no_polygons = 0;
+	}
+
+	return (OKAY);
+}
+
+/****************************************************************************
+* init_instance() - initialises the array which will store the instances of *
+*                   the master objects                                      *
+****************************************************************************/
+int Parser::init_instance()
+{
+	int loop;
+
+	debug("init_instance()", 1);
+
+	/* create the space required to store the instance objects */
+	instanceptr = (struct instance *) malloc(sizeof(struct instance) * no_instances);
+
+	if (instanceptr == NULL)
+		return(error("0043", "Cannot allocate memory", 0));
+
+	for (loop = 0; loop < no_instances; loop++)
+	{
+		/* set the initial location of all the objects to 0 */
+		instanceptr[loop].posx = 0.0;
+		instanceptr[loop].posy = 0.0;
+		instanceptr[loop].posz = 0.0;
+		/* set all the minimum values of all the object to 0 */
+		instanceptr[loop].minx = 0.0;
+		instanceptr[loop].miny = 0.0;
+		instanceptr[loop].minz = 0.0;
+		/* set all the maximum values of all the objects to 0 */
+		instanceptr[loop].maxx = 0.0;
+		instanceptr[loop].maxy = 0.0;
+		instanceptr[loop].maxz = 0.0;
+		/* set all the instance's scales to 1.0 */
+		instanceptr[loop].scalex = 1.0;
+		instanceptr[loop].scaley = 1.0;
+		instanceptr[loop].scalez = 1.0;
+		/* set all the instance's angles to 0.0 */
+		instanceptr[loop].anglex = 0.0;
+		instanceptr[loop].angley = 0.0;
+		instanceptr[loop].anglez = 0.0;
+		/* default master no should be set to 0 (this will be changed though */
+		instanceptr[loop].master_no = 0;
+		/* set all the object's vertice to 0 */
+		instanceptr[loop].no_vertices = 0;
+		/* set the default style of the object to wlreframe */
+		instanceptr[loop].style = WFRAME;
+		/* set the default solidity of the object to false */
+		instanceptr[loop].solid = FALSE;
+		/* set up the default outcome string */
+		instanceptr[loop].outcome = NULL;
+	}
+	return (OKAY);
+}
+
+/***************************************************************************
+* remove master() - removes the array which stores the master objects      *
+***************************************************************************/
+void Parser::remove_master()
+{
+	int loop;
+
+	debug("remove_master()", 1);
+
+	if (masterptr == NULL)
+		warn("0003", "Nothing in memory to free", 0);
+	else
+	{
+		for (loop = 0; loop < no_masters; loop++)
+		{
+			/* free the vertices array */
+			if (masterptr[loop].no_vertices > 0)
+			{
+				free(masterptr[loop].xvert);
+				free(masterptr[loop].yvert);
+				free(masterptr[loop].zvert);
+			}
+
+			/* free the edges array */
+			if (masterptr[loop].no_edges > 0)
+			{
+				free(masterptr[loop].edge0);
+				free(masterptr[loop].edge1);
+			}
+
+			/* free the polygons array */
+			if (masterptr[loop].no_polygons > 0)
+			{
+				free(masterptr[loop].poly0);
+				free(masterptr[loop].poly1);
+				free(masterptr[loop].poly2);
+			}
+		}
+
+		/* now free the master array completely */
+		free(masterptr);
+	}
+}
+
+/****************************************************************************
+* remove instance() - removes the array which stores the instances of the   *
+*                     master objects                                        *
+****************************************************************************/
+void Parser::remove_instance()
+{
+	int loop;
+
+	debug("remove_instance()", 1);
+
+	if (instanceptr == NULL)
+		warn("0003", "Nothing in memory to free", 0);
+	else
+	{
+		for (loop = 0; loop < no_instances; loop++)
+		{
+			/* free the arrays of vertices */
+			if (instanceptr[loop].xvert != NULL)
+				free(instanceptr[loop].xvert);
+
+			if (instanceptr[loop].yvert != NULL)
+				free(instanceptr[loop].yvert);
+
+			if (instanceptr[loop].zvert != NULL)
+				free(instanceptr[loop].zvert);
+
+			/* free the arrays of colour values for edges and polygons */
+			if (instanceptr[loop].edge_colour != NULL)
+				free(instanceptr[loop].edge_colour);
+			if (instanceptr[loop].poly_colour != NULL)
+				free(instanceptr[loop].poly_colour);
+
+			/* free the outcome string */
+			if (instanceptr[loop].outcome != NULL)
+				free(instanceptr[loop].outcome);
+		}
+		/* now free the instance array structure completely */
+		free(instanceptr);
+	}
 }
 
 /****************************************************************************
@@ -137,7 +311,7 @@ int Parser::process_master(void)
 
 	if (no_masters > 0)
 	{
-		if (init_master(no_masters) == ERROR)
+		if (init_master() == ERROR)
 			return (ERROR);
 		skip_garbage();
 		/* process the master objects */
@@ -196,7 +370,7 @@ int Parser::process_instance(void)
 
 	if (no_instances > 0)
 	{
-		if (init_instance(no_instances) == ERROR)
+		if (init_instance() == ERROR)
 			return (ERROR);
 		skip_garbage();
 		/* process the instance objects */
@@ -424,7 +598,7 @@ int Parser::process_object_definition(int object_no)
 		/* set the no_vertices value in the master structure */
 		masterptr[object_no].no_vertices = no_vert;
 		/* get the values of the vertices */
-		RESULT = process_verts(no_vert, object_no);
+		RESULT = process_verts(masterptr, no_vert, object_no);
 	}
 	else if (no_vert < 0)
 	{
@@ -449,7 +623,7 @@ int Parser::process_object_definition(int object_no)
 		/* set the no_edges value in the master structure */
 		masterptr[object_no].no_edges = no_edge;
 		/* get the values of the edges */
-		RESULT = process_edges(no_edge, object_no);
+		RESULT = process_edges(masterptr, no_edge, object_no);
 	}
 	else if (no_edge < 0)
 	{
@@ -474,7 +648,7 @@ int Parser::process_object_definition(int object_no)
 		/* set the no_polygons value in the master structure */
 		masterptr[object_no].no_polygons = no_poly;
 		/* get the values of the polygons */
-		RESULT = process_polys(no_poly, object_no);
+		RESULT = process_polys(masterptr, no_poly, object_no);
 	}
 	else if (no_poly < 0)
 	{

@@ -12,7 +12,15 @@ public:
 	int num_masters() const { return no_masters; }
 	int num_instances() const { return no_instances; }
 
+	struct master* master_ptr() const { return masterptr; }
+	struct instance* instance_ptr() const { return instanceptr; }
+
 private:
+	int init_master();
+	int init_instance();
+	void remove_master();
+	void remove_instance();
+
 	int process(void);
 	int process_master(void);
 	int process_instance(void);
@@ -28,6 +36,9 @@ private:
 
 	int no_masters;
 	int no_instances;
+
+	struct master *masterptr;
+	struct instance *instanceptr;
 };
 
 #endif // __PARSE_H__
