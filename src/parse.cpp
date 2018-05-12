@@ -15,24 +15,10 @@
 #include <string.h>
 #include "defs.h"
 #include "error.h"
+#include "parse.h"
 #include "pcomnds.h"
 #include "pfuncs.h"
 #include "setup.h"
-
-/*************************
-* prototype declarations *
-*************************/
-int parse(char *filename);
-int process(void);
-int process_master(void);
-int process_instance(void);
-int process_user(void);
-int process_objects(int no_objects);
-int check_object_values(int object_no, int object_pos, int no_objects);
-int process_object_definition(int object_no);
-int process_object_instances(int no_instances, int no_objects);
-int check_instance_values(int *col_set, int *spec_set, int *style_set,
-						  int instance_pos, int no_instances, int master_no);
 
 /****************************************************************************
 * parse() - main function to initiate the parsing of a text file for the    *
@@ -40,7 +26,7 @@ int check_instance_values(int *col_set, int *spec_set, int *style_set,
 *           Returns a pointer to a datastructure that contains the virtual  *
 *           world to be manipulated.                                        *
 ****************************************************************************/
-int parse(char *filename)
+int Parser::parse(char *filename)
 {
 	int retcode;
 	debug("parse()", 1);
@@ -92,7 +78,7 @@ int parse(char *filename)
 *             ".masterdefs", ".instance defs" or ".userdefs"                *
 *             any other strings will-result in a syntax error               *
 ****************************************************************************/
-int process(void)
+int Parser::process(void)
 {
 	char word[MAXLINE];
 
@@ -122,7 +108,7 @@ int process(void)
 * process_master() - process a text block which contains definitions for    *
 *                    the master objects                                     *
 ****************************************************************************/
-int process_master(void)
+int Parser::process_master(void)
 {
 	int RESULT = OKAY;
 	char word[MAXLINE];
@@ -181,7 +167,7 @@ int process_master(void)
 * process_instance() - process a text block which contains definitions for  *
 *                      the instance objects                                 *
 ****************************************************************************/
-int process_instance(void)
+int Parser::process_instance(void)
 {
 	int RESULT = OKAY;
 	char word[MAXLINE];
@@ -239,7 +225,7 @@ int process_instance(void)
 * process_user() - process a text block which contains definitions for the  *
 *                  user object                                              *
 ****************************************************************************/
-int process_user(void)
+int Parser::process_user(void)
 {
 	char word[MAXLINE];
 
@@ -302,7 +288,7 @@ int process_user(void)
 *                     definitions and create the master data structure      *
 *                     this structure is pointed to by 'master array'        *
 ****************************************************************************/
-int process_objects(int no_objects)
+int Parser::process_objects(int no_objects)
 {
 	int loop, master_no;
 	int RESULT = OKAY;
@@ -344,7 +330,7 @@ int process_objects(int no_objects)
 *                         the master object and see that it's definition is *
 *                         correctly terminated                              *
 ****************************************************************************/
-int check_object_values(int object_no, int object_pos, int no_objects)
+int Parser::check_object_values(int object_no, int object_pos, int no_objects)
 {
 	char word[MAXLINE];
 
@@ -408,7 +394,7 @@ int check_object_values(int object_no, int object_pos, int no_objects)
 *                      construction of an object with sets of polygons      *
 *                      each polygon is three-sided                          *
 ****************************************************************************/
-int process_object_definition(int object_no)
+int Parser::process_object_definition(int object_no)
 {
 	int RESULT = OKAY;
 	int no_vert, no_edge, no_poly;
@@ -507,7 +493,7 @@ int process_object_definition(int object_no)
 * process_object_instances () - function to process the list of instances   *
 *                               of master objects described                 *
 ****************************************************************************/
-int process_object_instances(int no_instances, int no_objects)
+int Parser::process_object_instances(int no_instances, int no_objects)
 {
 	int loop, master_no;
 	int RESULT = OKAY;
@@ -560,7 +546,7 @@ int process_object_instances(int no_instances, int no_objects)
 * check_instance_values() - process the optional and required commands for  *
 *                                  an instance of an object                 *
 ****************************************************************************/
-int check_instance_values(int *col_set, int *spec_set, int *style_set, int instance_pos, int no_instances, int master_no)
+int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, int instance_pos, int no_instances, int master_no)
 {
 	char word[MAXLINE] ;
 	float locx, locy, locz;

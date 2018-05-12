@@ -72,8 +72,10 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+	Parser script;
+
 	/* if parsing script results in an error then leave program */
-	if (parse(argv[1]) == ERROR)
+	if (script.parse(argv[1]) == ERROR)
 		exit(0);
 
 	/* display the contents of the master structure */
