@@ -20,7 +20,7 @@
 #include "pfuncs.h"
 #include "setup.h"
 
-Parser::Parser() : masterdef_processed(false)
+Parser::Parser() : masterdef_processed(false), no_masters(0), no_instances(0)
 {
 }
 
@@ -42,10 +42,6 @@ int Parser::parse(char *filename)
 	/* lincnt stores currently processed line */
 	lincnt = 0;
 
-	/* set the number of masters to zero */
-	no_masters = 0;
-	/* set the number of instances to zero */
-	no_instances = 0;
 	/* initialise the pointers */
 	masterptr = NULL;
 	instanceptr = NULL;

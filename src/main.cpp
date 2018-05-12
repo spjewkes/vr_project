@@ -32,8 +32,6 @@
 char LINE[MAXLINE];
 int lincnt;
 int lineptr;
-int no_masters;
-int no_instances;
 int stage;
 struct master *masterptr;
 struct instance *instanceptr;
@@ -85,7 +83,7 @@ int main(int argc, char *argv[])
 		/* set the palette up */
 		create_palette();
 		/* draw the initial position of all the objects */
-		draw_image(masterptr, instanceptr, no_instances);
+		draw_image(masterptr, instanceptr, script.num_instances());
 		/* set the value of c to a null value to begin with */
 
 		auto tp1 = std::chrono::system_clock::now();
@@ -134,7 +132,7 @@ int main(int argc, char *argv[])
 					if (event.button.button & SDL_BUTTON_LEFT)
 					{
 						/* see if we hit an objeot and act accordingly */
-						instance = hit_object(mpos_x, mpos_y, user, instanceptr, no_instances);
+						instance = hit_object(mpos_x, mpos_y, user, instanceptr, script.num_instances());
 						/* if this is the second click on the same object then
 						   we run it */
 						if (instance == prev_inst)
@@ -145,7 +143,7 @@ int main(int argc, char *argv[])
 							if (instance != ERROR)
 								program(instance, instanceptr);
 							/* draw the new image */
-							draw_image(masterptr, instanceptr, no_instances);
+							draw_image(masterptr, instanceptr, script.num_instances());
 							/* reset the palette - this takes care of any
 							   programs that may alter it */
 							create_palette();
@@ -274,7 +272,7 @@ int main(int argc, char *argv[])
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz - (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
+				if (check_col(locx, locy, locz, instanceptr, script.num_instances(), user) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
@@ -291,7 +289,7 @@ int main(int argc, char *argv[])
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz + (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
+				if (check_col(locx, locy, locz, instanceptr, script.num_instances(), user) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's posltion */
@@ -305,7 +303,7 @@ int main(int argc, char *argv[])
 				/* slide left */
 				locz = locz - (move * sin(user.angy / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(user.angy / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
+				if (check_col(locx, locy, locz, instanceptr, script.num_instances(), user) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
@@ -325,7 +323,7 @@ int main(int argc, char *argv[])
 				/* slide right */
 				locz = locz + (move * sin(user.angy / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(user.angy / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, instanceptr, no_instances, user) == OKAY)
+				if (check_col(locx, locy, locz, instanceptr, script.num_instances(), user) == OKAY)
 				{
 					/* if user hasn't colllded wlth an object instance
 					   then update the user's position */
@@ -346,7 +344,7 @@ int main(int argc, char *argv[])
 			}
 			
 			/* draw the new image */
-			draw_image(masterptr, instanceptr, no_instances);
+			draw_image(masterptr, instanceptr, script.num_instances());
 
 			/* now draw the pointer */
 			draw_pointer(mpos_x, mpos_y);
@@ -367,9 +365,9 @@ int main(int argc, char *argv[])
 	}
 
 	/* free memory taken up by master objects */
-	remove_master(no_masters);
+	remove_master(script.num_masters());
 	/* free memory taken up by instances */
-	remove_instance(no_instances);
+	remove_instance(script.num_instances());
 
 	debug("END OF PROGRAM", 3);
 

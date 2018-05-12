@@ -9,6 +9,9 @@ public:
 
 	int parse(char *filename);
 
+	int num_masters() const { return no_masters; }
+	int num_instances() const { return no_instances; }
+
 private:
 	int process(void);
 	int process_master(void);
@@ -22,6 +25,9 @@ private:
 
 	// for telling whether the master objects have been defined yet
 	bool masterdef_processed;
+
+	int no_masters;
+	int no_instances;
 };
 
 #endif // __PARSE_H__
