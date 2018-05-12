@@ -37,7 +37,6 @@ int main(int argc, char *argv[]);
 char LINE[MAXLINE];
 int lincnt;
 int lineptr;
-int masterdef_processed;
 int no_masters;
 int no_instances;
 int stage;

@@ -41,7 +41,7 @@ extern int stage;
 extern int no_masters;
 extern int no_instances;
 extern char LINE[];
-extern int lincnt, lineptr, masterdef_processed;
+extern int lincnt, lineptr;
 extern int no_masters, no_instances;
 extern struct master *masterptr;
 extern struct instance *instanceptr;

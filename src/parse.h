@@ -4,8 +4,8 @@
 class Parser
 {
 public:
-	Parser() {}
-	~Parser() {}
+	Parser();
+	~Parser();
 
 	int parse(char *filename);
 
@@ -19,6 +19,9 @@ private:
 	int process_object_definition(int object_no);
 	int process_object_instances(int no_instances, int no_objects);
 	int check_instance_values(int *col_set, int *spec_set, int *style_set, int instance_pos, int no_instances, int master_no);
+
+	// for telling whether the master objects have been defined yet
+	bool masterdef_processed;
 };
 
 #endif // __PARSE_H__

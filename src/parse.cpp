@@ -20,6 +20,14 @@
 #include "pfuncs.h"
 #include "setup.h"
 
+Parser::Parser() : masterdef_processed(false)
+{
+}
+
+Parser::~Parser()
+{
+}
+
 /****************************************************************************
 * parse() - main function to initiate the parsing of a text file for the    *
 *           virtual reality program.                                        *
@@ -33,8 +41,6 @@ int Parser::parse(char *filename)
 
 	/* lincnt stores currently processed line */
 	lincnt = 0;
-	/* for telling whether the master objects have been defined yet */
-	masterdef_processed = FALSE;
 
 	/* set the number of masters to zero */
 	no_masters = 0;
@@ -122,7 +128,7 @@ int Parser::process_master(void)
 
 	if (check("no_objects") != OKAY)
 		RESULT = error("0005", "The no_objects definition is missing", lincnt);
-	masterdef_processed = TRUE;
+	masterdef_processed = true;
 
 	if (check("=") != OKAY)
 		RESULT = error("0006", "Missing assignment symbol", lincnt);
@@ -175,7 +181,7 @@ int Parser::process_instance(void)
 	debug("process_instance()", 1);
 
 	/* error if the master objects haven't been defined */
-	if (masterdef_processed == FALSE)
+	if (!masterdef_processed)
 		RESULT = error("0011", "Master objects have not yet been defined", lincnt);
 
 	skip_garbage();
@@ -232,7 +238,7 @@ int Parser::process_user(void)
 	debug("process_user()", 1);
 
 	/* error if the master objects have already been defined */
-	if (masterdef_processed == TRUE)
+	if (masterdef_processed)
 		return (error("0004", "Master objects have already been defined", lincnt));
 
 	init_user();
