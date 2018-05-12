@@ -26,11 +26,6 @@
 #include "setup.h"
 #include "sound.h"
 
-/*************************
-* prototype declarations *
-*************************/
-int main(int argc, char *argv[]);
-
 /*******************
 * global variables *
 *******************/
