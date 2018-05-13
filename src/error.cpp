@@ -13,8 +13,17 @@
 #include <stdio.h>
 #include "defs.h"
 
+/* global debug mode */
+int debug_mode = TEST;
+
 /* forward declare prototypes */
 void debug(const char *string, int level);
+
+/* Set debug mode */
+void set_debug_mode(int mode)
+{
+	debug_mode = mode;
+}
 
 /*****************************************************************************
 * error() - all error messages come through here                             *
@@ -59,7 +68,7 @@ void warn(const char *warnno, const char *message, int line_no)
 *****************************************************************************/
 void debug(const char *string, int level)
 {
-	if (stage == TEST)
+	if (debug_mode == TEST)
 	{
 		/* print the debug message at a particular level */
 		switch (level)
@@ -86,7 +95,7 @@ void debug(const char *string, int level)
 		}
 		}
 	}
-	else if (stage == FINAL)
+	else if (debug_mode == FINAL)
 	{
 		/* we do nothing here because this is final stage of the program */
 	}

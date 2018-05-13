@@ -1,6 +1,8 @@
 #ifndef __ERROR_H__
 #define __ERROR_H__
 
+void set_debug_mode(int mode);
+
 int error(const char *errno, const char *message, int line_no);
 void warn(const char *warnno, const char *message, int line_no);
 void debug(const char *string, int level);

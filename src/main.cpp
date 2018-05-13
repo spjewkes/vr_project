@@ -32,7 +32,6 @@
 char LINE[MAXLINE];
 int lincnt;
 int lineptr;
-int stage;
 struct viewer user;
 void *fp;
 
@@ -50,7 +49,7 @@ int main(int argc, char *argv[])
 	/* set phase of implementation */
 	/* TEST: prints debug messages */
 	/* FINAL: doesn't show any of the parsing */
-	stage = FINAL;
+	set_debug_mode(FINAL);
 	debug("START OF PROGRAM", 3);
 	debug("main()", 1);
 	/* set mode to a value of 0 - resolution 320x200 */
