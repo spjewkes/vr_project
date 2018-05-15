@@ -1,6 +1,6 @@
 #include <cassert>
 #include <algorithm>
-#include "graphics.h"
+#include "graphics.hpp"
 
 static int g_width = 0;
 static int g_height = 0;

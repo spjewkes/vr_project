@@ -11,9 +11,9 @@
 * include files *
 ****************/
 #include <stdlib.h>
-#include "defs.h"
-#include "error.h"
-#include "pfuncs.h"
+#include "defs.hpp"
+#include "error.hpp"
+#include "pfuncs.hpp"
 
 /****************************************************************************
 * create_object_instance() - this function builds the instance object using *

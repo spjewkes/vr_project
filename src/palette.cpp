@@ -10,7 +10,7 @@
 /****************
 * include files *
 ****************/
-#include "graphics.h"
+#include "graphics.hpp"
 
 #define RED 0
 #define GREEN 1

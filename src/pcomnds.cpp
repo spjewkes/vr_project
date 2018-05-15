@@ -12,9 +12,9 @@
 ****************/
 #include <string.h>
 #include <stdlib.h>
-#include "defs.h"
-#include "error.h"
-#include "pfuncs.h"
+#include "defs.hpp"
+#include "error.hpp"
+#include "pfuncs.hpp"
 
 /*************************
 * prototype declarations *

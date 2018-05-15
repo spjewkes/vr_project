@@ -1,5 +1,5 @@
-#ifndef __PCOMNDS_H__
-#define __PCOMNDS_H__
+#ifndef __PCOMNDS_HPP__
+#define __PCOMNDS_HPP__
 
 int process_location(float *locx, float *locy, float *locz);
 int process_direction(float *angx, float *angy, float *angz);
@@ -16,4 +16,4 @@ int process_polys(struct master *masterptr, int no_polygons, int object_no);
 int process_sky(int *colour);
 int process_ground(int *colour);
 
-#endif // __PCOMNDS_H__
+#endif // __PCOMNDS_HPP__

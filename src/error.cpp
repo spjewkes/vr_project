@@ -11,7 +11,7 @@
 * include files *
 ****************/
 #include <stdio.h>
-#include "defs.h"
+#include "defs.hpp"
 
 /* global debug mode */
 int debug_mode = TEST;

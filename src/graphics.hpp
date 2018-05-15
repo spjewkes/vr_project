@@ -1,7 +1,7 @@
-#include <SDL2/SDL.h>
+#ifndef __GRAPHICS_HPP__
+#define __GRAPHICS_HPP__
 
-#ifndef __GRAPHICS_H__
-#define __GRAPHICS_H__
+#include <SDL2/SDL.h>
 
 #define WHITE (255)
 
@@ -22,4 +22,4 @@ void bar(int x0, int y0, int x1, int y1);
 void fillpoly(int num_points, int *points);
 void drawtri(int x0, int y0, int x1, int y1, int x2, int y2);
 
-#endif // __GRAPHICS_H__
+#endif // __GRAPHICS_HPP__

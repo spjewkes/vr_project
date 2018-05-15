@@ -11,8 +11,8 @@
 * include files *
 ****************/
 #include <stdio.h>
-#include "graphics.h"
-#include "defs.h"
+#include "graphics.hpp"
+#include "defs.hpp"
 
 /*****************************************************************************
 * mouse_info() - this function sends the offsets of the mouse position in    *

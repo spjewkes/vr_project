@@ -13,8 +13,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "defs.h"
-#include "error.h"
+#include "defs.hpp"
+#include "error.hpp"
 
 /* Global variables */
 static char LINE[MAXLINE];

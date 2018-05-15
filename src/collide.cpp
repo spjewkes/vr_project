@@ -10,10 +10,10 @@
 /****************
 * include files *
 ****************/
-#include "defs.h"
-#include "graphics.h"
-#include "pfuncs.h"
-#include "sound.h"
+#include "defs.hpp"
+#include "graphics.hpp"
+#include "pfuncs.hpp"
+#include "sound.hpp"
 
 /************************************
 * forward declaration of prototypes *

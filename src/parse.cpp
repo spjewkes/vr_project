@@ -13,12 +13,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "defs.h"
-#include "error.h"
-#include "parse.h"
-#include "pcomnds.h"
-#include "pfuncs.h"
-#include "setup.h"
+#include "defs.hpp"
+#include "error.hpp"
+#include "parse.hpp"
+#include "pcomnds.hpp"
+#include "pfuncs.hpp"
+#include "setup.hpp"
 
 /* Global variables */
 void *fp;

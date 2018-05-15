@@ -1,5 +1,5 @@
-#ifndef __PARSE_H__
-#define __PARSE_H__
+#ifndef __PARSE_HPP__
+#define __PARSE_HPP__
 
 class Parser
 {
@@ -44,4 +44,4 @@ private:
 	struct viewer user;
 };
 
-#endif // __PARSE_H__
+#endif // __PARSE_HPP__

@@ -12,7 +12,7 @@
 ****************/
 #include <string.h>
 #include <stddef.h>
-#include "defs.h"
+#include "defs.hpp"
 
 #define P_WAIT (0)
 

@@ -13,10 +13,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "defs.h"
-#include "error.h"
-#include "graphics.h"
-#include "pfuncs.h"
+#include "defs.hpp"
+#include "error.hpp"
+#include "graphics.hpp"
+#include "pfuncs.hpp"
 
 #define X  0
 #define Y  1

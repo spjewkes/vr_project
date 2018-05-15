@@ -14,17 +14,17 @@
 #include <stdio.h>
 #include <math.h>
 #include <chrono>
-#include "collide.h"
-#include "defs.h"
-#include "error.h"
-#include "graphics.h"
-#include "mouse.h"
-#include "parse.h"
-#include "palette.h"
-#include "program.h"
-#include "screen.h"
-#include "setup.h"
-#include "sound.h"
+#include "collide.hpp"
+#include "defs.hpp"
+#include "error.hpp"
+#include "graphics.hpp"
+#include "mouse.hpp"
+#include "parse.hpp"
+#include "palette.hpp"
+#include "program.hpp"
+#include "screen.hpp"
+#include "setup.hpp"
+#include "sound.hpp"
 
 /*******************
 * global variables *

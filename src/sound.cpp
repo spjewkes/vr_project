@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "sound.h"
+#include "sound.hpp"
 
 static Uint32 wav_len;
 static Uint8 *wav_data;

@@ -6,7 +6,7 @@ EXE=run_vr_project
 OBJ_DIR=obj
 SRC_DIR=src
 
-_DEPS=collide.h defs.h error.h graphics.h mouse.h palette.h parse.h pcomnds.h pfuncs.h program.h screen.h setup.h sound.h
+_DEPS=collide.hpp defs.hpp error.hpp graphics.hpp mouse.hpp palette.hpp parse.hpp pcomnds.hpp pfuncs.hpp program.hpp screen.hpp setup.hpp sound.hpp
 DEPS=$(patsubst %,$(SRC_DIR)/%,$(_DEPS))
 
 _OBJ=collide.o error.o graphics.o main.o mouse.o palette.o parse.o pcomnds.o pfuncs.o program.o screen.o setup.o sound.o
