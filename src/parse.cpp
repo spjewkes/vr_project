@@ -20,11 +20,16 @@
 #include "pfuncs.h"
 #include "setup.h"
 
+/* Global variables */
+void *fp;
+
+/* Constructor */
 Parser::Parser() : masterdef_processed(false), no_masters(0), no_instances(0),
 				   masterptr(NULL), instanceptr(NULL)
 {
 }
 
+/* Destructor */
 Parser::~Parser()
 {
 	// free memory taken up by master objects

@@ -39,7 +39,6 @@
 /* External variables */
 extern int lincnt, lineptr;
 extern struct viewer user;
-extern void *fp;
 
 /*************************
 * Define Keyboard events *

@@ -32,7 +32,6 @@
 int lincnt;
 int lineptr;
 struct viewer user;
-void *fp;
 
 /************
 * functions *

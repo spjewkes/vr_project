@@ -18,6 +18,7 @@
 
 /* Global variables */
 static char LINE[MAXLINE];
+extern void *fp;
 
 /*************************
 * prototype declarations *
