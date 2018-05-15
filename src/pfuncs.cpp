@@ -16,6 +16,9 @@
 #include "defs.h"
 #include "error.h"
 
+/* Global variables */
+static char LINE[MAXLINE];
+
 /*************************
 * prototype declarations *
 *************************/

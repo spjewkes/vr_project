@@ -29,7 +29,6 @@
 /*******************
 * global variables *
 *******************/
-char LINE[MAXLINE];
 int lincnt;
 int lineptr;
 struct viewer user;

@@ -37,7 +37,6 @@
 #define MOVE_SPEED (25.0f)
 
 /* External variables */
-extern char LINE[];
 extern int lincnt, lineptr;
 extern struct viewer user;
 extern void *fp;
