@@ -89,7 +89,7 @@ int screen_open(int mode)
 *                 rough graphical form just a brief check to see if the     *
 *                 values are being stored correctly                         *
 ****************************************************************************/
-void draw_image(struct master *mptr, struct instance *iptr, int no_instances)
+void draw_image(struct master *mptr, struct instance *iptr, int no_instances, struct viewer user)
 {
 	int loop1, loop2, loop3;
 	int master_no;

@@ -168,6 +168,27 @@ int Parser::init_instance()
 	return (OKAY);
 }
 
+/*****************************************************************************
+* init_user() - initialises user variables                                   *
+*****************************************************************************/
+void Parser::init_user()
+{
+	debug("init_user()", 1);
+
+	user.locx = 0.0;
+	user.locy = 0.0;
+	user.locz = 0.0;
+
+	user.angx = 0.0;
+	user.angy = 0.0;
+	user.angz = 0.0;
+
+	user.radius = 1.0;
+
+	user.sky = 0;
+	user.ground = 0;
+}
+
 /***************************************************************************
 * remove master() - removes the array which stores the master objects      *
 ***************************************************************************/

@@ -31,7 +31,6 @@
 *******************/
 int lincnt;
 int lineptr;
-struct viewer user;
 
 /************
 * functions *
@@ -78,7 +77,7 @@ int main(int argc, char *argv[])
 		/* set the palette up */
 		create_palette();
 		/* draw the initial position of all the objects */
-		draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances());
+		draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances(), script.get_user());
 		/* set the value of c to a null value to begin with */
 
 		auto tp1 = std::chrono::system_clock::now();
@@ -94,9 +93,9 @@ int main(int argc, char *argv[])
 
 		/* get temporary values of position of user to check collision
 		   with any object instances */
-		locx = user.locx;
-		locy = user.locy;
-		locz = user.locz;
+		locx = script.get_user().locx;
+		locy = script.get_user().locy;
+		locz = script.get_user().locz;
 
 		bool key_state[keyboard_state::KEY_MAX] = { false };
 		float move;
@@ -127,7 +126,7 @@ int main(int argc, char *argv[])
 					if (event.button.button & SDL_BUTTON_LEFT)
 					{
 						/* see if we hit an objeot and act accordingly */
-						instance = hit_object(mpos_x, mpos_y, user, script.instance_ptr(), script.num_instances());
+						instance = hit_object(mpos_x, mpos_y, script.get_user(), script.instance_ptr(), script.num_instances());
 						/* if this is the second click on the same object then
 						   we run it */
 						if (instance == prev_inst)
@@ -138,7 +137,7 @@ int main(int argc, char *argv[])
 							if (instance != ERROR)
 								program(instance, script.instance_ptr());
 							/* draw the new image */
-							draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances());
+							draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances(), script.get_user());
 							/* reset the palette - this takes care of any
 							   programs that may alter it */
 							create_palette();
@@ -263,16 +262,16 @@ int main(int argc, char *argv[])
 			{
 				/* walk forward */
 				/* angle 0 is facing forwards so must decrement by 90 */
-				angle = user.angy + 90.0;
+				angle = script.get_user().angy + 90.0;
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz - (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), user) == OKAY)
+				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
-					user.locx = locx;
-					user.locz = locz;
+					script.get_user().locx = locx;
+					script.get_user().locz = locz;
 				}
 			}
 
@@ -280,57 +279,57 @@ int main(int argc, char *argv[])
 			{
 				/* walk backwards */
 				/* angle 0 is facing forwards so nust increment by 90 */
-				angle = user.angy + 90.0;
+				angle = script.get_user().angy + 90.0;
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz + (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), user) == OKAY)
+				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's posltion */
-					user.locx = locx;
-					user.locz = locz;
+					script.get_user().locx = locx;
+					script.get_user().locz = locz;
 				}
 			}
 
 			if (key_state[keyboard_state::KEY_LEFT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide left */
-				locz = locz - (move * sin(user.angy / RADCONST) * elapsed_time.count());
-				locx = locx - (move * cos(user.angy / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), user) == OKAY)
+				locz = locz - (move * sin(script.get_user().angy / RADCONST) * elapsed_time.count());
+				locx = locx - (move * cos(script.get_user().angy / RADCONST) * elapsed_time.count());
+				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
-					user.locx = locx;
-					user.locz = locz;
+					script.get_user().locx = locx;
+					script.get_user().locz = locz;
 				}
 			}
 			else if (key_state[keyboard_state::KEY_LEFT])
 			{
 				/* turn to the left */
-				user.angy -= move * elapsed_time.count();
-				if (user.angy < 0.0) user.angy += 360.0;
+				script.get_user().angy -= move * elapsed_time.count();
+				if (script.get_user().angy < 0.0) script.get_user().angy += 360.0;
 			}
 
 			if (key_state[keyboard_state::KEY_RIGHT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide right */
-				locz = locz + (move * sin(user.angy / RADCONST) * elapsed_time.count());
-				locx = locx + (move * cos(user.angy / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), user) == OKAY)
+				locz = locz + (move * sin(script.get_user().angy / RADCONST) * elapsed_time.count());
+				locx = locx + (move * cos(script.get_user().angy / RADCONST) * elapsed_time.count());
+				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
 				{
 					/* if user hasn't colllded wlth an object instance
 					   then update the user's position */
-					user.locx = locx;
-					user.locz = locz;
+					script.get_user().locx = locx;
+					script.get_user().locz = locz;
 				}
 			}
 			else if (key_state[keyboard_state::KEY_RIGHT])
 			{
 				/* turn to the right */
-				user.angy += move * elapsed_time.count();
-				if (user.angy > 360.0) user.angy -= 360.0;
+				script.get_user().angy += move * elapsed_time.count();
+				if (script.get_user().angy > 360.0) script.get_user().angy -= 360.0;
 			}
 
 			if (key_state[keyboard_state::KEY_QUIT])
@@ -339,7 +338,7 @@ int main(int argc, char *argv[])
 			}
 			
 			/* draw the new image */
-			draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances());
+			draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances(), script.get_user());
 
 			/* now draw the pointer */
 			draw_pointer(mpos_x, mpos_y);

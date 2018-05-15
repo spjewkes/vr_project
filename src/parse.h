@@ -14,10 +14,12 @@ public:
 
 	struct master* master_ptr() const { return masterptr; }
 	struct instance* instance_ptr() const { return instanceptr; }
+	struct viewer& get_user() { return user; }
 
 private:
 	int init_master();
 	int init_instance();
+	void init_user();
 	void remove_master();
 	void remove_instance();
 
@@ -39,6 +41,7 @@ private:
 
 	struct master *masterptr;
 	struct instance *instanceptr;
+	struct viewer user;
 };
 
 #endif // __PARSE_H__
