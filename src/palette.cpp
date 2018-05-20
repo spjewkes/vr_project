@@ -49,9 +49,6 @@ int Palette::blue(int i) const
 ***************************************************************************/
 void Palette::create_palette(void)
 {
-	/* first create the array to store the colour values */
-	int palette[256][3];
-
 	/* we need to set all the colours in the array */
 	/* the array Is spllt lnto 16 blocks of 16 entries each */
 	/* each block contaxns a range of shades for a colour that an object */
@@ -308,10 +305,6 @@ void Palette::create_palette(void)
 	palette[255][BLUE] = 255;
 	/* spread between them */
 	spread_col(240, 255, palette);
-
-	/* now we set the hardware colour lookup table to the values found */
-	/* in the palette array */
-	set_palette(palette);
 }
 
 /************************************************
@@ -361,31 +354,4 @@ void Palette::spread_col(int start_col, int end_col, int palette[][3])
 		palette[minc+loop][GREEN] = (int)green;
 		palette[minc+loop][BLUE] = (int)blue;
 	}
-}
-
-/***************************************************************************
-* function to set the hardware colours in the lookup table to those values *
-* found within the palette array                                           *
-***************************************************************************/
-void Palette::set_palette(int palette[][3])
-{
-	int loop;
-
-	/* this loop runs through the palette array and sets the colours */
-	/* accordingly - we assume that there is 256 entries in this table */
-	for (loop = 0; loop < 256; loop++)
-		setrgbpalette(loop, palette[loop][RED],
-					  palette[loop][GREEN],
-					  palette[loop][BLUE]);
-}
-
-void Palette::setrgbpalette(int index, int r, int g, int b)
-{
-	assert(index >= 0 && index < 256);
-	assert(r >= 0 && r < 256);
-	assert(g >= 0 && g < 256);
-	assert(b >= 0 && b < 256);
-	palette[index][0] = r;
-	palette[index][1] = g;
-	palette[index][2] = b;
 }
