@@ -20,7 +20,6 @@
 #include "graphics.hpp"
 #include "mouse.hpp"
 #include "parse.hpp"
-#include "palette.hpp"
 #include "program.hpp"
 #include "screen.hpp"
 #include "setup.hpp"
@@ -74,8 +73,6 @@ int main(int argc, char *argv[])
 	/* open up the graphics screen */
 	if (init_audio() && screen_open(mode) == OKAY)
 	{
-		/* set the palette up */
-		create_palette();
 		/* draw the initial position of all the objects */
 		draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances(), script.get_user());
 		/* set the value of c to a null value to begin with */
@@ -138,9 +135,6 @@ int main(int argc, char *argv[])
 								program(instance, script.instance_ptr());
 							/* draw the new image */
 							draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances(), script.get_user());
-							/* reset the palette - this takes care of any
-							   programs that may alter it */
-							create_palette();
 							/* finally redraw the pointer */
 							draw_pointer(mpos_x, mpos_y);
 							/* so that another double click is needed */
@@ -342,9 +336,6 @@ int main(int argc, char *argv[])
 
 			/* now draw the pointer */
 			draw_pointer(mpos_x, mpos_y);
-
-			/* check the contents of the palette */
-			/* check_palette();                  */
 
 			update_graphics();
 

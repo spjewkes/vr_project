@@ -1,13 +1,14 @@
 #include <cassert>
 #include <algorithm>
 #include "graphics.hpp"
+#include "palette.hpp"
+
+static Palette g_palette;
 
 static int g_width = 0;
 static int g_height = 0;
 static SDL_Window *g_window = NULL;
 static SDL_Renderer *g_renderer = NULL;
-
-static int g_palette[256][3];
 
 int create_graphics(int width, int height)
 {
@@ -39,6 +40,32 @@ void close_graphics()
     SDL_Quit();
 }
 
+/****************************************************************************
+* function that simply displays the contents of the colour look up table on *
+* a graphics display capable of showing all 256 colours (use something like *
+* a vesa bgi driver or other svga type)                                     *
+****************************************************************************/
+void check_palette(void)
+{
+	int loop1, loop2;
+	int dx, dy, colour;
+
+	/* set the rate of change horizontally
+	   and vertically acrOsS the screen */
+	dx = getmaxx() / 16;
+	dy = getmaxy() / 16;
+
+	/* set initial colour to zero */
+	colour = 0;
+	for (loop1 = 0; loop1 < 16; loop1++)
+		for (loop2 = 0; loop2 < 16; loop2++)
+		{
+			/* draw a coloured box */
+			setcolor(colour++);
+			bar(loop2*dx, loop1*dy, loop2*dx+dx, loop1*dy+dy);
+		}
+}
+
 void update_title(float fps)
 {
 	char title[256];
@@ -48,6 +75,8 @@ void update_title(float fps)
 
 void update_graphics()
 {
+	/* check the contents of the palette */
+	// check_palette();
 	SDL_RenderPresent(g_renderer);
 }
 
@@ -63,9 +92,7 @@ int getmaxy()
 
 void setcolor(int index)
 {
-	assert(index >= 0 && index < 256);
-	int retcode = SDL_SetRenderDrawColor(g_renderer, g_palette[index][0],
-										 g_palette[index][1], g_palette[index][2],
+	int retcode = SDL_SetRenderDrawColor(g_renderer, g_palette.red(index), g_palette.green(index), g_palette.blue(index),
 										 SDL_ALPHA_OPAQUE);
 	assert(retcode == 0);
 }
@@ -74,17 +101,6 @@ void line(int x0, int y0, int x1, int y1)
 {
 	int retcode = SDL_RenderDrawLine(g_renderer, x0, y0, x1, y1);
 	assert(retcode == 0);
-}
-
-void setrgbpalette(int index, int r, int g, int b)
-{
-	assert(index >= 0 && index < 256);
-	assert(r >= 0 && r < 256);
-	assert(g >= 0 && g < 256);
-	assert(b >= 0 && b < 256);
-	g_palette[index][0] = r;
-	g_palette[index][1] = g;
-	g_palette[index][2] = b;
 }
 
 void bar(int x0, int y0, int x1, int y1)

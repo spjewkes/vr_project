@@ -10,81 +10,44 @@
 /****************
 * include files *
 ****************/
-#include "graphics.hpp"
+#include <cassert>
+#include "palette.hpp"
 
 #define RED 0
 #define GREEN 1
 #define BLUE 2
 
-/************************************************
-* function to spread from one colour to another *
-************************************************/
-void spread_col(int start_col, int end_col, int palette[][3])
+Palette::Palette()
 {
-	float dr, dg, db, red, green, blue;
-	int minc, maxc, size, loop;
-
-	/* make sure that start col references the colour that is lowest */
-	/* in the colour lookup-table */
-	if (start_col > end_col)
-	{
-		maxc = start_col;
-		minc = end_col;
-	}
-	else
-	{
-		maxc = end_col;
-		minc = start_col;
-	}
-
-	/* now find the rate of change in the red, green and blue */
-	/* between the start and end colours */
-	size = maxc - minc;
-	dr = (float)(palette[maxc][RED] - palette[minc][RED]) / (float)size;
-	dg = (float)(palette[maxc][GREEN] - palette[minc][GREEN]) / (float)size;
-	db = (float)(palette[maxc][BLUE] - palette[minc][BLUE]) / (float)size;
-
-	/* set the initial red, green and blue values to those found */
-	/* at the start colour */
-	red = (float)palette[minc][RED];
-	green = (float)palette[minc][GREEN];
-	blue = (float)palette[minc][BLUE];
-
-	for (loop = 1; loop < size; loop++)
-	{
-		/* now for every colour value after the start colour and up to */
-		/* and including the end colour, start to change the RGB values */
-		red += dr;
-		green += dg;
-		blue += db;
-
-		/* set the values in the palette array */
-		palette[minc+loop][RED] = (int)red;
-		palette[minc+loop][GREEN] = (int)green;
-		palette[minc+loop][BLUE] = (int)blue;
-	}
+	create_palette();
 }
 
-/***************************************************************************
-* function to set the hardware colours in the lookup table to those values *
-* found within the palette array                                           *
-***************************************************************************/
-void set_palette(int palette[][3])
+Palette::~Palette()
 {
-	int loop;
+}
 
-	/* this loop runs through the palette array and sets the colours */
-	/* accordingly - we assume that there is 256 entries in this table */
-	for (loop = 0; loop < 256; loop++)
-		setrgbpalette(loop, palette[loop][RED],
-					  palette[loop][GREEN],
-					  palette[loop][BLUE]);
+int Palette::red(int i) const
+{
+	assert(i >= 0 && i <= 255);
+	return palette[i][RED];
+}
+
+int Palette::green(int i) const
+{
+	assert(i >= 0 && i <= 255);
+	return palette[i][GREEN];
+}
+
+int Palette::blue(int i) const
+{
+	assert(i >= 0 && i <= 255);
+	return palette[i][BLUE];
 }
 
 /***************************************************************************
 * function to create the palette needed by the virtual world program       *
 ***************************************************************************/
-void create_palette(void)
+void Palette::create_palette(void)
 {
 	/* first create the array to store the colour values */
 	int palette[256][3];
@@ -351,28 +314,78 @@ void create_palette(void)
 	set_palette(palette);
 }
 
-/****************************************************************************
-* function that simply displays the contents of the colour look up table on *
-* a graphics display capable of showing all 256 colours (use something like *
-* a vesa bgi driver or other svga type)                                     *
-****************************************************************************/
-void check_palette(void)
+/************************************************
+* function to spread from one colour to another *
+************************************************/
+void Palette::spread_col(int start_col, int end_col, int palette[][3])
 {
-	int loop1, loop2;
-	int dx, dy, colour;
+	float dr, dg, db, red, green, blue;
+	int minc, maxc, size, loop;
 
-	/* set the rate of change horizontally
-	   and vertically acrOsS the screen */
-	dx = getmaxx() / 16;
-	dy = getmaxy() / 16;
+	/* make sure that start col references the colour that is lowest */
+	/* in the colour lookup-table */
+	if (start_col > end_col)
+	{
+		maxc = start_col;
+		minc = end_col;
+	}
+	else
+	{
+		maxc = end_col;
+		minc = start_col;
+	}
 
-	/* set initial colour to zero */
-	colour = 0;
-	for (loop1 = 0; loop1 < 16; loop1++)
-		for (loop2 = 0; loop2 < 16; loop2++)
-		{
-			/* draw a coloured box */
-			setcolor(colour++);
-			bar(loop2*dx, loop1*dy, loop2*dx+dx, loop1*dy+dy);
-		}
+	/* now find the rate of change in the red, green and blue */
+	/* between the start and end colours */
+	size = maxc - minc;
+	dr = (float)(palette[maxc][RED] - palette[minc][RED]) / (float)size;
+	dg = (float)(palette[maxc][GREEN] - palette[minc][GREEN]) / (float)size;
+	db = (float)(palette[maxc][BLUE] - palette[minc][BLUE]) / (float)size;
+
+	/* set the initial red, green and blue values to those found */
+	/* at the start colour */
+	red = (float)palette[minc][RED];
+	green = (float)palette[minc][GREEN];
+	blue = (float)palette[minc][BLUE];
+
+	for (loop = 1; loop < size; loop++)
+	{
+		/* now for every colour value after the start colour and up to */
+		/* and including the end colour, start to change the RGB values */
+		red += dr;
+		green += dg;
+		blue += db;
+
+		/* set the values in the palette array */
+		palette[minc+loop][RED] = (int)red;
+		palette[minc+loop][GREEN] = (int)green;
+		palette[minc+loop][BLUE] = (int)blue;
+	}
+}
+
+/***************************************************************************
+* function to set the hardware colours in the lookup table to those values *
+* found within the palette array                                           *
+***************************************************************************/
+void Palette::set_palette(int palette[][3])
+{
+	int loop;
+
+	/* this loop runs through the palette array and sets the colours */
+	/* accordingly - we assume that there is 256 entries in this table */
+	for (loop = 0; loop < 256; loop++)
+		setrgbpalette(loop, palette[loop][RED],
+					  palette[loop][GREEN],
+					  palette[loop][BLUE]);
+}
+
+void Palette::setrgbpalette(int index, int r, int g, int b)
+{
+	assert(index >= 0 && index < 256);
+	assert(r >= 0 && r < 256);
+	assert(g >= 0 && g < 256);
+	assert(b >= 0 && b < 256);
+	palette[index][0] = r;
+	palette[index][1] = g;
+	palette[index][2] = b;
 }
