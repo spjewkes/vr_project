@@ -10,15 +10,24 @@
 /****************
 * include files *
 ****************/
+#include <iostream>
 #include <string.h>
 #include <stddef.h>
 #include "defs.hpp"
 
 #define P_WAIT (0)
 
-void spawnvp(int, char *, char *[])
+static void spawnvp(int, const char *cmdname, const char *const *argv)
 {
-	/* NOT CURRENTLY IMPLEMENTED */
+	// Not currently implemented but print commnads to stdout
+	// to show what was to have been executed.
+	std::cout << "Running: " << cmdname << " with the following args:\n";
+	int i = 0;
+	while (argv[i])
+	{
+		std::cout << "\t" << argv[i] << std::endl;
+		i++;
+	}
 }
 
 /****************************************************************************
