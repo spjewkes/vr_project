@@ -19,8 +19,6 @@
 /*************************
 * prototype declarations *
 *************************/
-int process_location(float *locx, float *locy, float *locz);
-int process_direction(float *angx, float *angy, float *angz);
 int process_radius(float *radius);
 int process_angle(float *angx, float *angy, float *angz);
 int process_scale(float *angx, float *angy, float *angz);
@@ -35,7 +33,7 @@ int process_ground(int *colour);
 * process_location() - process the command which defines the user obJect's  *
 *                      initial location                                     *
 ****************************************************************************/
-int process_location(float *locx, float *locy, float *locz)
+int process_location(Vector3d &loc)
 {
 	int RESULT = OKAY;
 
@@ -44,17 +42,17 @@ int process_location(float *locx, float *locy, float *locz)
 	if (check("=") != OKAY)
 		RESULT = error("0006", "Missing assignment symbol", lincnt);
 
-	*locx = fgetnum();
+	loc.x(fgetnum());
 
 	if (check(",") != OKAY)
 		RESULT = error("0017", "Syntax error with location definition", lincnt);
 
-	*locy = fgetnum();
+	loc.y(fgetnum());
 
 	if (check(",") != OKAY)
 		RESULT = error("0017", "Syntax error with location definition", lincnt);
         
-	*locz = fgetnum();
+	loc.z(fgetnum());
 
 	if (check("") != BLANK)
 		RESULT = error("0017", "Syntax error with location definition", lincnt);
@@ -66,7 +64,7 @@ int process_location(float *locx, float *locy, float *locz)
 * process_direction() - process the command which defines the user object's *                                                                                                    **
 *                       initial direction                                   *
 ****************************************************************************/
-int process_direction(float *angx, float *angy, float *angz)
+int process_direction(Vector3d &ang)
 {
 	int RESULT = OKAY;
 
@@ -75,17 +73,17 @@ int process_direction(float *angx, float *angy, float *angz)
 	if (check("=") != OKAY)
 		RESULT = error("0006", "Missing assignment symbol", lincnt);
         
-	*angx = fgetnum();
+	ang.x(fgetnum());
 
 	if (check(",") != OKAY)
 		RESULT = error("0018", "Syntax error with user direction definition", lincnt);
         
-	*angy = fgetnum();
+	ang.y(fgetnum());
 
 	if (check(",") != OKAY)
 		RESULT = error("0018", "Syntax error with user direction definition", lincnt);
         
-	*angz = fgetnum();
+	ang.z(fgetnum());
 
 	if (check("") != BLANK)
 		RESULT = error("0018", "Syntax error with user direction definition", lincnt);

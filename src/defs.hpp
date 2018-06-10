@@ -1,6 +1,8 @@
 #ifndef __DEFS_HPP__
 #define __DEFS_HPP__
 
+#include "vector3d.hpp"
+
 #define RADCONST (57.295779513082321)
 
 #define FALSE (0)
@@ -53,8 +55,8 @@ enum keyboard_state
 ************************/
 struct viewer
 {
-	float angx, angy, angz;
-	float locx, locy, locz;
+	Vector3d ang;
+	Vector3d loc;
 
 	float radius;
 

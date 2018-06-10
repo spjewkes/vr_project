@@ -90,9 +90,9 @@ int main(int argc, char *argv[])
 
 		/* get temporary values of position of user to check collision
 		   with any object instances */
-		locx = script.get_user().locx;
-		locy = script.get_user().locy;
-		locz = script.get_user().locz;
+		locx = script.get_user().loc.x();
+		locy = script.get_user().loc.y();
+		locz = script.get_user().loc.z();
 
 		bool key_state[keyboard_state::KEY_MAX] = { false };
 		float move;
@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
 			{
 				/* walk forward */
 				/* angle 0 is facing forwards so must decrement by 90 */
-				angle = script.get_user().angy + 90.0;
+				angle = script.get_user().ang.y() + 90.0;
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz - (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(angle / RADCONST) * elapsed_time.count());
@@ -264,8 +264,8 @@ int main(int argc, char *argv[])
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
-					script.get_user().locx = locx;
-					script.get_user().locz = locz;
+					script.get_user().loc.x(locx);
+					script.get_user().loc.z(locz);
 				}
 			}
 
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 			{
 				/* walk backwards */
 				/* angle 0 is facing forwards so nust increment by 90 */
-				angle = script.get_user().angy + 90.0;
+				angle = script.get_user().ang.y() + 90.0;
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz + (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(angle / RADCONST) * elapsed_time.count());
@@ -281,49 +281,51 @@ int main(int argc, char *argv[])
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's posltion */
-					script.get_user().locx = locx;
-					script.get_user().locz = locz;
+					script.get_user().loc.x(locx);
+					script.get_user().loc.z(locz);
 				}
 			}
 
 			if (key_state[keyboard_state::KEY_LEFT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide left */
-				locz = locz - (move * sin(script.get_user().angy / RADCONST) * elapsed_time.count());
-				locx = locx - (move * cos(script.get_user().angy / RADCONST) * elapsed_time.count());
+				locz = locz - (move * sin(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
+				locx = locx - (move * cos(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
 				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
-					script.get_user().locx = locx;
-					script.get_user().locz = locz;
+					script.get_user().loc.x(locx);
+					script.get_user().loc.z(locz);
 				}
 			}
 			else if (key_state[keyboard_state::KEY_LEFT])
 			{
 				/* turn to the left */
-				script.get_user().angy -= move * elapsed_time.count();
-				if (script.get_user().angy < 0.0) script.get_user().angy += 360.0;
+				script.get_user().ang.y(script.get_user().ang.y() - (move * elapsed_time.count()));
+				if (script.get_user().ang.y() < 0.0)
+					script.get_user().ang.y(script.get_user().ang.y() + 360.0);
 			}
 
 			if (key_state[keyboard_state::KEY_RIGHT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide right */
-				locz = locz + (move * sin(script.get_user().angy / RADCONST) * elapsed_time.count());
-				locx = locx + (move * cos(script.get_user().angy / RADCONST) * elapsed_time.count());
+				locz = locz + (move * sin(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
+				locx = locx + (move * cos(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
 				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
 				{
 					/* if user hasn't colllded wlth an object instance
 					   then update the user's position */
-					script.get_user().locx = locx;
-					script.get_user().locz = locz;
+					script.get_user().loc.x(locx);
+					script.get_user().loc.z(locz);
 				}
 			}
 			else if (key_state[keyboard_state::KEY_RIGHT])
 			{
 				/* turn to the right */
-				script.get_user().angy += move * elapsed_time.count();
-				if (script.get_user().angy > 360.0) script.get_user().angy -= 360.0;
+				script.get_user().ang.y(script.get_user().ang.y() + (move * elapsed_time.count()));
+				if (script.get_user().ang.y() > 360.0)
+					script.get_user().ang.y(script.get_user().ang.y() - 360.0);
 			}
 
 			if (key_state[keyboard_state::KEY_QUIT])

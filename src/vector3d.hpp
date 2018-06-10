@@ -2,7 +2,6 @@
 #define __VECTOR3D_HPP__
 
 #include <cmath>
-#include <ostream>
 
 /**
  * Class defining a 3d vector type.
@@ -10,8 +9,6 @@
 class Vector3d
 {
 public:
-    friend std::ostream& operator<<(std::ostream &, const Vector3d &);
-
 	/// Constructors
 	Vector3d() : m_x(0.0f), m_y(0.0f), m_z(0.0f) {}
 	Vector3d(float x, float y, float z) : m_x(x), m_y(y), m_z(z) {}
@@ -180,7 +177,5 @@ private:
 	float m_y;
 	float m_z;
 };
-
-std::ostream& operator<<(std::ostream &out, const Vector3d &rhs);
 
 #endif // __VECTOR3D_HPP__

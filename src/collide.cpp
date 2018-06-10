@@ -48,22 +48,22 @@ int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *inst
 
 	/* now make the final Jump into making the mouse coordinates into real world coordinates */
 	/* now rotate the point around user */
-	rotate(&pntx, &pnty, &pntz, user.angx, user.angy, user.angz);
+	rotate(&pntx, &pnty, &pntz, user.ang.x(), user.ang.y(), user.ang.z());
 	/* and translate it */
-	translate(&pntx, &pnty, &pntz, user.locx, user.locy, user. locz);
+	translate(&pntx, &pnty, &pntz, user.loc.x(), user.loc.y(), user.loc.z());
 
 	/* now create the vector from the user to the mouse point */
-	dx = pntx - user.locx;
-	dy = pnty - user.locy;
-	dz = pntz - user.locz;
+	dx = pntx - user.loc.x();
+	dy = pnty - user.loc.y();
+	dz = pntz - user.loc.z();
 
 	/* now we have the vector start to examine the points on the line checking whether any of them collide with an object start at t = 0.0 and continue past t = 1.0 */
 	for (t = 0.0; t < 150.0; t += 0.01)
 	{
 		/* calculate a point along the line */
-		pntx = user.locx + (t * dx);
-		pnty = user.locy + (t * dy);
-		pntz = user.locz + (t * dz);
+		pntx = user.loc.x() + (t * dx);
+		pnty = user.loc.y() + (t * dy);
+		pntz = user.loc.z() + (t * dz);
 
 		/* now see if any instance has collided with the point */
 		which_instance = collision(pntx, pnty, pntz, instanceptr, no_instances);

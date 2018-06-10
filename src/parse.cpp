@@ -19,6 +19,7 @@
 #include "pcomnds.hpp"
 #include "pfuncs.hpp"
 #include "setup.hpp"
+#include "vector3d.hpp"
 
 /* Global variables */
 void *fp;
@@ -175,13 +176,13 @@ void Parser::init_user()
 {
 	debug("init_user()", 1);
 
-	user.locx = 0.0;
-	user.locy = 0.0;
-	user.locz = 0.0;
+	user.loc.x(0.0);
+	user.loc.y(0.0);
+	user.loc.z(0.0);
 
-	user.angx = 0.0;
-	user.angy = 0.0;
-	user.angz = 0.0;
+	user.ang.x(0.0);
+	user.ang.y(0.0);
+	user.ang.z(0.0);
 
 	user.radius = 1.0;
 
@@ -448,13 +449,13 @@ int Parser::process_user(void)
 		if (strcmp(word, "location") == EQUAL)
 		{
 			/* location command */
-			if (process_location(&user.locx, &user.locy, &user.locz) == ERROR)
+			if (process_location(user.loc) == ERROR)
 				return (ERROR);
 		}
 		else if (strcmp(word, "direction") == EQUAL)
 		{
 			/* direction command */
-			if (process_direction(&user.angx, &user.angy, &user.angz) == ERROR)
+			if (process_direction(user.ang) == ERROR)
 				return (ERROR);
 		}
 		else if (strcmp (word, "radius") == EQUAL)
@@ -751,7 +752,6 @@ int Parser::process_object_instances(int no_instances, int no_objects)
 int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, int instance_pos, int no_instances, int master_no)
 {
 	char word[MAXLINE] ;
-	float locx, locy, locz;
 	float angx, angy, angz;
 	float sclx, scly, sclz;
 	float specularity;
@@ -759,7 +759,7 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 	char *string_ptr;
 
 	/* set the angles, scales and locations defaults */
-	locx = 0.0; locy = 0.0; locz = 0.0;
+	Vector3d loc;
 	angx = 0.0; angy = 0.0; angz = 0.0;
 	sclx = 1.0; scly = 1.0; sclz = 1.0;
 
@@ -772,12 +772,12 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 		if (strcmp(word, "location") == EQUAL)
 		{
 			/* get the instance location from the file */
-			if (process_location(&locx, &locy, &locz) == ERROR)
+			if (process_location(loc) == ERROR)
 				return (ERROR);
 			/* fill instance location values into the instance structure */
-			instanceptr[instance_pos].posx = locx;
-			instanceptr[instance_pos].posy = locy;
-			instanceptr[instance_pos].posz = locz;
+			instanceptr[instance_pos].posx = loc.x();
+			instanceptr[instance_pos].posy = loc.y();
+			instanceptr[instance_pos].posz = loc.z();
 		}
 		else if (strcmp(word, "angle") == EQUAL)
 		{
@@ -843,7 +843,7 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 				if (create_object_instance(masterptr, instanceptr, instance_pos, master_no) == ERROR)
 					return (ERROR);
 				/* translate the instance */
-				translation(instanceptr, instance_pos, locx, locy, locz);
+				translation(instanceptr, instance_pos, loc.x(), loc.y(), loc.z());
 				/* set the colours of the instances facets (polygons) */
 				if (set_colour(masterptr, instanceptr, instance_pos, master_no, colour, specularity) == ERROR)
 					return (ERROR);
@@ -862,7 +862,7 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 				if (create_object_instance(masterptr, instanceptr, instance_pos, master_no) == ERROR)
 					return (ERROR);
 				/* translate the instance */
-				translation(instanceptr, instance_pos, locx, locy, locz);
+				translation(instanceptr, instance_pos, loc.x(), loc.y(), loc.z());
 				/* set the colours if the instances facets */
 				if (set_colour(masterptr, instanceptr, instance_pos, master_no, colour, specularity) == ERROR)
 					return (ERROR);

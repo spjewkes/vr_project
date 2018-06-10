@@ -1,8 +1,10 @@
 #ifndef __PCOMNDS_HPP__
 #define __PCOMNDS_HPP__
 
-int process_location(float *locx, float *locy, float *locz);
-int process_direction(float *angx, float *angy, float *angz);
+#include "vector3d.hpp"
+
+int process_location(Vector3d &loc);
+int process_direction(Vector3d &ang);
 int process_radius(float *radius);
 int process_angle(float *angx, float *angy, float *angz);
 int process_scale(float *sclx, float *scly, float *sclz);

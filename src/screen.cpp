@@ -127,12 +127,12 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 		/* the distance away from the viewer we use pythagoras */
 		/* here we dont't need to find the square root as all distances */
 		/* are still going to be relative */
-		hyp1 = abs(iptr[loop1].minx - user.locx)
-			+ abs (iptr[loop1].miny - user.locy)
-			+ abs (iptr[loop1].minz - user.locz);
-		hyp2 = abs(iptr[loop1].maxz - user.locx)
-			+ abs(iptr[loop1].maxy - user.locy)
-			+ abs(iptr[loop1].maxz - user.locz);
+		hyp1 = abs(iptr[loop1].minx - user.loc.x())
+			+ abs (iptr[loop1].miny - user.loc.y())
+			+ abs (iptr[loop1].minz - user.loc.z());
+		hyp2 = abs(iptr[loop1].maxz - user.loc.x())
+			+ abs(iptr[loop1].maxy - user.loc.y())
+			+ abs(iptr[loop1].maxz - user.loc.z());
 
 		if (hyp1 > hyp2 ) tmp = hyp1;
 		else tmp = hyp2;
@@ -186,8 +186,8 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 			y = iptr[tmp].yvert[loop2];
 			z = iptr[tmp].zvert[loop2];
 			/* set coordinate so that viewer is at origin */
-			translate(&x, &y, &z, 0-user.locx, 0-user.locy, 0-user.locz);
-			rotate(&x, &y, &z, 0-user.angx, 0-user.angy, 0-user.angz);
+			translate(&x, &y, &z, 0-user.loc.x(), 0-user.loc.y(), 0-user.loc.z());
+			rotate(&x, &y, &z, 0-user.ang.x(), 0-user.ang.y(), 0-user.ang.z());
 			/* now normalise the points ready for the perspective
 			   projection */
 			x = x * ((2.0 * vrp) / (100.0 * (vrp+BACK)));
