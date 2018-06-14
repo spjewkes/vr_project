@@ -186,9 +186,9 @@ void check_instance(struct instance *ptr, int no_rows)
 		/* print which master object it is cased on */
 		printf("\nMaster object number:\t%d", ptr[loop1].master_no);
 		/* print the iocational values */
-		printf("\nX location:  %f,", ptr[loop1].posx);
-		printf("\tY location:  %f,", ptr[loop1].posy);
-		printf("\tZ location:  %f", ptr[loop1].posz);
+		printf("\nX location:  %f,", ptr[loop1].pos.x());
+		printf("\tY location:  %f,", ptr[loop1].pos.y());
+		printf("\tZ location:  %f", ptr[loop1].pos.z());
 		/* print the minimum values */
 		printf("\nMinimum X:  %f,", ptr[loop1].minx);
 		printf("\tMinimum Y:  %f,", ptr[loop1].miny);

@@ -70,7 +70,7 @@ struct instance
 {
 	int master_no;
 
-	float posx, posy, posz;
+	Vector3d pos;
 	float minx, miny, minz;
 	float maxx, maxy, maxz;
 	float anglex, angley, anglez;

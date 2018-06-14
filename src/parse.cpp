@@ -136,9 +136,9 @@ int Parser::init_instance()
 	for (loop = 0; loop < no_instances; loop++)
 	{
 		/* set the initial location of all the objects to 0 */
-		instanceptr[loop].posx = 0.0;
-		instanceptr[loop].posy = 0.0;
-		instanceptr[loop].posz = 0.0;
+		instanceptr[loop].pos.x(0.0);
+		instanceptr[loop].pos.y(0.0);
+		instanceptr[loop].pos.z(0.0);
 		/* set all the minimum values of all the object to 0 */
 		instanceptr[loop].minx = 0.0;
 		instanceptr[loop].miny = 0.0;
@@ -775,9 +775,7 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 			if (process_location(loc) == ERROR)
 				return (ERROR);
 			/* fill instance location values into the instance structure */
-			instanceptr[instance_pos].posx = loc.x();
-			instanceptr[instance_pos].posy = loc.y();
-			instanceptr[instance_pos].posz = loc.z();
+			instanceptr[instance_pos].pos = loc;
 		}
 		else if (strcmp(word, "angle") == EQUAL)
 		{
