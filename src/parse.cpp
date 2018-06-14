@@ -140,13 +140,13 @@ int Parser::init_instance()
 		instanceptr[loop].pos.y(0.0);
 		instanceptr[loop].pos.z(0.0);
 		/* set all the minimum values of all the object to 0 */
-		instanceptr[loop].minx = 0.0;
-		instanceptr[loop].miny = 0.0;
-		instanceptr[loop].minz = 0.0;
+		instanceptr[loop].min.x(0.0);
+		instanceptr[loop].min.y(0.0);
+		instanceptr[loop].min.z(0.0);
 		/* set all the maximum values of all the objects to 0 */
-		instanceptr[loop].maxx = 0.0;
-		instanceptr[loop].maxy = 0.0;
-		instanceptr[loop].maxz = 0.0;
+		instanceptr[loop].max.x(0.0);
+		instanceptr[loop].max.y(0.0);
+		instanceptr[loop].max.z(0.0);
 		/* set all the instance's scales to 1.0 */
 		instanceptr[loop].scalex = 1.0;
 		instanceptr[loop].scaley = 1.0;

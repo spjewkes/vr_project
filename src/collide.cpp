@@ -89,12 +89,12 @@ int collision(float pntx, float pnty, float pntz, struct instance *instanceptr, 
 		if (instanceptr[loop].solid == TRUE)
 		{
 			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
-			if ((pntx >= instanceptr[loop].minx) &&
-			    (pnty >= instanceptr[loop].miny) &&
-			    (pntz >= instanceptr[loop].minz) &&
-			    (pntx <= instanceptr[loop].maxx) &&
-			    (pnty <= instanceptr[loop].maxy) &&
-			    (pntz <= instanceptr[loop].maxz))
+			if ((pntx >= instanceptr[loop].min.x()) &&
+			    (pnty >= instanceptr[loop].min.y()) &&
+			    (pntz >= instanceptr[loop].min.z()) &&
+			    (pntx <= instanceptr[loop].max.x()) &&
+			    (pnty <= instanceptr[loop].max.y()) &&
+			    (pntz <= instanceptr[loop].max.z()))
 			{
 				/* we have collided with a collision box */
 				/* send the number of the instance */
@@ -120,12 +120,12 @@ int check_col(float locx, float locy, float locz, struct instance *instanceptr, 
 		if (instanceptr[loop].solid == TRUE)
 		{
 			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
-			if (((locx+user.radius) >= instanceptr[loop].minx) &&
-			    ((locy+user.radius) >= instanceptr[loop].miny) &&
-			    ((locz+user.radius) >= instanceptr[loop].minz) &&
-			    ((locx-user.radius) <= instanceptr[loop].maxx) &&
-			    ((locy-user.radius) <= instanceptr[loop].maxy) &&
-			    ((locz-user.radius) <= instanceptr[loop].maxz))
+			if (((locx+user.radius) >= instanceptr[loop].min.x()) &&
+			    ((locy+user.radius) >= instanceptr[loop].min.y()) &&
+			    ((locz+user.radius) >= instanceptr[loop].min.z()) &&
+			    ((locx-user.radius) <= instanceptr[loop].max.x()) &&
+			    ((locy-user.radius) <= instanceptr[loop].max.y()) &&
+			    ((locz-user.radius) <= instanceptr[loop].max.z()))
 			{
 				/* we have collided with the collision box */
 				/* make a beep */

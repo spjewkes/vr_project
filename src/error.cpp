@@ -190,13 +190,13 @@ void check_instance(struct instance *ptr, int no_rows)
 		printf("\tY location:  %f,", ptr[loop1].pos.y());
 		printf("\tZ location:  %f", ptr[loop1].pos.z());
 		/* print the minimum values */
-		printf("\nMinimum X:  %f,", ptr[loop1].minx);
-		printf("\tMinimum Y:  %f,", ptr[loop1].miny);
-		printf("\tMinimum Z:  %f", ptr[loop1].minz);
+		printf("\nMinimum X:  %f,", ptr[loop1].min.x());
+		printf("\tMinimum Y:  %f,", ptr[loop1].min.y());
+		printf("\tMinimum Z:  %f", ptr[loop1].min.z());
 		/* print the maximum values */
-		printf("\nMaximum X:  %f,", ptr[loop1].maxx);
-		printf("\tMaximum Y:  %f,", ptr[loop1].maxy);
-		printf("\tMaximum Z:  %f", ptr[loop1].maxz);
+		printf("\nMaximum X:  %f,", ptr[loop1].max.x());
+		printf("\tMaximum Y:  %f,", ptr[loop1].max.y());
+		printf("\tMaximum Z:  %f", ptr[loop1].max.z());
 		/* print the angle values */
 		printf("\nAngle X:  %f,", ptr[loop1].anglex);
 		printf("\tAngle Y:  %f,", ptr[loop1].angley);

@@ -103,7 +103,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 	int polyarray[18];
 	int poly_no[3];
 	int polyptr, no_points;
-	int tmp, hyp1, hyp2;
+	int tmp;
 	/* the viewing plance position */
 	float vrp = -50.0;
 	/* the back plane position */
@@ -127,16 +127,9 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 		/* the distance away from the viewer we use pythagoras */
 		/* here we dont't need to find the square root as all distances */
 		/* are still going to be relative */
-		hyp1 = abs(iptr[loop1].minx - user.loc.x())
-			+ abs (iptr[loop1].miny - user.loc.y())
-			+ abs (iptr[loop1].minz - user.loc.z());
-		hyp2 = abs(iptr[loop1].maxz - user.loc.x())
-			+ abs(iptr[loop1].maxy - user.loc.y())
-			+ abs(iptr[loop1].maxz - user.loc.z());
-
-		if (hyp1 > hyp2 ) tmp = hyp1;
-		else tmp = hyp2;
-		depth_array[loop1][1] = (long)tmp;
+		Vector3d hyp1 = iptr[loop1].min - user.loc;
+		Vector3d hyp2 = iptr[loop1].max - user.loc;
+		depth_array[loop1][1] = static_cast<long>(std::fmax(hyp1.length2(), hyp2.length2()));
 	}
 
 	/* smallest values come first */

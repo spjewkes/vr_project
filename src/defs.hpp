@@ -71,8 +71,8 @@ struct instance
 	int master_no;
 
 	Vector3d pos;
-	float minx, miny, minz;
-	float maxx, maxy, maxz;
+	Vector3d min;
+	Vector3d max;
 	float anglex, angley, anglez;
 	float scalex, scaley, scalez;
 

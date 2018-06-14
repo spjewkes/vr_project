@@ -572,11 +572,11 @@ void set_bound(struct instance *instanceptr, int instance_no)
 	/* now set the instance values with the minimum x,y and z and the
 	   maximum x,y and z */
 	/* the minimum values */
-	instanceptr[instance_no].minx = xmin;
-	instanceptr[instance_no].miny = ymin;
-	instanceptr[instance_no].minz = zmin;
+	instanceptr[instance_no].min.x(xmin);
+	instanceptr[instance_no].min.y(ymin);
+	instanceptr[instance_no].min.z(zmin);
 	/* the maximum values */
-	instanceptr[instance_no].maxx = xmax;
-	instanceptr[instance_no].maxy = ymax;
-	instanceptr[instance_no].maxz = zmax;
+	instanceptr[instance_no].max.x(xmax);
+	instanceptr[instance_no].max.y(ymax);
+	instanceptr[instance_no].max.z(zmax);
 }
