@@ -6,8 +6,8 @@
 int process_location(Vector3d &loc);
 int process_direction(Vector3d &ang);
 int process_radius(float *radius);
-int process_angle(float *angx, float *angy, float *angz);
-int process_scale(float *sclx, float *scly, float *sclz);
+int process_angle(Vector3d &ang);
+int process_scale(Vector3d &scl);
 int process_colour(int *colour);
 int process_specularity(float *specularity);
 char *process_outcome(void);

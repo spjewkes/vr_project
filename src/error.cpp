@@ -119,13 +119,13 @@ void check_master(struct master *ptr, int no_rows)
 		/* print which object in the master array */
 		printf("\nMaster object:\t%d", loop1);
 		/* print the scale values */
-		printf("\nScale X:  %f,", ptr[loop1].scalex);
-		printf("\tScale Y:  %f,", ptr[loop1].scaley);
-		printf("\tScale Z:  %f", ptr[loop1].scalez);
+		printf("\nScale X:  %f,", ptr[loop1].scale.x());
+		printf("\tScale Y:  %f,", ptr[loop1].scale.y());
+		printf("\tScale Z:  %f", ptr[loop1].scale.z());
 		/* print the angle values */
-		printf("\nAngle X:  %f,", ptr[loop1].anglex);
-		printf("\tAngle Y:  %f,", ptr[loop1].angley);
-		printf("\tAngle Z:  %f", ptr[loop1].anglez);
+		printf("\nAngle X:  %f,", ptr[loop1].angle.x());
+		printf("\tAngle Y:  %f,", ptr[loop1].angle.y());
+		printf("\tAngle Z:  %f", ptr[loop1].angle.z());
 		/* print the number of vertices that build up the object */
 		printf("\nNumber of vertices:\t%d", ptr[loop1].no_vertices);
 		/* now list the coordinate values that built up the object */
@@ -198,13 +198,13 @@ void check_instance(struct instance *ptr, int no_rows)
 		printf("\tMaximum Y:  %f,", ptr[loop1].max.y());
 		printf("\tMaximum Z:  %f", ptr[loop1].max.z());
 		/* print the angle values */
-		printf("\nAngle X:  %f,", ptr[loop1].anglex);
-		printf("\tAngle Y:  %f,", ptr[loop1].angley);
-		printf("\tAngle Z:  %f", ptr[loop1].anglez);
+		printf("\nAngle X:  %f,", ptr[loop1].angle.x());
+		printf("\tAngle Y:  %f,", ptr[loop1].angle.y());
+		printf("\tAngle Z:  %f", ptr[loop1].angle.z());
 		/* print the scale values */
-		printf("\nScale X:  %f,", ptr[loop1].scalex);
-		printf("\tScale Y:  %f,", ptr[loop1].scaley);
-		printf("\tScale Z:  %f", ptr[loop1].scalez);
+		printf("\nScale X:  %f,", ptr[loop1].scale.x());
+		printf("\tScale Y:  %f,", ptr[loop1].scale.y());
+		printf("\tScale Z:  %f", ptr[loop1].scale.z());
 		/* print the number of vertices that build up the object */
 		printf("\nNumber of vertices:\t%d", ptr[loop1].no_vertices);
 		/* now list the coordinate values that built up the object */

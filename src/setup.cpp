@@ -48,21 +48,25 @@ int create_object_instance(struct master *masterptr, struct instance *instancept
 		ypnt = masterptr[master_no].yvert[loop];
 		zpnt = masterptr[master_no].zvert[loop];
 		/* scale by the master values */
-		scale(&xpnt, &ypnt, &zpnt, masterptr[master_no].scalex,
-			  masterptr[master_no].scaley,
-			  masterptr[master_no].scalez);
+		scale(&xpnt, &ypnt, &zpnt,
+			  masterptr[master_no].scale.x(),
+			  masterptr[master_no].scale.y(),
+			  masterptr[master_no].scale.z());
 		/* now scale the instance with the instance values */
-		scale(&xpnt, &ypnt, &zpnt, instanceptr[instance_no].scalex,
-			  instanceptr[instance_no].scaley,
-			  instanceptr[instance_no].scalez);
+		scale(&xpnt, &ypnt, &zpnt,
+			  instanceptr[instance_no].scale.x(),
+			  instanceptr[instance_no].scale.y(),
+			  instanceptr[instance_no].scale.z());
 		/* rotate by the master values */
-		rotate(&xpnt, &ypnt, &zpnt, masterptr[master_no].anglex,
-			   masterptr[master_no].angley,
-			   masterptr[master_no].anglez);
+		rotate(&xpnt, &ypnt, &zpnt,
+			   masterptr[master_no].angle.x(),
+			   masterptr[master_no].angle.y(),
+			   masterptr[master_no].angle.z());
 		/* now rotate the instance with the instance values */
-		rotate(&xpnt, &ypnt, &zpnt, instanceptr[instance_no].anglex,
-			   instanceptr[instance_no].angley,
-			   instanceptr[instance_no].anglez);
+		rotate(&xpnt, &ypnt, &zpnt,
+			   instanceptr[instance_no].angle.x(),
+			   instanceptr[instance_no].angle.y(),
+			   instanceptr[instance_no].angle.z());
 		/* place the coordinate into the instance structure */
 		instanceptr[instance_no].xvert[loop] = xpnt;
 		instanceptr[instance_no].yvert[loop] = ypnt;

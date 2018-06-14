@@ -101,13 +101,13 @@ int Parser::init_master()
 	for (loop = 0; loop < no_masters; loop++)
 	{
 		/* set all the object's scales to 1.0 */
-		masterptr[loop].scalex = 1.0;
-		masterptr[loop].scaley = 1.0;
-		masterptr[loop].scalez = 1.0;
+		masterptr[loop].scale.x(1.0);
+		masterptr[loop].scale.y(1.0);
+		masterptr[loop].scale.z(1.0);
 		/* set all the obJect's angles to 0.0 */
-		masterptr[loop].anglex = 0.0;
-		masterptr[loop].angley = 0.0;
-		masterptr[loop].anglez = 0.0;
+		masterptr[loop].angle.x(0.0);
+		masterptr[loop].angle.y(0.0);
+		masterptr[loop].angle.z(0.0);
 		/* set all the object's vertices, edges and polygons to 0 */
 		masterptr[loop].no_vertices = 0;
 		masterptr[loop].no_edges = 0;
@@ -148,13 +148,13 @@ int Parser::init_instance()
 		instanceptr[loop].max.y(0.0);
 		instanceptr[loop].max.z(0.0);
 		/* set all the instance's scales to 1.0 */
-		instanceptr[loop].scalex = 1.0;
-		instanceptr[loop].scaley = 1.0;
-		instanceptr[loop].scalez = 1.0;
+		instanceptr[loop].scale.x(1.0);
+		instanceptr[loop].scale.y(1.0);
+		instanceptr[loop].scale.z(1.0);
 		/* set all the instance's angles to 0.0 */
-		instanceptr[loop].anglex = 0.0;
-		instanceptr[loop].angley = 0.0;
-		instanceptr[loop].anglez = 0.0;
+		instanceptr[loop].angle.x(0.0);
+		instanceptr[loop].angle.y(0.0);
+		instanceptr[loop].angle.z(0.0);
 		/* default master no should be set to 0 (this will be changed though */
 		instanceptr[loop].master_no = 0;
 		/* set all the object's vertice to 0 */
@@ -537,8 +537,8 @@ int Parser::check_object_values(int object_no, int object_pos, int no_objects)
 {
 	char word[MAXLINE];
 
-	float angx, angy, angz;
-	float sclx, scly, sclz;
+	Vector3d ang;
+	Vector3d scl;
 
 	debug("check_object_values()", 1);
 
@@ -549,23 +549,19 @@ int Parser::check_object_values(int object_no, int object_pos, int no_objects)
 		if (strcmp(word, "angle") == EQUAL)
 		{
 			/* get object angle values from script */
-			if (process_angle(&angx, &angy, &angz) == ERROR)
+			if (process_angle(ang) == ERROR)
 				return(ERROR);
 			/* load master structure with angle values */
-			masterptr[object_no].anglex = angx;
-			masterptr[object_no].angley = angy;
-			masterptr[object_no].anglez = angz;
+			masterptr[object_no].angle = ang;
 		}
 		else if (strcmp(word, "scale") == EQUAL)
 		{
 			/* get object scale values from script */
-			if (process_scale(&sclx, &scly, &sclz) == ERROR)
+			if (process_scale(scl) == ERROR)
 				return(ERROR);
 
 			/* fill master structure with scale values */
-			masterptr[object_no].scalex = sclx;
-			masterptr[object_no].scaley = scly;
-			masterptr[object_no].scalez = sclz;
+			masterptr[object_no].scale = scl;
 		}
 		else if (strcmp(word, "master_no") == EQUAL)
 		{
@@ -752,16 +748,14 @@ int Parser::process_object_instances(int no_instances, int no_objects)
 int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, int instance_pos, int no_instances, int master_no)
 {
 	char word[MAXLINE] ;
-	float angx, angy, angz;
-	float sclx, scly, sclz;
 	float specularity;
 	int colour, style;
 	char *string_ptr;
 
 	/* set the angles, scales and locations defaults */
 	Vector3d loc;
-	angx = 0.0; angy = 0.0; angz = 0.0;
-	sclx = 1.0; scly = 1.0; sclz = 1.0;
+	Vector3d ang;
+	Vector3d scl(1.0, 1.0, 1.0);
 
 	debug("check_instance_values()", 1);
 
@@ -779,19 +773,15 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 		}
 		else if (strcmp(word, "angle") == EQUAL)
 		{
-			if (process_angle(&angx, &angy, &angz) == ERROR)
+			if (process_angle(ang) == ERROR)
 				return (ERROR);
-			instanceptr[instance_pos].anglex = angx;
-			instanceptr[instance_pos].angley = angy;
-			instanceptr[instance_pos].anglez = angz;
+			instanceptr[instance_pos].angle = ang;
 		}
 		else if (strcmp(word, "scale") == EQUAL)
 		{
-			if (process_scale(&sclx, &scly, &sclz) == ERROR)
+			if (process_scale(scl) == ERROR)
 				return (ERROR);
-			instanceptr[instance_pos].scalex = sclx;
-			instanceptr[instance_pos].scaley = scly;
-			instanceptr[instance_pos].scalez = sclz;
+			instanceptr[instance_pos].scale = scl;
 		}
 		else if (strcmp(word, "colour") == EQUAL)
 		{

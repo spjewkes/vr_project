@@ -73,8 +73,8 @@ struct instance
 	Vector3d pos;
 	Vector3d min;
 	Vector3d max;
-	float anglex, angley, anglez;
-	float scalex, scaley, scalez;
+	Vector3d angle;
+	Vector3d scale;
 
 	int no_vertices;
 	float *xvert, *yvert, *zvert;
@@ -93,8 +93,8 @@ struct instance
 **************************/
 struct master
 {
-	float scalex, scaley, scalez;
-	float anglex, angley, anglez;
+	Vector3d scale;
+	Vector3d angle;
 
 	int no_vertices;
 	float *xvert, *yvert, *zvert;

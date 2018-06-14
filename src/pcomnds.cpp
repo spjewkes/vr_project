@@ -20,8 +20,6 @@
 * prototype declarations *
 *************************/
 int process_radius(float *radius);
-int process_angle(float *angx, float *angy, float *angz);
-int process_scale(float *angx, float *angy, float *angz);
 int process_colour(int *colour);
 int process_specularity(float *specularity);
 char *process_outcome(void);
@@ -116,7 +114,7 @@ int process_radius(float *radius)
 * process_angle() - process the command which defines the master object's   *
 *                   initial angle                                           *
 ****************************************************************************/
-int process_angle(float *angx, float *angy, float *angz)
+int process_angle(Vector3d &ang)
 {
 	int RESULT = OKAY;
 
@@ -125,17 +123,17 @@ int process_angle(float *angx, float *angy, float *angz)
 	if (check("=") != OKAY)
 		RESULT = error("0006", "Missing assignment symbol", lincnt);
 
-	*angx = fgetnum();
+	ang.x(fgetnum());
 
 	if (check(",") != OKAY)
 		RESULT = error("0023", "Syntax error with angle command", lincnt);
 
-	*angy = fgetnum();
+	ang.y(fgetnum());
 
 	if (check(", ") != OKAY)
 		RESULT = error("0023", "Syntax error with angle command", lincnt);
 
-	*angz = fgetnum();
+	ang.z(fgetnum());
 
 	if (check("") != BLANK)
 		RESULT = error("0023", "Syntax error with angle command", lincnt);
@@ -147,7 +145,7 @@ int process_angle(float *angx, float *angy, float *angz)
 * process_scale() - process the command which defines the master object's   *
 *                   initial scale                                           *
 ****************************************************************************/
-int process_scale(float *sclx, float *scly, float *sclz)
+int process_scale(Vector3d &scl)
 {
 	int RESULT = OKAY;
 
@@ -156,17 +154,17 @@ int process_scale(float *sclx, float *scly, float *sclz)
 	if (check("=") != OKAY)
 		RESULT = error("0006", "Missing assignment symbol", lincnt);
 
-	*sclx = fgetnum();
+	scl.x(fgetnum());
 
 	if (check(",") != OKAY)
 		RESULT = error("0024", "Syntax error with scale command", lincnt);
 
-	*scly = fgetnum();
+	scl.y(fgetnum());
 
 	if (check(",") != OKAY)
 		RESULT = error("0024", "Syntax error with scale command", lincnt);
 
-	*sclz = fgetnum();
+	scl.z(fgetnum());
 
 	if (check("") != BLANK)
 		RESULT = error("0024", "Syntax error with scale command", lincnt);
