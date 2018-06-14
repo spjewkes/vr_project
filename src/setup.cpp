@@ -32,21 +32,14 @@ int create_object_instance(struct master *masterptr, struct instance *instancept
 	instanceptr[instance_no].no_vertices = no_verts;
 
 	/* create array for instance polygons */
-	instanceptr[instance_no].xvert = (float *) malloc(sizeof(float) * no_verts);
-	instanceptr[instance_no].yvert = (float *) malloc(sizeof(float) * no_verts);
-	instanceptr[instance_no].zvert = (float *) malloc(sizeof(float) * no_verts);
-	/* now check that these have been created */
-	if ((instanceptr[instance_no].xvert == NULL) ||
-		(instanceptr[instance_no].yvert == NULL) ||
-		(instanceptr[instance_no].zvert == NULL))
-		return(error("0048", "Error allocating memory", lincnt));
+	instanceptr[instance_no].vert.resize(no_verts);
 
 	for (loop = 0; loop < no_verts; loop++)
 	{
 		/* the x, y, z coord from the master */
-		xpnt = masterptr[master_no].xvert[loop];
-		ypnt = masterptr[master_no].yvert[loop];
-		zpnt = masterptr[master_no].zvert[loop];
+		xpnt = masterptr[master_no].vert[loop].x();
+		ypnt = masterptr[master_no].vert[loop].y();
+		zpnt = masterptr[master_no].vert[loop].z();
 		/* scale by the master values */
 		scale(&xpnt, &ypnt, &zpnt,
 			  masterptr[master_no].scale.x(),
@@ -68,9 +61,9 @@ int create_object_instance(struct master *masterptr, struct instance *instancept
 			   instanceptr[instance_no].angle.y(),
 			   instanceptr[instance_no].angle.z());
 		/* place the coordinate into the instance structure */
-		instanceptr[instance_no].xvert[loop] = xpnt;
-		instanceptr[instance_no].yvert[loop] = ypnt;
-		instanceptr[instance_no].zvert[loop] = zpnt;
+		instanceptr[instance_no].vert[loop].x(xpnt);
+		instanceptr[instance_no].vert[loop].y(ypnt);
+		instanceptr[instance_no].vert[loop].z(zpnt);
 	}
 	return (RESULT);
 }

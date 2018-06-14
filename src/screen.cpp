@@ -175,9 +175,9 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 		for (loop2 = 0; loop2 < iptr[tmp].no_vertices; loop2++)
 		{
 			/* get the vertex point */
-			x = iptr[tmp].xvert[loop2];
-			y = iptr[tmp].yvert[loop2];
-			z = iptr[tmp].zvert[loop2];
+			x = iptr[tmp].vert[loop2].x();
+			y = iptr[tmp].vert[loop2].y();
+			z = iptr[tmp].vert[loop2].z();
 			/* set coordinate so that viewer is at origin */
 			translate(&x, &y, &z, 0-user.loc.x(), 0-user.loc.y(), 0-user.loc.z());
 			rotate(&x, &y, &z, 0-user.ang.x(), 0-user.ang.y(), 0-user.ang.z());

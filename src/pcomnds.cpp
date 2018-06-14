@@ -383,16 +383,9 @@ int process_verts(struct master* masterptr, int no_vertices, int object_no)
 {
 	int RESULT = OKAY;
 	int loop, vert_no;
-	float *xvert, *yvert, *zvert;
 
 	/* first we create the vertice data structures */
-	xvert = (float *) malloc(sizeof(float) * no_vertices);
-	yvert = (float *) malloc(sizeof(float) * no_vertices);
-	zvert = (float *) malloc(sizeof(float) * no_vertices);
-
-	/* now check there was no problem in memory allocation */
-	if ((xvert == NULL) || (yvert == NULL) || (zvert == NULL))
-		return(error("0048", "Error allocating memory", lincnt));
+	masterptr[object_no].vert.resize(no_vertices);
 
 	for (loop = 0; loop < no_vertices; loop++)
 	{
@@ -410,27 +403,22 @@ int process_verts(struct master* masterptr, int no_vertices, int object_no)
 			RESULT = error("0006", "Missing assignment symbol", lincnt);
 
 		/* now we get the x, y and z values of the vertex */
-		xvert[vert_no-1] = fgetnum();
+		masterptr[object_no].vert[vert_no-1].x(fgetnum());
 
 		if (check(",") != OKAY)
 			RESULT = error("0047", "Syntax error with vertex command", lincnt);
 
-		yvert[vert_no-1] = fgetnum();
+		masterptr[object_no].vert[vert_no-1].y(fgetnum());
 
 		if (check(",") != OKAY)
 			RESULT = error("0047", "Syntax error with vertex command", lincnt);
 
-		zvert[vert_no-1] = fgetnum();
+		masterptr[object_no].vert[vert_no-1].z(fgetnum());
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != BLANK)
 			RESULT = error("0047", "Syntax error with vertex command", lincnt);
 	}
-
-	/* set the memory holding the vertices into the master structure */
-	masterptr[object_no].xvert = xvert;
-	masterptr[object_no].yvert = yvert;
-	masterptr[object_no].zvert = zvert;
 
 	return (RESULT);
 }

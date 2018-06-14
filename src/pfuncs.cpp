@@ -346,13 +346,13 @@ void translation(struct instance *instanceptr, int instance_no,
 	/* loop to translate the whole of an instance object */
 	for (loop = 0; loop < instanceptr[instance_no].no_vertices; loop++)
 	{
-		x = instanceptr[instance_no].xvert[loop];
-		y = instanceptr[instance_no].yvert[loop];
-		z = instanceptr[instance_no].zvert[loop];
+		x = instanceptr[instance_no].vert[loop].x();
+		y = instanceptr[instance_no].vert[loop].y();
+		z = instanceptr[instance_no].vert[loop].z();
 		translate(&x, &y, &z, locx, locy, locz);
-		instanceptr[instance_no].xvert[loop] = x;
-		instanceptr[instance_no].yvert[loop] = y;
-		instanceptr[instance_no].zvert[loop] = z;
+		instanceptr[instance_no].vert[loop].x(x);
+		instanceptr[instance_no].vert[loop].y(y);
+		instanceptr[instance_no].vert[loop].z(z);
 	}
 }
 
@@ -388,13 +388,13 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 		edge0 = masterptr[master_no].edge0[loop];
 		edge1 = masterptr[master_no].edge1[loop];
 		/* get the first vertex of that edge */
-		x1 = instanceptr[instance_no].xvert[edge0];
-		y1 = instanceptr[instance_no].yvert[edge0];
-		z1 = instanceptr[instance_no].zvert[edge0];
+		x1 = instanceptr[instance_no].vert[edge0].x();
+		y1 = instanceptr[instance_no].vert[edge0].y();
+		z1 = instanceptr[instance_no].vert[edge0].z();
 		/* now get the second vertex of that edge */
-		x2 = instanceptr[instance_no].xvert[edge1];
-		y2 = instanceptr[instance_no].yvert[edge1];
-		z2 = instanceptr[instance_no].zvert[edge1];
+		x2 = instanceptr[instance_no].vert[edge1].x();
+		y2 = instanceptr[instance_no].vert[edge1].y();
+		z2 = instanceptr[instance_no].vert[edge1].z();
 		/* now we calculate the changes between the first and */
 		/* second vertex */
 		dx1 = abs(x2 - x1);
@@ -432,19 +432,19 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 		edge0 = masterptr[master_no].edge0[poly_no[0]];
 		edge1 = masterptr[master_no].edge1[poly_no[0]];
 		/* get the first vertex of that edge */
-		x1 = instanceptr[instance_no].xvert[edge0];
-		y1 = instanceptr[instance_no].yvert[edge0];
-		z1 = instanceptr[instance_no].zvert[edge0];
+		x1 = instanceptr[instance_no].vert[edge0].x();
+		y1 = instanceptr[instance_no].vert[edge0].y();
+		z1 = instanceptr[instance_no].vert[edge0].z();
 		/* now get the second vertex of that edge */
-		x2 = instanceptr[instance_no].xvert[edge1];
-		y2 = instanceptr[instance_no].yvert[edge1];
-		z2 = instanceptr[instance_no].zvert[edge1];
+		x2 = instanceptr[instance_no].vert[edge1].x();
+		y2 = instanceptr[instance_no].vert[edge1].y();
+		z2 = instanceptr[instance_no].vert[edge1].z();
 		/* we need a third point to find the normal to the plane */
 		/* so we'll get the end point of the second edge */
 		edge1 = masterptr[master_no].edge1[(poly_no[1])];
-		x3 = instanceptr[instance_no].xvert[edge1];
-		y3 = instanceptr[instance_no].yvert[edge1];
-		z3 = instanceptr[instance_no].zvert[edge1];
+		x3 = instanceptr[instance_no].vert[edge1].x();
+		y3 = instanceptr[instance_no].vert[edge1].y();
+		z3 = instanceptr[instance_no].vert[edge1].z();
 		/* now we calculate the changes between the first and */
 		/* second vertex */
 		dx1 = x2 - x1;
@@ -532,41 +532,41 @@ void set_bound(struct instance *instanceptr, int instance_no)
 	/* set the x,y and z min/max values to the values of the first vertex
 	   as an initial value */
 	/* minimum value of collision box */
-	xmin = instanceptr[instance_no].xvert[0];
-	ymin = instanceptr[instance_no].yvert[0];
-	zmin = instanceptr[instance_no].zvert[0];
+	xmin = instanceptr[instance_no].vert[0].x();
+	ymin = instanceptr[instance_no].vert[0].y();
+	zmin = instanceptr[instance_no].vert[0].z();
 	/* maximum value of collision box */
-	xmax = instanceptr[instance_no].xvert[0];
-	ymax = instanceptr[instance_no].yvert[0];
-	zmax = instanceptr[instance_no].zvert[0];
+	xmax = instanceptr[instance_no].vert[0].x();
+	ymax = instanceptr[instance_no].vert[0].y();
+	zmax = instanceptr[instance_no].vert[0].z();
 
 	/* now look at other values in the instances vertex list and alter the
 	   minimum and maximum values accordingly */
 	for (loop = 1; loop < no_verts; loop++)
 	{
 		/* looking for the minimum x value */
-		if (instanceptr[instance_no].xvert[loop] < xmin)
-			xmin = instanceptr[instance_no].xvert[loop];
+		if (instanceptr[instance_no].vert[loop].x() < xmin)
+			xmin = instanceptr[instance_no].vert[loop].x();
 
 		/* looking for the minimum y value */
-		if (instanceptr[instance_no].yvert[loop] < ymin)
-			ymin = instanceptr[instance_no].yvert[loop];
+		if (instanceptr[instance_no].vert[loop].y() < ymin)
+			ymin = instanceptr[instance_no].vert[loop].y();
 
 		/* looking for the minimum z value */
-		if (instanceptr[instance_no].zvert[loop] < zmin)
-			zmin = instanceptr[instance_no].zvert[loop];
+		if (instanceptr[instance_no].vert[loop].z() < zmin)
+			zmin = instanceptr[instance_no].vert[loop].z();
 
 		/* looking for the maximum x value */
-		if (instanceptr[instance_no].xvert[loop] > xmax)
-			xmax = instanceptr[instance_no].xvert[loop];
+		if (instanceptr[instance_no].vert[loop].x() > xmax)
+			xmax = instanceptr[instance_no].vert[loop].x();
 
 		/* looking for the maximum y value */
-		if (instanceptr[instance_no].yvert[loop] > ymax)
-			ymax = instanceptr[instance_no].yvert[loop];
+		if (instanceptr[instance_no].vert[loop].y() > ymax)
+			ymax = instanceptr[instance_no].vert[loop].y();
 
 		/* looking for the maximum z value */
-		if (instanceptr[instance_no].zvert[loop] > zmax)
-			zmax = instanceptr[instance_no].zvert[loop];
+		if (instanceptr[instance_no].vert[loop].z() > zmax)
+			zmax = instanceptr[instance_no].vert[loop].z();
 	}
 
 	/* now set the instance values with the minimum x,y and z and the

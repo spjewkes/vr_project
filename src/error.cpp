@@ -134,9 +134,9 @@ void check_master(struct master *ptr, int no_rows)
 			/* print the vertex number */
 			printf("\nVertex number:\t%d", loop2);
 			/* list the vertex values */
-			printf("\n%f, ", ptr[loop1].xvert[loop2]);
-			printf(" %f,", ptr[loop1].yvert[loop2]);
-			printf(" %f", ptr[loop1].zvert[loop2]);
+			printf("\n%f, ", ptr[loop1].vert[loop2].x());
+			printf(" %f,", ptr[loop1].vert[loop2].y());
+			printf(" %f", ptr[loop1].vert[loop2].z());
 		}
 		/* print the number of edges that build up the object */
 		printf("\nNumber of edges:\t%d", ptr[loop1].no_edges);
@@ -213,9 +213,9 @@ void check_instance(struct instance *ptr, int no_rows)
 			/* print the vertex number */
 			printf("\nVertex number: \t%d", loop2);
 			/* list the vertex values */
-			printf("\n%f,", ptr[loop1].xvert[loop2]);
-			printf("  %f,", ptr[loop1].yvert[loop2]);
-			printf("  %f", ptr[loop1].zvert[loop2]);
+			printf("\n%f,", ptr[loop1].vert[loop2].x());
+			printf("  %f,", ptr[loop1].vert[loop2].y());
+			printf("  %f", ptr[loop1].vert[loop2].z());
 		}
 		/* print the style number */
 		printf("\nStyle number:\t%d", ptr[loop1].style);

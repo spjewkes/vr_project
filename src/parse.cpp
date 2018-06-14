@@ -205,14 +205,6 @@ void Parser::remove_master()
 	{
 		for (loop = 0; loop < no_masters; loop++)
 		{
-			/* free the vertices array */
-			if (masterptr[loop].no_vertices > 0)
-			{
-				free(masterptr[loop].xvert);
-				free(masterptr[loop].yvert);
-				free(masterptr[loop].zvert);
-			}
-
 			/* free the edges array */
 			if (masterptr[loop].no_edges > 0)
 			{
@@ -250,16 +242,6 @@ void Parser::remove_instance()
 	{
 		for (loop = 0; loop < no_instances; loop++)
 		{
-			/* free the arrays of vertices */
-			if (instanceptr[loop].xvert != NULL)
-				free(instanceptr[loop].xvert);
-
-			if (instanceptr[loop].yvert != NULL)
-				free(instanceptr[loop].yvert);
-
-			if (instanceptr[loop].zvert != NULL)
-				free(instanceptr[loop].zvert);
-
 			/* free the arrays of colour values for edges and polygons */
 			if (instanceptr[loop].edge_colour != NULL)
 				free(instanceptr[loop].edge_colour);

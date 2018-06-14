@@ -1,6 +1,7 @@
 #ifndef __DEFS_HPP__
 #define __DEFS_HPP__
 
+#include <vector>
 #include "vector3d.hpp"
 
 #define RADCONST (57.295779513082321)
@@ -77,7 +78,7 @@ struct instance
 	Vector3d scale;
 
 	int no_vertices;
-	float *xvert, *yvert, *zvert;
+	std::vector<Vector3d> vert;
 
 	int *edge_colour;
 	int *poly_colour;
@@ -97,7 +98,7 @@ struct master
 	Vector3d angle;
 
 	int no_vertices;
-	float *xvert, *yvert, *zvert;
+	std::vector<Vector3d> vert;
 
 	int no_edges;
 	int *edge0, *edge1;
