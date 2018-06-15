@@ -24,12 +24,11 @@ int create_object_instance(struct master *masterptr, struct instance *instancept
 						   int instance_no, int master_no)
 {
 	int RESULT = OKAY;
-	int loop, no_verts;
+	int loop;
 	float xpnt, ypnt, zpnt;
 
 	/* pass the no_polygons value into the instance */
-	no_verts = masterptr[master_no].no_vertices;
-	instanceptr[instance_no].no_vertices = no_verts;
+	int no_verts = masterptr[master_no].vert.size();
 
 	/* create array for instance polygons */
 	instanceptr[instance_no].vert.resize(no_verts);

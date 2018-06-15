@@ -458,7 +458,7 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 		tmp = getnum();
 
 		/* now make sure that it is a valid vertex reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].no_vertices))
+		if ((tmp < 1) || (tmp > masterptr[object_no].vert.size()))
 			RESULT = error("0050", "Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
@@ -470,7 +470,7 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 		tmp = getnum();
 
 		/* now make sure that it is a valid vertex reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].no_vertices))
+		if ((tmp < 1) || (tmp > masterptr[object_no].vert.size()))
 			RESULT = error("0050", "Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */

@@ -77,7 +77,6 @@ struct instance
 	Vector3d angle;
 	Vector3d scale;
 
-	int no_vertices;
 	std::vector<Vector3d> vert;
 
 	int *edge_colour;
@@ -97,7 +96,6 @@ struct master
 	Vector3d scale;
 	Vector3d angle;
 
-	int no_vertices;
 	std::vector<Vector3d> vert;
 
 	int no_edges;

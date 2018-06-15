@@ -127,7 +127,7 @@ void check_master(struct master *ptr, int no_rows)
 		printf("\tAngle Y:  %f,", ptr[loop1].angle.y());
 		printf("\tAngle Z:  %f", ptr[loop1].angle.z());
 		/* print the number of vertices that build up the object */
-		printf("\nNumber of vertices:\t%d", ptr[loop1].no_vertices);
+		printf("\nNumber of vertices:\t%d", ptr[loop1].vert.size());
 		/* now list the coordinate values that built up the object */
 		for (auto vertex : ptr[loop1].vert)
 		{
@@ -206,7 +206,7 @@ void check_instance(struct instance *ptr, int no_rows)
 		printf("\tScale Y:  %f,", ptr[loop1].scale.y());
 		printf("\tScale Z:  %f", ptr[loop1].scale.z());
 		/* print the number of vertices that build up the object */
-		printf("\nNumber of vertices:\t%d", ptr[loop1].no_vertices);
+		printf("\nNumber of vertices:\t%d", ptr[loop1].vert.size());
 		/* now list the coordinate values that built up the object */
 		int i = 0;
 		for (auto vertex : ptr[loop1].vert)

@@ -522,50 +522,40 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 ****************************************************************************/
 void set_bound(struct instance *instanceptr, int instance_no)
 {
-	int no_verts, loop;
-	float xmin, ymin, zmin, xmax, ymax, zmax;
-
-	/* get the number of vertices in the object */
-	no_verts = instanceptr[instance_no].no_vertices;
-
 	/* set the x,y and z min/max values to the values of the first vertex
 	   as an initial value */
+
 	/* minimum value of collision box */
-	xmin = instanceptr[instance_no].vert[0].x();
-	ymin = instanceptr[instance_no].vert[0].y();
-	zmin = instanceptr[instance_no].vert[0].z();
+	float xmin = instanceptr[instance_no].vert[0].x();
+	float ymin = instanceptr[instance_no].vert[0].y();
+	float zmin = instanceptr[instance_no].vert[0].z();
+
 	/* maximum value of collision box */
-	xmax = instanceptr[instance_no].vert[0].x();
-	ymax = instanceptr[instance_no].vert[0].y();
-	zmax = instanceptr[instance_no].vert[0].z();
+	float xmax = instanceptr[instance_no].vert[0].x();
+	float ymax = instanceptr[instance_no].vert[0].y();
+	float zmax = instanceptr[instance_no].vert[0].z();
 
 	/* now look at other values in the instances vertex list and alter the
 	   minimum and maximum values accordingly */
-	for (loop = 1; loop < no_verts; loop++)
+	for (auto vertex : instanceptr[instance_no].vert)
 	{
 		/* looking for the minimum x value */
-		if (instanceptr[instance_no].vert[loop].x() < xmin)
-			xmin = instanceptr[instance_no].vert[loop].x();
+		xmin = std::fmin(xmin, vertex.x());
 
 		/* looking for the minimum y value */
-		if (instanceptr[instance_no].vert[loop].y() < ymin)
-			ymin = instanceptr[instance_no].vert[loop].y();
+		ymin = std::fmin(ymin, vertex.y());
 
 		/* looking for the minimum z value */
-		if (instanceptr[instance_no].vert[loop].z() < zmin)
-			zmin = instanceptr[instance_no].vert[loop].z();
+		zmin = std::fmin(zmin, vertex.z());
 
 		/* looking for the maximum x value */
-		if (instanceptr[instance_no].vert[loop].x() > xmax)
-			xmax = instanceptr[instance_no].vert[loop].x();
+		xmax = std::fmax(xmax, vertex.x());
 
 		/* looking for the maximum y value */
-		if (instanceptr[instance_no].vert[loop].y() > ymax)
-			ymax = instanceptr[instance_no].vert[loop].y();
+		ymax = std::fmax(ymax, vertex.y());
 
 		/* looking for the maximum z value */
-		if (instanceptr[instance_no].vert[loop].z() > zmax)
-			zmax = instanceptr[instance_no].vert[loop].z();
+		zmax = std::fmax(zmax, vertex.z());
 	}
 
 	/* now set the instance values with the minimum x,y and z and the

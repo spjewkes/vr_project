@@ -109,7 +109,6 @@ int Parser::init_master()
 		masterptr[loop].angle.y(0.0);
 		masterptr[loop].angle.z(0.0);
 		/* set all the object's vertices, edges and polygons to 0 */
-		masterptr[loop].no_vertices = 0;
 		masterptr[loop].no_edges = 0;
 		masterptr[loop].no_polygons = 0;
 	}
@@ -157,8 +156,6 @@ int Parser::init_instance()
 		instanceptr[loop].angle.z(0.0);
 		/* default master no should be set to 0 (this will be changed though */
 		instanceptr[loop].master_no = 0;
-		/* set all the object's vertice to 0 */
-		instanceptr[loop].no_vertices = 0;
 		/* set the default style of the object to wlreframe */
 		instanceptr[loop].style = WFRAME;
 		/* set the default solidity of the object to false */
@@ -601,7 +598,7 @@ int Parser::process_object_definition(int object_no)
 	if (no_vert > 0)
 	{
 		/* set the no_vertices value in the master structure */
-		masterptr[object_no].no_vertices = no_vert;
+		masterptr[object_no].vert.resize(no_vert);
 		/* get the values of the vertices */
 		RESULT = process_verts(masterptr, no_vert, object_no);
 	}
