@@ -169,15 +169,17 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 		/* make tmp hold the value of the current instance */
 		tmp = depth_array[loop1][0];
 
+		loop2 = 0;
+
 		/* for every instance */
 		/* rotate and translate all of the vertices so
 		   it's relative to the viewer */
-		for (loop2 = 0; loop2 < iptr[tmp].no_vertices; loop2++)
+		for (auto vertex : iptr[tmp].vert)
 		{
 			/* get the vertex point */
-			x = iptr[tmp].vert[loop2].x();
-			y = iptr[tmp].vert[loop2].y();
-			z = iptr[tmp].vert[loop2].z();
+			x = vertex.x();
+			y = vertex.y();
+			z = vertex.z();
 			/* set coordinate so that viewer is at origin */
 			translate(&x, &y, &z, 0-user.loc.x(), 0-user.loc.y(), 0-user.loc.z());
 			rotate(&x, &y, &z, 0-user.ang.x(), 0-user.ang.y(), 0-user.ang.z());
@@ -192,6 +194,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 			store[loop2][X] = x;
 			store[loop2][Y] = y;
 			store[loop2][Z] = z;
+			loop2++;
 		}
 
 		/* get the master no of the of master that stores

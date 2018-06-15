@@ -129,14 +129,14 @@ void check_master(struct master *ptr, int no_rows)
 		/* print the number of vertices that build up the object */
 		printf("\nNumber of vertices:\t%d", ptr[loop1].no_vertices);
 		/* now list the coordinate values that built up the object */
-		for (loop2 = 0; loop2 < ptr[loop1].no_vertices; loop2++)
+		for (auto vertex : ptr[loop1].vert)
 		{
 			/* print the vertex number */
 			printf("\nVertex number:\t%d", loop2);
 			/* list the vertex values */
-			printf("\n%f, ", ptr[loop1].vert[loop2].x());
-			printf(" %f,", ptr[loop1].vert[loop2].y());
-			printf(" %f", ptr[loop1].vert[loop2].z());
+			printf("\n%f, ", vertex.x());
+			printf(" %f,", vertex.y());
+			printf(" %f", vertex.z());
 		}
 		/* print the number of edges that build up the object */
 		printf("\nNumber of edges:\t%d", ptr[loop1].no_edges);
@@ -172,7 +172,7 @@ void check_master(struct master *ptr, int no_rows)
 ****************************************************************************/
 void check_instance(struct instance *ptr, int no_rows)
 {
-	int loop1, loop2;
+	int loop1;
 
 	debug("check_instance ()", 1);
 
@@ -208,14 +208,15 @@ void check_instance(struct instance *ptr, int no_rows)
 		/* print the number of vertices that build up the object */
 		printf("\nNumber of vertices:\t%d", ptr[loop1].no_vertices);
 		/* now list the coordinate values that built up the object */
-		for (loop2 = 0; loop2 < ptr[loop1].no_vertices; loop2++)
+		int i = 0;
+		for (auto vertex : ptr[loop1].vert)
 		{
 			/* print the vertex number */
-			printf("\nVertex number: \t%d", loop2);
+			printf("\nVertex number: \t%d", i++);
 			/* list the vertex values */
-			printf("\n%f,", ptr[loop1].vert[loop2].x());
-			printf("  %f,", ptr[loop1].vert[loop2].y());
-			printf("  %f", ptr[loop1].vert[loop2].z());
+			printf("\n%f,", vertex.x());
+			printf("  %f,", vertex.y());
+			printf("  %f", vertex.z());
 		}
 		/* print the style number */
 		printf("\nStyle number:\t%d", ptr[loop1].style);

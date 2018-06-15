@@ -340,19 +340,18 @@ void translate(float *pntx, float *pnty, float *pntz,
 void translation(struct instance *instanceptr, int instance_no,
 				 float locx, float locy, float locz)
 {
-	int loop;
 	float x, y, z;
 
 	/* loop to translate the whole of an instance object */
-	for (loop = 0; loop < instanceptr[instance_no].no_vertices; loop++)
+	for (auto &vertex : instanceptr[instance_no].vert)
 	{
-		x = instanceptr[instance_no].vert[loop].x();
-		y = instanceptr[instance_no].vert[loop].y();
-		z = instanceptr[instance_no].vert[loop].z();
+		x = vertex.x();
+		y = vertex.y();
+		z = vertex.z();
 		translate(&x, &y, &z, locx, locy, locz);
-		instanceptr[instance_no].vert[loop].x(x);
-		instanceptr[instance_no].vert[loop].y(y);
-		instanceptr[instance_no].vert[loop].z(z);
+		vertex.x(x);
+		vertex.y(y);
+		vertex.z(z);
 	}
 }
 
