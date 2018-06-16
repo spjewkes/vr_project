@@ -1,5 +1,5 @@
 CPP=g++
-CPPFLAGS=-std=c++11 -Wall -Wextra
+CPPFLAGS=-std=c++14 -Wall -Wextra -pedantic -Weffc++
 LIBS=
 EXE=run_vr_project
 
