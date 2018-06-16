@@ -1,6 +1,7 @@
 #ifndef __PCOMNDS_HPP__
 #define __PCOMNDS_HPP__
 
+#include <string>
 #include "vector3d.hpp"
 
 int process_location(Vector3d &loc);
@@ -10,7 +11,7 @@ int process_angle(Vector3d &ang);
 int process_scale(Vector3d &scl);
 int process_colour(int *colour);
 int process_specularity(float *specularity);
-char *process_outcome(void);
+bool process_outcome(std::string &outcome);
 int process_style(int *style);
 int process_verts(struct master *masterptr, int no_vertices, int object_no);
 int process_edges(struct master *masterptr, int no_edges, int object_no);

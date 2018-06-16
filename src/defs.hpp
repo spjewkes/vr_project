@@ -2,6 +2,7 @@
 #define __DEFS_HPP__
 
 #include <vector>
+#include <string>
 #include "vector3d.hpp"
 
 #define RADCONST (57.295779513082321)
@@ -85,7 +86,7 @@ struct instance
 	int style;
 	int solid;
 
-	char *outcome;
+	std::string outcome;
 };
 
 /**************************

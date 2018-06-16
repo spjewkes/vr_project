@@ -10,7 +10,7 @@
 /****************
 * include files *
 ****************/
-#include <string.h>
+#include <string>
 #include <stdlib.h>
 #include "defs.hpp"
 #include "error.hpp"
@@ -22,7 +22,6 @@
 int process_radius(float *radius);
 int process_colour(int *colour);
 int process_specularity(float *specularity);
-char *process_outcome(void);
 int process_style(int *style);
 int process_sky(int *colour);
 int process_ground(int *colour);
@@ -312,10 +311,9 @@ int process_specularity(float *specularity)
 *                     there is also the possibility to execute DOS commands *
 *                     with this string                                      *
 ****************************************************************************/
-char *process_outcome(void)
+bool process_outcome(std::string &outcome)
 {
 	char word[MAXLINE];
-	char *string_ptr;
 
 	debug("process_outcome()", 1);
 
@@ -323,31 +321,20 @@ char *process_outcome(void)
 	if (check("=") != OKAY)
 	{
 		error("0006", "Missing assignment symbol", lincnt);
-		return (NULL);
+		return false;
 	}
 
 	/* if the string is in error then return error */
 	if (getstring(word) == ERROR)
 	{
 		error("0053", "Syntax error with outcome string", lincnt);
-		return (NULL);
+		return false;
 	}
 
-	/* so we have a valid string we must now copy the string into
-	   some allocated memory - i.e. place it within the instance
-	   data structure */
-	string_ptr = (char *)malloc(sizeof(char) * strlen(word));
+	/* copy array over to outcome string */
+	outcome = word;
 
-	/* check to make sure that we allocated the memory okay */
-	if (string_ptr == NULL)
-	{
-		error("0043", "Cannot allocate memory", lincnt);
-		return (NULL);
-	}
-	/* copy array over to malloced memory */
-	strcpy(string_ptr, word);
-
-	return (string_ptr);
+	return true;
 }
 
 /****************************************************************************

@@ -176,7 +176,7 @@ int getstring(char *word)
 	{
 		/* check to make sure that we haven't reached the end of the
 		   line retrieved from the file */
-		if (lineptr == '\0')
+		if (LINE[lineptr] == '\0')
 			return (RESULT);
 
 		/* otherwise we put the value into the char array pointed to by tptr */

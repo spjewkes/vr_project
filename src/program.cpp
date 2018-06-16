@@ -49,7 +49,7 @@ void program(int instance, struct instance *ptr)
 	array[0] = NULL;
 
 	/* copy the outcome string to a char array we can play with */
-	strcpy(path, ptr[instance].outcome);
+	strcpy(path, ptr[instance].outcome.c_str());
 
 	/* if the string doesn't contain the string 'solid' then it must
 	   contain a program to execute */

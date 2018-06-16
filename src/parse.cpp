@@ -161,7 +161,7 @@ int Parser::init_instance()
 		/* set the default solidity of the object to false */
 		instanceptr[loop].solid = FALSE;
 		/* set up the default outcome string */
-		instanceptr[loop].outcome = NULL;
+		instanceptr[loop].outcome = "";
 	}
 	return (OKAY);
 }
@@ -229,21 +229,12 @@ void Parser::remove_master()
 ****************************************************************************/
 void Parser::remove_instance()
 {
-	int loop;
-
 	debug("remove_instance()", 1);
 
 	if (instanceptr == NULL)
 		warn("0003", "Nothing in memory to free", 0);
 	else
 	{
-		for (loop = 0; loop < no_instances; loop++)
-		{
-			/* free the outcome string */
-			if (instanceptr[loop].outcome != NULL)
-				free(instanceptr[loop].outcome);
-		}
-
 		/* now free the instance array structure completely */
 		free(instanceptr);
 	}
@@ -724,7 +715,6 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 	char word[MAXLINE] ;
 	float specularity;
 	int colour, style;
-	char *string_ptr;
 
 	/* set the angles, scales and locations defaults */
 	Vector3d loc;
@@ -780,18 +770,17 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 			/* fill the instance style value into the instance structure */
 			instanceptr[instance_pos].style = style;
 		}
-		else if (strcmp (word, "outcome") == EQUAL)
+		else if (strcmp(word, "outcome") == EQUAL)
 		{
-			if ((string_ptr = process_outcome()) == NULL)
+			if (!process_outcome(instanceptr[instance_pos].outcome))
 				return (ERROR);
-			instanceptr[instance_pos].outcome = string_ptr;
 			/* now we should check whether we want
 			   the object to be solid or not */
-			if (strcmp(string_ptr, "") == EQUAL)
+			if (instanceptr[instance_pos].outcome == "")
 				instanceptr[instance_pos].solid = FALSE;
-			else if (strcmp(string_ptr, "ignore") == EQUAL)
+			else if (instanceptr[instance_pos].outcome == "ignore")
 				instanceptr[instance_pos].solid = FALSE;
-			else if (strcmp(string_ptr, "solid") == EQUAL)
+			else if (instanceptr[instance_pos].outcome == "solid")
 				instanceptr[instance_pos].solid = TRUE;
 			else
 				instanceptr[instance_pos].solid = TRUE;
