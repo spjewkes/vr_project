@@ -90,7 +90,7 @@ struct instance
 	std::vector<unsigned int> poly_colour;
 
 	RenderStyle style;
-	int solid;
+	bool is_solid;
 
 	std::string outcome;
 };

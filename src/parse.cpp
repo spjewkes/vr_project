@@ -159,7 +159,7 @@ int Parser::init_instance()
 		/* set the default style of the object to wlreframe */
 		instanceptr[loop].style = RenderStyle::WIREFRAME;
 		/* set the default solidity of the object to false */
-		instanceptr[loop].solid = FALSE;
+		instanceptr[loop].is_solid = false;
 		/* set up the default outcome string */
 		instanceptr[loop].outcome = "";
 	}
@@ -775,13 +775,13 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 			/* now we should check whether we want
 			   the object to be solid or not */
 			if (instanceptr[instance_pos].outcome == "")
-				instanceptr[instance_pos].solid = FALSE;
+				instanceptr[instance_pos].is_solid = false;
 			else if (instanceptr[instance_pos].outcome == "ignore")
-				instanceptr[instance_pos].solid = FALSE;
+				instanceptr[instance_pos].is_solid = false;
 			else if (instanceptr[instance_pos].outcome == "solid")
-				instanceptr[instance_pos].solid = TRUE;
+				instanceptr[instance_pos].is_solid = true;
 			else
-				instanceptr[instance_pos].solid = TRUE;
+				instanceptr[instance_pos].is_solid = true;
 		}
 		else if (strcmp(word, "master_no") == EQUAL)
 		{

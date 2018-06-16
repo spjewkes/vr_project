@@ -86,7 +86,7 @@ int collision(float pntx, float pnty, float pntz, struct instance *instanceptr, 
 	int loop;
 	for (loop = 0; loop < no_instances; loop++)
 	{
-		if (instanceptr[loop].solid == TRUE)
+		if (instanceptr[loop].is_solid)
 		{
 			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
 			if ((pntx >= instanceptr[loop].min.x()) &&
@@ -117,7 +117,7 @@ int check_col(float locx, float locy, float locz, struct instance *instanceptr, 
 
 	for (loop = 0; loop < no_instances; loop++)
 	{
-		if (instanceptr[loop].solid == TRUE)
+		if (instanceptr[loop].is_solid)
 		{
 			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
 			if (((locx+user.radius) >= instanceptr[loop].min.x()) &&

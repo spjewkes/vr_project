@@ -221,7 +221,7 @@ void check_instance(struct instance *ptr, int no_rows)
 		/* print the style number */
 		printf("\nStyle number:\t%d", ptr[loop1].style);
 		/* print whether the object is to be solid or not */
-		printf("\nSolid?:\t%d", ptr[loop1].solid);
+		printf("\nSolid?:\t%d", ptr[loop1].is_solid);
 		/* print the outcome string */
 		printf("\nOutcome string:\t>>%s<<", ptr[loop1].outcome.c_str());
 		printf("\n----------------\n");
