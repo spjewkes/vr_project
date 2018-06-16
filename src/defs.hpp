@@ -79,8 +79,8 @@ struct instance
 
 	std::vector<Vector3d> vert;
 
-	int *edge_colour;
-	int *poly_colour;
+	std::vector<unsigned int> edge_colour;
+	std::vector<unsigned int> poly_colour;
 
 	int style;
 	int solid;

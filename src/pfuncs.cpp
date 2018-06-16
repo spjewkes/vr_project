@@ -372,13 +372,8 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 	no_polygons = masterptr[instanceptr[instance_no].master_no].no_polygons;
 
 	/* create the arrays that will hold the colour values */
-	instanceptr[instance_no].edge_colour = (int *) malloc(sizeof(int) * no_edges);
-	instanceptr[instance_no].poly_colour = (int *) malloc(sizeof(int) * no_polygons);
-
-	/* check that the system did actually allocate some memory */
-	if ((instanceptr[instance_no].edge_colour == NULL) ||
-		(instanceptr[instance_no].poly_colour == NULL))
-		return(error("0048", "Error allocating memory", lincnt));
+	instanceptr[instance_no].edge_colour.resize(no_edges);
+	instanceptr[instance_no].poly_colour.resize(no_polygons);
 
 	/* now fill the edge array with colour values */
 	for (loop = 0; loop < no_edges; loop++)

@@ -429,7 +429,7 @@ int process_verts(struct master* masterptr, int no_vertices, int object_no)
 int process_edges(struct master* masterptr, int no_edges, int object_no)
 {
 	int RESULT = OKAY;
-	int loop, edge_no, tmp;
+	int loop, edge_no;
 	int *edge0, *edge1;
 
 	/* first we create the edge data structures */
@@ -455,26 +455,26 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 			RESULT = error("0006", "Missing assignment symbol", lincnt);
 
 		/* now we get the start and end vertices of the edge */
-		tmp = getnum();
+		size_t edge_val = getnum();
 
 		/* now make sure that it is a valid vertex reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].vert.size()))
+		if ((edge_val < 1) || (edge_val > masterptr[object_no].vert.size()))
 			RESULT = error("0050", "Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		edge0[edge_no-1] = tmp - 1;
+		edge0[edge_no-1] = edge_val - 1;
 
 		if (check(",") != OKAY)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
 
-		tmp = getnum();
+		edge_val = getnum();
 
 		/* now make sure that it is a valid vertex reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].vert.size()))
+		if ((edge_val < 1) || (edge_val > masterptr[object_no].vert.size()))
 			RESULT = error("0050", "Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		edge1[edge_no-1] = tmp - 1;
+		edge1[edge_no-1] = edge_val - 1;
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != BLANK)

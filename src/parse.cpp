@@ -239,16 +239,11 @@ void Parser::remove_instance()
 	{
 		for (loop = 0; loop < no_instances; loop++)
 		{
-			/* free the arrays of colour values for edges and polygons */
-			if (instanceptr[loop].edge_colour != NULL)
-				free(instanceptr[loop].edge_colour);
-			if (instanceptr[loop].poly_colour != NULL)
-				free(instanceptr[loop].poly_colour);
-
 			/* free the outcome string */
 			if (instanceptr[loop].outcome != NULL)
 				free(instanceptr[loop].outcome);
 		}
+
 		/* now free the instance array structure completely */
 		free(instanceptr);
 	}
