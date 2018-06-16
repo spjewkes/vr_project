@@ -202,7 +202,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 		master_no = iptr[tmp].master_no;
 
 		/* now we check whether to draw the image as a wireframe or solid */
-		if (iptr[tmp].style == WFRAME)
+		if (iptr[tmp].style == RenderStyle::WIREFRAME)
 		{
 			for (loop2 = 0; loop2 < mptr[master_no].no_edges; loop2++)
 			{
@@ -232,7 +232,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 				}
 			}
 		}
-		else if (iptr[tmp].style == SOLID)
+		else if (iptr[tmp].style == RenderStyle::SOLID)
 		{
 			/* now let's examine the three edges */
 			for(loop2 = 0; loop2 < mptr[master_no].no_polygons; loop2++)

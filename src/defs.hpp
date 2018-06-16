@@ -28,13 +28,19 @@
 
 #define EVER (;;)
 
-#define SOLID  (0)
-#define WFRAME (1)
-
 #define MOVE_SPEED (25.0f)
 
 /* External variables */
 extern int lincnt, lineptr;
+
+//
+// Define object's render style
+//
+enum RenderStyle
+{
+	SOLID,
+	WIREFRAME
+};
 
 /*************************
 * Define Keyboard events *
@@ -83,7 +89,7 @@ struct instance
 	std::vector<unsigned int> edge_colour;
 	std::vector<unsigned int> poly_colour;
 
-	int style;
+	RenderStyle style;
 	int solid;
 
 	std::string outcome;

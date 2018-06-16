@@ -22,7 +22,6 @@
 int process_radius(float *radius);
 int process_colour(int *colour);
 int process_specularity(float *specularity);
-int process_style(int *style);
 int process_sky(int *colour);
 int process_ground(int *colour);
 
@@ -341,7 +340,7 @@ bool process_outcome(std::string &outcome)
 * process_style() - process the command which defines the instance object's *
 *                   style                                                   *
 ****************************************************************************/
-int process_style(int *style)
+int process_style(RenderStyle &style)
 {
 	int RESULT = OKAY;
 	char word[MAXLINE];
@@ -354,9 +353,9 @@ int process_style(int *style)
 	getword(word);
 
 	if (strcmp(word, "SOLID") == EQUAL)
-		*style = SOLID;
+		style = RenderStyle::SOLID;
 	else if (strcmp(word, "WIREFRAME") == EQUAL)
-		*style = WFRAME;
+		style = RenderStyle::WIREFRAME;
 	else
 		RESULT = error("0036", "Unknown style type", lincnt);
 

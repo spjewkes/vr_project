@@ -157,7 +157,7 @@ int Parser::init_instance()
 		/* default master no should be set to 0 (this will be changed though */
 		instanceptr[loop].master_no = 0;
 		/* set the default style of the object to wlreframe */
-		instanceptr[loop].style = WFRAME;
+		instanceptr[loop].style = RenderStyle::WIREFRAME;
 		/* set the default solidity of the object to false */
 		instanceptr[loop].solid = FALSE;
 		/* set up the default outcome string */
@@ -714,7 +714,7 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 {
 	char word[MAXLINE] ;
 	float specularity;
-	int colour, style;
+	int colour;
 
 	/* set the angles, scales and locations defaults */
 	Vector3d loc;
@@ -764,11 +764,9 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 		else if (strcmp(word, "style") == EQUAL)
 		{
 			/* get the instance style from the file */
-			if (process_style(&style) == ERROR)
+			if (process_style(instanceptr[instance_pos].style) == ERROR)
 				return (ERROR);
 			*style_set = TRUE;
-			/* fill the instance style value into the instance structure */
-			instanceptr[instance_pos].style = style;
 		}
 		else if (strcmp(word, "outcome") == EQUAL)
 		{
