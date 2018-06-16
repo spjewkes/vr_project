@@ -31,7 +31,7 @@ private:
 	int check_object_values(int object_no, int object_pos, int no_objects);
 	int process_object_definition(int object_no);
 	int process_object_instances(int no_instances, int no_objects);
-	int check_instance_values(int *col_set, int *spec_set, int *style_set, int instance_pos, int no_instances, int master_no);
+	int check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no);
 
 	// for telling whether the master objects have been defined yet
 	bool masterdef_processed;

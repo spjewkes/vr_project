@@ -110,10 +110,10 @@ int collision(float pntx, float pnty, float pntz, struct instance *instanceptr, 
 * check col() - checks to see if the location is not inside any objects     *
 *               boundary boxes                                              *
 ****************************************************************************/
-int check_col(float locx, float locy, float locz, struct instance *instanceptr, int no_instances, struct viewer user)
+bool check_col(float locx, float locy, float locz, struct instance *instanceptr, int no_instances, struct viewer user)
 {
 	int loop;
-	int RESULT = OKAY;
+	bool collide = false;
 
 	for (loop = 0; loop < no_instances; loop++)
 	{
@@ -132,9 +132,10 @@ int check_col(float locx, float locy, float locz, struct instance *instanceptr, 
 				start_blip();
 				play_blip();
 				stop_blip();
-				return(FALSE);
+				collide = true;
+				break;
 			}
 		}
 	}
-	return(RESULT);
+	return collide;
 }

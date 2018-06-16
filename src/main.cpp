@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz - (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
+				if (!check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz + (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
+				if (!check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's posltion */
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
 				/* slide left */
 				locz = locz - (move * sin(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
+				if (!check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
 				/* slide right */
 				locz = locz + (move * sin(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
-				if (check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()) == OKAY)
+				if (!check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()))
 				{
 					/* if user hasn't colllded wlth an object instance
 					   then update the user's position */

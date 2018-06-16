@@ -25,8 +25,8 @@
 /************************************
 * forward declaration of prototypes *
 ************************************/
-int clip3d(float *xs, float *ys, float *zs,
-		   float *xe, float *ye, float *ze, float minz);
+bool clip3d(float *xs, float *ys, float *zs,
+			float *xe, float *ye, float *ze, float minz);
 int clip3dpara(float pre_array[][3], float post_array[][3], float minz);
 
 /****************************************************************************
@@ -218,7 +218,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 				y2 = store[edge1][Y];
 				z2 = store[edge1][Z];
 				/* set up the values ready for clipping */
-				if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin) == TRUE)
+				if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin))
 				{
 					/* project onto a 2D monitor */
 					x1 = (((x1*-1.0)/z1) * midx) + midx;
@@ -364,12 +364,10 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 * clipt() - function is based on pseudo code in Foley and van Dam book page *
 *           122                                                             *
 ****************************************************************************/
-int clipt(float denom, float num, float *tE, float *tL)
+bool clipt(float denom, float num, float *tE, float *tL)
 {
 	float t;
-	int accept;
-
-	accept = TRUE;
+	bool accept = true;
 
 	/* PE intersection */
 	if (denom > 0.0)
@@ -379,7 +377,7 @@ int clipt(float denom, float num, float *tE, float *tL)
 		if (t > *tL)
 		{
 			/* if tE and tL crossover then prepare to reject line */
-			accept = FALSE;
+			accept = false;
 		}
 		else if (t > *tE)
 		{
@@ -395,7 +393,7 @@ int clipt(float denom, float num, float *tE, float *tL)
 		if (t < *tE)
 		{
 			/* if tE and tL crossover then prepare to reject the line */
-			accept = FALSE;
+			accept = false;
 		}
 		else if (t < *tL)
 		{
@@ -408,11 +406,11 @@ int clipt(float denom, float num, float *tE, float *tL)
 		if (num > 0.0)
 		{
 			/* line is outside of edge */
-			accept = FALSE;
+			accept = false;
 		}
 	}
 	/* return value of accept */
-	return (accept);
+	return accept;
 }
 
 /*****************************************************************************
@@ -444,7 +442,7 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
 		tmax = 1.0;
 
 		/* now clip edge with the front plane */
-		if (clipt(0.0-dz, pre_array[loop][2]-minz, &tmin, &tmax) == TRUE)
+		if (clipt(0.0-dz, pre_array[loop][2]-minz, &tmin, &tmax))
 		{
 			/* edge is visible and has now been clipped */
 			/* if endpoint 0 (t=0) is not in the region */
@@ -495,47 +493,46 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
 *            this function is for a canonical perspective-projection        *
 *            viewing volume                                                 *
 ****************************************************************************/
-int clip3d(float *xs, float *ys, float *zs,
-		   float *xe, float *ye, float *ze, float minz)
+bool clip3d(float *xs, float *ys, float *zs,
+			float *xe, float *ye, float *ze, float minz)
 {
 	float tmin, tmax;
 	float dx, dy, dz;
-	int accept;
+	bool accept = false;
 
 	/* assume initially that none of the line is visible */
-	accept = FALSE;
 	tmin = 0.0;
 	tmax = 1.0;
 	dx = *xe - *xs;
 	dz = *ze - *zs;
 
-	if (clipt(-dx-dz, *xs+*zs, &tmin, &tmax) == TRUE)
+	if (clipt(-dx-dz, *xs+*zs, &tmin, &tmax))
 	{
 		/* right side */
-		if (clipt(dx-dz, -*xs+*zs, &tmin, &tmax) == TRUE)
+		if (clipt(dx-dz, -*xs+*zs, &tmin, &tmax))
 		{
 			/* left side */
 			/* if we get this far then part of the line is in -z<=x<=z */
 			dy = *ye - *ys;
-			if (clipt(dy-dz, -*ys+*zs, &tmin, &tmax) == TRUE)
+			if (clipt(dy-dz, -*ys+*zs, &tmin, &tmax))
 			{
 				/* bottom part */
-				if (clipt(-dy-dz, *ys+*zs, &tmin, &tmax) == TRUE)
+				if (clipt(-dy-dz, *ys+*zs, &tmin, &tmax))
 				{
 					/* top part */
 					/* if we get this far then part of the line
 					   is visible in: */
 					/* -z<=x<=z, -z<=y<=z */
-					if (clipt(-dz, *zs-minz, &tmin, &tmax) == TRUE)
+					if (clipt(-dz, *zs-minz, &tmin, &tmax))
 					{
 						/* front plane */
-						if (clipt(dz, -*zs-400.0, &tmin, &tmax) == TRUE)
+						if (clipt(dz, -*zs-400.0, &tmin, &tmax))
 						{
 							/* back plane */
 							/* if we get this far then part of */
 							/* the line is visible in: */
 							/* -z<=x<=z, -z<=y<=z, -l<=z<=zmin */
-							accept = TRUE;
+							accept = true;
 							/* part of the line is visible */
 							/* if endpoint 1 (t=1) is not in the region */
 							/* then compute the intersection */

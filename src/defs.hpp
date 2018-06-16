@@ -7,9 +7,6 @@
 
 #define RADCONST (57.295779513082321)
 
-#define FALSE (0)
-#define TRUE  (!FALSE)
-
 #define TEST  (1)
 #define FINAL (2)
 

@@ -661,15 +661,14 @@ int Parser::process_object_instances(int no_instances, int no_objects)
 {
 	int loop, master_no;
 	int RESULT = OKAY;
-	int col_set, spec_set, style_set;
 
 	debug("process_object_instances()", 1);
 
 	for (loop = 0; loop < no_instances; loop++)
 	{
-		col_set = FALSE;
-		spec_set = FALSE;
-		style_set = FALSE;
+		bool col_set = false;
+		bool spec_set = false;
+		bool style_set = false;
 
 		/* check for the master no command */
 		if (check("master_no") != OKAY)
@@ -693,14 +692,14 @@ int Parser::process_object_instances(int no_instances, int no_objects)
 		/* now get any other commands for that instance */
 		/* take one away from master no because that's the way they are */
 		/* stored in the master array */
-		if (check_instance_values(&col_set, &spec_set, &style_set,
+		if (check_instance_values(col_set, spec_set, style_set,
 								  loop, no_instances, master_no-1) != OKAY)
 			RESULT = ERROR;
 		/* make sure that colour, specularity & style have been specified */
-		if ((col_set == FALSE) ||
-			(spec_set == FALSE) ||
-			(style_set == FALSE))
+		if (!col_set || !spec_set || !style_set)
+		{
 			RESULT = error("0030", "Either colour, specularity or style has not been set", lincnt);
+		}
 	}
 
 	return (RESULT);
@@ -710,7 +709,7 @@ int Parser::process_object_instances(int no_instances, int no_objects)
 * check_instance_values() - process the optional and required commands for  *
 *                                  an instance of an object                 *
 ****************************************************************************/
-int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, int instance_pos, int no_instances, int master_no)
+int Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no)
 {
 	char word[MAXLINE] ;
 	float specularity;
@@ -752,21 +751,21 @@ int Parser::check_instance_values(int *col_set, int *spec_set, int *style_set, i
 			/* process the colour value */
 			if (process_colour(&colour) == ERROR)
 				return (ERROR);
-			*col_set = TRUE;
+			col_set = true;
 		}
 		else if (strcmp(word, "specularity") == EQUAL)
 		{
 			/* process the specularity value */
 			if (process_specularity(&specularity) == ERROR)
 				return (ERROR);
-			*spec_set = TRUE;
+			spec_set = true;
 		}
 		else if (strcmp(word, "style") == EQUAL)
 		{
 			/* get the instance style from the file */
 			if (process_style(instanceptr[instance_pos].style) == ERROR)
 				return (ERROR);
-			*style_set = TRUE;
+			style_set = true;
 		}
 		else if (strcmp(word, "outcome") == EQUAL)
 		{

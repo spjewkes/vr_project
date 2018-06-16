@@ -40,7 +40,8 @@ void program(int instance, struct instance *ptr)
 	char path[MAXLINE];
 	char *array[MAXARG];
 	char *chptr;
-	int loop, flag, inparam;
+	int loop, flag;
+	bool inparam = false;
 
 	/* point to the start of the array */
 	chptr = path;
@@ -86,6 +87,8 @@ void program(int instance, struct instance *ptr)
 
 				/* set flag to zero and start processing string */
 				flag = 0;
+				inparam = false;
+				
 				/* now we want to loop to pick up more parameters */
 				while (flag == 0)
 				{
@@ -93,8 +96,10 @@ void program(int instance, struct instance *ptr)
 					{
 					case '\0':
 						/* the end of the array of characters */
-						if (inparam == FALSE)
+						if (!inparam)
+						{
 							array[loop] = NULL;
+						}
 
 						/* terminate string */
 						*chptr++ = '\0';
@@ -105,7 +110,7 @@ void program(int instance, struct instance *ptr)
 					case ' ':
 					case '\t':
 						/* end of a parameter */
-						inparam = FALSE;
+						inparam = false;
 						/* terminate the string */
 						*chptr++ = '\0';
 						/* end this for..loop */
@@ -114,7 +119,7 @@ void program(int instance, struct instance *ptr)
 
 					default:
 						/* we're in a parameter */
-						inparam = TRUE;
+						inparam = true;
 						/* increment pointer */
 						chptr++;
 						break;
