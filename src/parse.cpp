@@ -108,8 +108,6 @@ int Parser::init_master()
 		masterptr[loop].angle.x(0.0);
 		masterptr[loop].angle.y(0.0);
 		masterptr[loop].angle.z(0.0);
-		/* set all the object's vertices, edges and polygons to 0 */
-		masterptr[loop].no_polygons = 0;
 	}
 
 	return (OKAY);
@@ -191,26 +189,13 @@ void Parser::init_user()
 ***************************************************************************/
 void Parser::remove_master()
 {
-	int loop;
-
 	debug("remove_master()", 1);
 
 	if (masterptr == NULL)
 		warn("0003", "Nothing in memory to free", 0);
 	else
 	{
-		for (loop = 0; loop < no_masters; loop++)
-		{
-			/* free the polygons array */
-			if (masterptr[loop].no_polygons > 0)
-			{
-				free(masterptr[loop].poly0);
-				free(masterptr[loop].poly1);
-				free(masterptr[loop].poly2);
-			}
-		}
-
-		/* now free the master array completely */
+		/* free the master array completely */
 		free(masterptr);
 	}
 }
@@ -618,13 +603,11 @@ int Parser::process_object_definition(int object_no)
 	if (check("=") != OKAY)
 		RESULT = error("0006", "Missing assignment symbol", lincnt);
 
-	if ( (no_poly = getnum() ) == ERROR)
+	if ((no_poly = getnum() ) == ERROR)
 		RESULT = error("0007", "Cannot parse number", lincnt);
 
 	if (no_poly > 0)
 	{
-		/* set the no_polygons value in the master structure */
-		masterptr[object_no].no_polygons = no_poly;
 		/* get the values of the polygons */
 		RESULT = process_polys(masterptr, no_poly, object_no);
 	}

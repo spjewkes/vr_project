@@ -235,12 +235,12 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 		else if (iptr[tmp].style == RenderStyle::SOLID)
 		{
 			/* now let's examine the three edges */
-			for(loop2 = 0; loop2 < mptr[master_no].no_polygons; loop2++)
+			for(size_t i = 0; i < mptr[master_no].poly0.size(); i++)
 			{
 				/* get the three edges that build up the polygon */
-				poly_no[0] = mptr[master_no].poly0[loop2];
-				poly_no[1] = mptr[master_no].poly1[loop2];
-				poly_no[2] = mptr[master_no].poly2[loop2];
+				poly_no[0] = mptr[master_no].poly0[i];
+				poly_no[1] = mptr[master_no].poly1[i];
+				poly_no[2] = mptr[master_no].poly2[i];
 
 				/* before we go any further let's make
 				   sure the polygon is visible */
@@ -349,8 +349,9 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 						polyarray[polyptr++] = polyarray[Y];
 
 						no_points++;
+						
 						/* firstly set the colour */
-						setcolor(iptr[tmp].poly_colour[loop2]);
+						setcolor(iptr[tmp].poly_colour[i]);
 						/* now draw the polygon */
 						fillpoly(no_points, polyarray);
 					}

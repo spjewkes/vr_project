@@ -105,8 +105,9 @@ struct master
 	std::vector<unsigned int> edge0;
 	std::vector<unsigned int> edge1;
 
-	int no_polygons;
-	int *poly0, *poly1, *poly2;
+	std::vector<unsigned int> poly0;
+	std::vector<unsigned int> poly1;
+	std::vector<unsigned int> poly2;
 };
 
 #endif // __DEFS_HPP__

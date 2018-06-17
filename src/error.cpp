@@ -108,7 +108,7 @@ void debug(const char *string, int level)
 *****************************************************************************/
 void check_master(struct master *ptr, int no_rows)
 {
-	int loop1, loop2;
+	int loop1;
 	debug ("check_master()", 1);
 
 	printf("\nThere are %d master(s).\n", no_rows);
@@ -128,11 +128,13 @@ void check_master(struct master *ptr, int no_rows)
 		printf("\tAngle Z:  %f", ptr[loop1].angle.z());
 		/* print the number of vertices that build up the object */
 		printf("\nNumber of vertices:\t%lu", ptr[loop1].vert.size());
+
+		int i = 0;
 		/* now list the coordinate values that built up the object */
 		for (auto vertex : ptr[loop1].vert)
 		{
 			/* print the vertex number */
-			printf("\nVertex number:\t%d", loop2);
+			printf("\nVertex number:\t%d", i++);
 			/* list the vertex values */
 			printf("\n%f, ", vertex.x());
 			printf(" %f,", vertex.y());
@@ -150,16 +152,16 @@ void check_master(struct master *ptr, int no_rows)
 			printf("\nVertex two: %d", ptr[loop1].edge1[i]);
 		}
 		/* print the number of polygons that build up the object */
-		printf ("\nNumber of polygons: \t%d", ptr[loop1].no_polygons);
+		printf ("\nNumber of polygons: \t%lu", ptr[loop1].poly0.size());
 		/* now list the edges that make up the polygon */
-		for (loop2 = 0; loop2 < ptr[loop1].no_polygons; loop2++)
+		for (size_t i = 0; i < ptr[loop1].poly0.size(); i++)
 		{
 			/* print the polygon number */
-			printf("\nPolygon number: \t%d", loop2);
+			printf("\nPolygon number: \t%zu", i);
 			/* list the edges that make up the polygon */
-			printf("\nEdge one: %d", ptr[loop1].poly0[loop2]);
-			printf("\nEdge two: %d", ptr[loop1].poly1[loop2]);
-			printf("\nEdge three: %d", ptr[loop1].poly2[loop2]);
+			printf("\nEdge one: %d", ptr[loop1].poly0[i]);
+			printf("\nEdge two: %d", ptr[loop1].poly1[i]);
+			printf("\nEdge three: %d", ptr[loop1].poly2[i]);
 		}
 		printf("\n---------------------\n");
 	}

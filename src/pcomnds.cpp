@@ -474,16 +474,11 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 	int RESULT = OKAY;
 	int loop, poly_no;
 	unsigned int tmp;
-	int *poly0, *poly1, *poly2;
 
 	/* first we create the polygon data structures */
-	poly0 = (int *) malloc(sizeof(int) * no_polygons);
-	poly1 = (int *) malloc(sizeof(int) * no_polygons);
-	poly2 = (int *) malloc(sizeof(int) * no_polygons);
-
-	/* now check there was no problem in memory allocation */
-	if ((poly0 == NULL) || (poly1 == NULL) || (poly2 == NULL))
-		return (error("0048", "Error allocating memory", lincnt));
+	masterptr[object_no].poly0.resize(no_polygons);
+	masterptr[object_no].poly1.resize(no_polygons);
+	masterptr[object_no].poly2.resize(no_polygons);
 
 	for (loop = 0; loop < no_polygons; loop++)
 	{
@@ -508,7 +503,7 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		poly0[poly_no-1] = tmp - 1;
+		masterptr[object_no].poly0[poly_no-1] = tmp - 1;
 
 		if (check(",") != OKAY)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
@@ -521,8 +516,8 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		poly1[poly_no-1] = tmp - 1;
-
+		masterptr[object_no].poly1[poly_no-1] = tmp - 1;
+		
 		if (check(",") != OKAY)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
 
@@ -534,17 +529,12 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		poly2[poly_no-1] = tmp - 1;
+		masterptr[object_no].poly2[poly_no-1] = tmp - 1;
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != BLANK)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
 	}
 
-	/* set the memory holding the vertices into the master structure */
-	masterptr[object_no].poly0 = poly0;
-	masterptr[object_no].poly1 = poly1;
-	masterptr[object_no].poly2 = poly2;
-
-	return(RESULT);
+	return RESULT;
 }

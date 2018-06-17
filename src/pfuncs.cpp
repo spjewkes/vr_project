@@ -369,7 +369,7 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 	float A,B,C,D, normal, hyp, adj, cos_theta, kd;
 
 	no_edges = masterptr[instanceptr[instance_no].master_no].edge0.size();
-	no_polygons = masterptr[instanceptr[instance_no].master_no].no_polygons;
+	no_polygons = masterptr[instanceptr[instance_no].master_no].poly0.size();
 
 	/* create the arrays that will hold the colour values */
 	instanceptr[instance_no].edge_colour.resize(no_edges);
