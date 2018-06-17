@@ -139,15 +139,15 @@ void check_master(struct master *ptr, int no_rows)
 			printf(" %f", vertex.z());
 		}
 		/* print the number of edges that build up the object */
-		printf("\nNumber of edges:\t%d", ptr[loop1].no_edges);
+		printf("\nNumber of edges:\t%lu", ptr[loop1].edge0.size());
 		/* now list the vertices that make up the edges */
-		for (loop2 = 0; loop2 < ptr[loop1].no_edges; loop2++)
+		for (size_t i = 0; i < ptr[loop1].edge0.size(); i++)
 		{
 			/* print the edge number */
-			printf("\nEdge number: \t%d", loop2);
+			printf("\nEdge number: \t%zu", i);
 			/* list the vertices that make up the edge */
-			printf("\nVertex one: %d", ptr[loop1].edge0[loop2]);
-			printf("\nVertex two: %d", ptr[loop1].edge1[loop2]);
+			printf("\nVertex one: %d", ptr[loop1].edge0[i]);
+			printf("\nVertex two: %d", ptr[loop1].edge1[i]);
 		}
 		/* print the number of polygons that build up the object */
 		printf ("\nNumber of polygons: \t%d", ptr[loop1].no_polygons);

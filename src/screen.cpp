@@ -204,11 +204,11 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 		/* now we check whether to draw the image as a wireframe or solid */
 		if (iptr[tmp].style == RenderStyle::WIREFRAME)
 		{
-			for (loop2 = 0; loop2 < mptr[master_no].no_edges; loop2++)
+			for (size_t i = 0; i < mptr[master_no].edge0.size(); i++)
 			{
 				/* get the value of the start and ends of the edges */
-				edge0 = mptr[master_no].edge0[loop2];
-				edge1 = mptr[master_no].edge1[loop2];
+				edge0 = mptr[master_no].edge0[i];
+				edge1 = mptr[master_no].edge1[i];
 				/* get the first vertex of the edge */
 				x1 = store[edge0][X];
 				y1 = store[edge0][Y];
@@ -226,7 +226,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 					x2 = (((x2*-1.0)/z2) * midx) + midx;
 					y2 = (((y2*-1.0)/z2) * midy) + midy;
 					/* set its colour */
-					setcolor(iptr[tmp].edge_colour[loop2]);
+					setcolor(iptr[tmp].edge_colour[i]);
 					/* draw line if it's in the viewing volume */
 					line(x1, y1, x2, y2);
 				}

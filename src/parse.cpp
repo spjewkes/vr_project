@@ -109,7 +109,6 @@ int Parser::init_master()
 		masterptr[loop].angle.y(0.0);
 		masterptr[loop].angle.z(0.0);
 		/* set all the object's vertices, edges and polygons to 0 */
-		masterptr[loop].no_edges = 0;
 		masterptr[loop].no_polygons = 0;
 	}
 
@@ -202,13 +201,6 @@ void Parser::remove_master()
 	{
 		for (loop = 0; loop < no_masters; loop++)
 		{
-			/* free the edges array */
-			if (masterptr[loop].no_edges > 0)
-			{
-				free(masterptr[loop].edge0);
-				free(masterptr[loop].edge1);
-			}
-
 			/* free the polygons array */
 			if (masterptr[loop].no_polygons > 0)
 			{
@@ -608,8 +600,6 @@ int Parser::process_object_definition(int object_no)
 
 	if (no_edge > 0)
 	{
-		/* set the no_edges value in the master structure */
-		masterptr[object_no].no_edges = no_edge;
 		/* get the values of the edges */
 		RESULT = process_edges(masterptr, no_edge, object_no);
 	}

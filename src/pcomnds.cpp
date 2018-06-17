@@ -416,14 +416,10 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 {
 	int RESULT = OKAY;
 	int loop, edge_no;
-	int *edge0, *edge1;
 
 	/* first we create the edge data structures */
-	edge0 = (int *) malloc(sizeof(int) * no_edges);
-	edge1 = (int *) malloc(sizeof(int) * no_edges);
-	/* now check there was no problem in memory allocation */
-	if ((edge0 == NULL) || (edge1 == NULL))
-		return(error("0048", "Error allocating memory", lincnt));
+	masterptr[object_no].edge0.resize(no_edges);
+	masterptr[object_no].edge1.resize(no_edges);
 
 	for (loop = 0; loop < no_edges; loop++)
 	{
@@ -448,7 +444,7 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 			RESULT = error("0050", "Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		edge0[edge_no-1] = edge_val - 1;
+		masterptr[object_no].edge0[edge_no-1] = edge_val - 1;
 
 		if (check(",") != OKAY)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
@@ -460,16 +456,12 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 			RESULT = error("0050", "Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		edge1[edge_no-1] = edge_val - 1;
+		masterptr[object_no].edge1[edge_no-1] = edge_val - 1;
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != BLANK)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
 	}
-
-	/* set the memory holding the vertices into the master structure */
-	masterptr[object_no].edge0 = edge0;
-	masterptr[object_no].edge1 = edge1;
 
 	return (RESULT);
 }
@@ -480,7 +472,8 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 int process_polys(struct master* masterptr, int no_polygons, int object_no)
 {
 	int RESULT = OKAY;
-	int loop, poly_no, tmp;
+	int loop, poly_no;
+	unsigned int tmp;
 	int *poly0, *poly1, *poly2;
 
 	/* first we create the polygon data structures */
@@ -511,7 +504,7 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].no_edges))
+		if ((tmp < 1) || (tmp > masterptr[object_no].edge0.size()))
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
@@ -524,7 +517,7 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].no_edges))
+		if ((tmp < 1) || (tmp > masterptr[object_no].edge0.size()))
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
@@ -537,7 +530,7 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].no_edges))
+		if ((tmp < 1) || (tmp > masterptr[object_no].edge0.size()))
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */

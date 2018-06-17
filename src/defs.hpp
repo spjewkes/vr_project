@@ -102,8 +102,8 @@ struct master
 
 	std::vector<Vector3d> vert;
 
-	int no_edges;
-	int *edge0, *edge1;
+	std::vector<unsigned int> edge0;
+	std::vector<unsigned int> edge1;
 
 	int no_polygons;
 	int *poly0, *poly1, *poly2;
