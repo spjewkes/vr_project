@@ -1,6 +1,8 @@
 #ifndef __PARSE_HPP__
 #define __PARSE_HPP__
 
+#include "defs.hpp"
+
 class Parser
 {
 public:
@@ -9,19 +11,17 @@ public:
 
 	int parse(char *filename);
 
-	int num_masters() const { return no_masters; }
-	int num_instances() const { return no_instances; }
+	int num_masters() const { return masters.size(); }
+	int num_instances() const { return instances.size(); }
 
-	struct master* master_ptr() const { return masterptr; }
-	struct instance* instance_ptr() const { return instanceptr; }
-	struct viewer& get_user() { return user; }
+	master* master_ptr() const { return const_cast<master *>(&masters[0]); }
+	instance* instance_ptr() const { return const_cast<instance *>(&instances[0]); }
+	viewer& get_user() { return user; }
 
 private:
-	int init_master();
-	int init_instance();
+	int init_master(int no_masters);
+	int init_instance(int no_instances);
 	void init_user();
-	void remove_master();
-	void remove_instance();
 
 	int process(void);
 	int process_master(void);
@@ -36,12 +36,9 @@ private:
 	// for telling whether the master objects have been defined yet
 	bool masterdef_processed;
 
-	int no_masters;
-	int no_instances;
-
-	struct master *masterptr;
-	struct instance *instanceptr;
-	struct viewer user;
+	std::vector<master> masters;
+	std::vector<instance> instances;
+	viewer user;
 };
 
 #endif // __PARSE_HPP__
