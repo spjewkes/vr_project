@@ -93,7 +93,7 @@ int Parser::init_master()
 	debug("init_master()", 1);
 
 	/* create the space required for the master objects */
-	masterptr = (struct master *) malloc(sizeof(struct master) * no_masters);
+	masterptr = new master[no_masters];
 
 	if (masterptr == NULL)
 		return(error("O043", "Cannot allocate memory", 0));
@@ -124,7 +124,7 @@ int Parser::init_instance()
 	debug("init_instance()", 1);
 
 	/* create the space required to store the instance objects */
-	instanceptr = (struct instance *) malloc(sizeof(struct instance) * no_instances);
+	instanceptr = new instance[no_instances];
 
 	if (instanceptr == NULL)
 		return(error("0043", "Cannot allocate memory", 0));
@@ -196,7 +196,7 @@ void Parser::remove_master()
 	else
 	{
 		/* free the master array completely */
-		free(masterptr);
+		delete [] masterptr;
 	}
 }
 
@@ -213,7 +213,7 @@ void Parser::remove_instance()
 	else
 	{
 		/* now free the instance array structure completely */
-		free(instanceptr);
+		delete [] instanceptr;
 	}
 }
 
