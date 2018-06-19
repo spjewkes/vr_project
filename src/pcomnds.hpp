@@ -14,9 +14,9 @@ int process_colour(int *colour);
 int process_specularity(float *specularity);
 bool process_outcome(std::string &outcome);
 int process_style(RenderStyle &style);
-int process_verts(struct master *masterptr, int no_vertices, int object_no);
-int process_edges(struct master *masterptr, int no_edges, int object_no);
-int process_polys(struct master *masterptr, int no_polygons, int object_no);
+int process_verts(master &mast, int no_vertices);
+int process_edges(master &mast, int no_edges);
+int process_polys(master &mast, int no_polygons);
 int process_sky(int *colour);
 int process_ground(int *colour);
 

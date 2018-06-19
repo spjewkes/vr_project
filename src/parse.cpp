@@ -85,9 +85,9 @@ int Parser::init_master(int no_masters)
 	debug("init_master()", 1);
 
 	/* create the space required for the master objects */
-	masters.resize(no_masters);
+	m_masters.resize(no_masters);
 
-	for (auto &mast : masters)
+	for (auto &mast : m_masters)
 	{
 		/* set all the object's scales to 1.0 */
 		mast.scale.x(1.0);
@@ -111,9 +111,9 @@ int Parser::init_instance(int no_instances)
 	debug("init_instance()", 1);
 
 	/* create the space required to store the instance objects */
-	instances.resize(no_instances);
+	m_instances.resize(no_instances);
 
-	for (auto &inst : instances)
+	for (auto &inst : m_instances)
 	{
 		/* set the initial location of all the objects to 0 */
 		inst.pos.x(0.0);
@@ -154,18 +154,18 @@ void Parser::init_user()
 {
 	debug("init_user()", 1);
 
-	user.loc.x(0.0);
-	user.loc.y(0.0);
-	user.loc.z(0.0);
+	m_user.loc.x(0.0);
+	m_user.loc.y(0.0);
+	m_user.loc.z(0.0);
 
-	user.ang.x(0.0);
-	user.ang.y(0.0);
-	user.ang.z(0.0);
+	m_user.ang.x(0.0);
+	m_user.ang.y(0.0);
+	m_user.ang.z(0.0);
 
-	user.radius = 1.0;
+	m_user.radius = 1.0;
 
-	user.sky = 0;
-	user.ground = 0;
+	m_user.sky = 0;
+	m_user.ground = 0;
 }
 
 /****************************************************************************
@@ -293,7 +293,7 @@ int Parser::process_instance(void)
 			return (ERROR);
 		skip_garbage();
 		/* process the instance objects */
-		if (process_object_instances(instances.size(), masters.size()) != OKAY)
+		if (process_object_instances(m_instances.size(), m_masters.size()) != OKAY)
 			RESULT = error("0013", "Error with instance object definitions", lincnt);
 	}
 	else if (no_instances < 0)
@@ -341,31 +341,31 @@ int Parser::process_user(void)
 		if (strcmp(word, "location") == EQUAL)
 		{
 			/* location command */
-			if (process_location(user.loc) == ERROR)
+			if (process_location(m_user.loc) == ERROR)
 				return (ERROR);
 		}
 		else if (strcmp(word, "direction") == EQUAL)
 		{
 			/* direction command */
-			if (process_direction(user.ang) == ERROR)
+			if (process_direction(m_user.ang) == ERROR)
 				return (ERROR);
 		}
 		else if (strcmp (word, "radius") == EQUAL)
 		{
 			/* radius command */
-			if (process_radius(&user.radius) == ERROR)
+			if (process_radius(&m_user.radius) == ERROR)
 				return (ERROR);
 		}
 		else if (strcmp(word, "sky") == EQUAL)
 		{
 			/* sky command */
-			if (process_sky(&user.sky) == ERROR)
+			if (process_sky(&m_user.sky) == ERROR)
 				return (ERROR);
 		}
 		else if (strcmp(word, "ground") == EQUAL)
 		{
 			/* ground command */
-			if (process_ground(&user.ground) == ERROR)
+			if (process_ground(&m_user.ground) == ERROR)
 				return (ERROR);
 		}
 		else if (strcmp(word, ".end_userdefs") == EQUAL)
@@ -444,7 +444,7 @@ int Parser::check_object_values(int object_no, int object_pos, int no_objects)
 			if (process_angle(ang) == ERROR)
 				return(ERROR);
 			/* load master structure with angle values */
-			masters[object_no].angle = ang;
+			m_masters[object_no].angle = ang;
 		}
 		else if (strcmp(word, "scale") == EQUAL)
 		{
@@ -453,7 +453,7 @@ int Parser::check_object_values(int object_no, int object_pos, int no_objects)
 				return(ERROR);
 
 			/* fill master structure with scale values */
-			masters[object_no].scale = scl;
+			m_masters[object_no].scale = scl;
 		}
 		else if (strcmp(word, "master_no") == EQUAL)
 		{
@@ -510,10 +510,8 @@ int Parser::process_object_definition(int object_no)
 
 	if (no_vert > 0)
 	{
-		/* set the no_vertices value in the master structure */
-		masters[object_no].vert.resize(no_vert);
 		/* get the values of the vertices */
-		RESULT = process_verts(master_ptr(), no_vert, object_no);
+		RESULT = process_verts(m_masters[object_no], no_vert);
 	}
 	else if (no_vert < 0)
 	{
@@ -536,7 +534,7 @@ int Parser::process_object_definition(int object_no)
 	if (no_edge > 0)
 	{
 		/* get the values of the edges */
-		RESULT = process_edges(master_ptr(), no_edge, object_no);
+		RESULT = process_edges(m_masters[object_no], no_edge);
 	}
 	else if (no_edge < 0)
 	{
@@ -559,7 +557,7 @@ int Parser::process_object_definition(int object_no)
 	if (no_poly > 0)
 	{
 		/* get the values of the polygons */
-		RESULT = process_polys(master_ptr(), no_poly, object_no);
+		RESULT = process_polys(m_masters[object_no], no_poly);
 	}
 	else if (no_poly < 0)
 	{
@@ -608,7 +606,7 @@ int Parser::process_object_instances(int no_instances, int no_objects)
 
 		/* store the master no value in the instance */
 		/* take one away to-match internal format of master object references */
-		instances[loop].master_no = master_no - 1;
+		m_instances[loop].master_no = master_no - 1;
 
 		skip_garbage();
 
@@ -655,19 +653,19 @@ int Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set
 			if (process_location(loc) == ERROR)
 				return (ERROR);
 			/* fill instance location values into the instance structure */
-			instances[instance_pos].pos = loc;
+			m_instances[instance_pos].pos = loc;
 		}
 		else if (strcmp(word, "angle") == EQUAL)
 		{
 			if (process_angle(ang) == ERROR)
 				return (ERROR);
-			instances[instance_pos].angle = ang;
+			m_instances[instance_pos].angle = ang;
 		}
 		else if (strcmp(word, "scale") == EQUAL)
 		{
 			if (process_scale(scl) == ERROR)
 				return (ERROR);
-			instances[instance_pos].scale = scl;
+			m_instances[instance_pos].scale = scl;
 		}
 		else if (strcmp(word, "colour") == EQUAL)
 		{
@@ -686,24 +684,24 @@ int Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set
 		else if (strcmp(word, "style") == EQUAL)
 		{
 			/* get the instance style from the file */
-			if (process_style(instances[instance_pos].style) == ERROR)
+			if (process_style(m_instances[instance_pos].style) == ERROR)
 				return (ERROR);
 			style_set = true;
 		}
 		else if (strcmp(word, "outcome") == EQUAL)
 		{
-			if (!process_outcome(instances[instance_pos].outcome))
+			if (!process_outcome(m_instances[instance_pos].outcome))
 				return (ERROR);
 			/* now we should check whether we want
 			   the object to be solid or not */
-			if (instances[instance_pos].outcome == "")
-				instances[instance_pos].is_solid = false;
-			else if (instances[instance_pos].outcome == "ignore")
-				instances[instance_pos].is_solid = false;
-			else if (instances[instance_pos].outcome == "solid")
-				instances[instance_pos].is_solid = true;
+			if (m_instances[instance_pos].outcome == "")
+				m_instances[instance_pos].is_solid = false;
+			else if (m_instances[instance_pos].outcome == "ignore")
+				m_instances[instance_pos].is_solid = false;
+			else if (m_instances[instance_pos].outcome == "solid")
+				m_instances[instance_pos].is_solid = true;
 			else
-				instances[instance_pos].is_solid = true;
+				m_instances[instance_pos].is_solid = true;
 		}
 		else if (strcmp(word, "master_no") == EQUAL)
 		{
@@ -711,15 +709,14 @@ int Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set
 			{
 				lineptr = 0;
 				/* set up the instance of the master object */
-				if (create_object_instance(master_ptr(), instance_ptr(), instance_pos, master_no) == ERROR)
+				if (create_object_instance(m_masters[master_no], m_instances[instance_pos]) == ERROR)
 					return (ERROR);
 				/* translate the instance */
-				translation(instance_ptr(), instance_pos, loc.x(), loc.y(), loc.z());
+				translation(m_instances[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colours of the instances facets (polygons) */
-				if (set_colour(master_ptr(), instance_ptr(), instance_pos, master_no, colour, specularity) == ERROR)
-					return (ERROR);
+				set_colour(m_masters[master_no], m_instances[instance_pos], colour, specularity);
 				/* finially we set up the collision box around the object */
-				set_bound(instance_ptr(), instance_pos);
+				set_bound(m_instances[instance_pos]);
 				return (OKAY);
 			}
 			else
@@ -730,15 +727,14 @@ int Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set
 			if ((instance_pos+1) == no_instances)
 			{
 				/* set up the instance of the master object */
-				if (create_object_instance(master_ptr(), instance_ptr(), instance_pos, master_no) == ERROR)
+				if (create_object_instance(m_masters[master_no], m_instances[instance_pos]) == ERROR)
 					return (ERROR);
 				/* translate the instance */
-				translation(instance_ptr(), instance_pos, loc.x(), loc.y(), loc.z());
+				translation(m_instances[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colours if the instances facets */
-				if (set_colour(master_ptr(), instance_ptr(), instance_pos, master_no, colour, specularity) == ERROR)
-					return (ERROR);
+				set_colour(m_masters[master_no], m_instances[instance_pos], colour, specularity);
 				/* finially we set up the collision box around the object */
-				set_bound(instance_ptr(), instance_pos);
+				set_bound(m_instances[instance_pos]);
 				return (OKAY);
 			}
 			else

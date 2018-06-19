@@ -365,13 +365,13 @@ int process_style(RenderStyle &style)
 /****************************************************************************
 * process_vertices() - process the object's vertices                        *
 ****************************************************************************/
-int process_verts(struct master* masterptr, int no_vertices, int object_no)
+int process_verts(master &mast, int no_vertices)
 {
 	int RESULT = OKAY;
 	int loop, vert_no;
 
 	/* first we create the vertice data structures */
-	masterptr[object_no].vert.resize(no_vertices);
+	mast.vert.resize(no_vertices);
 
 	for (loop = 0; loop < no_vertices; loop++)
 	{
@@ -389,17 +389,17 @@ int process_verts(struct master* masterptr, int no_vertices, int object_no)
 			RESULT = error("0006", "Missing assignment symbol", lincnt);
 
 		/* now we get the x, y and z values of the vertex */
-		masterptr[object_no].vert[vert_no-1].x(fgetnum());
+		mast.vert[vert_no-1].x(fgetnum());
 
 		if (check(",") != OKAY)
 			RESULT = error("0047", "Syntax error with vertex command", lincnt);
 
-		masterptr[object_no].vert[vert_no-1].y(fgetnum());
+		mast.vert[vert_no-1].y(fgetnum());
 
 		if (check(",") != OKAY)
 			RESULT = error("0047", "Syntax error with vertex command", lincnt);
 
-		masterptr[object_no].vert[vert_no-1].z(fgetnum());
+		mast.vert[vert_no-1].z(fgetnum());
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != BLANK)
@@ -412,14 +412,14 @@ int process_verts(struct master* masterptr, int no_vertices, int object_no)
 /****************************************************************************
 * process_edges() - process the object's edges                              *
 ****************************************************************************/
-int process_edges(struct master* masterptr, int no_edges, int object_no)
+int process_edges(master &mast, int no_edges)
 {
 	int RESULT = OKAY;
 	int loop, edge_no;
 
 	/* first we create the edge data structures */
-	masterptr[object_no].edge0.resize(no_edges);
-	masterptr[object_no].edge1.resize(no_edges);
+	mast.edge0.resize(no_edges);
+	mast.edge1.resize(no_edges);
 
 	for (loop = 0; loop < no_edges; loop++)
 	{
@@ -440,11 +440,11 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 		size_t edge_val = getnum();
 
 		/* now make sure that it is a valid vertex reference */
-		if ((edge_val < 1) || (edge_val > masterptr[object_no].vert.size()))
+		if ((edge_val < 1) || (edge_val > mast.vert.size()))
 			RESULT = error("0050", "Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		masterptr[object_no].edge0[edge_no-1] = edge_val - 1;
+		mast.edge0[edge_no-1] = edge_val - 1;
 
 		if (check(",") != OKAY)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
@@ -452,11 +452,11 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 		edge_val = getnum();
 
 		/* now make sure that it is a valid vertex reference */
-		if ((edge_val < 1) || (edge_val > masterptr[object_no].vert.size()))
+		if ((edge_val < 1) || (edge_val > mast.vert.size()))
 			RESULT = error("0050", "Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		masterptr[object_no].edge1[edge_no-1] = edge_val - 1;
+		mast.edge1[edge_no-1] = edge_val - 1;
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != BLANK)
@@ -469,16 +469,16 @@ int process_edges(struct master* masterptr, int no_edges, int object_no)
 /****************************************************************************
 * process_polygons() - process the object's polygons                        *
 ****************************************************************************/
-int process_polys(struct master* masterptr, int no_polygons, int object_no)
+int process_polys(master &mast, int no_polygons)
 {
 	int RESULT = OKAY;
 	int loop, poly_no;
 	unsigned int tmp;
 
 	/* first we create the polygon data structures */
-	masterptr[object_no].poly0.resize(no_polygons);
-	masterptr[object_no].poly1.resize(no_polygons);
-	masterptr[object_no].poly2.resize(no_polygons);
+	mast.poly0.resize(no_polygons);
+	mast.poly1.resize(no_polygons);
+	mast.poly2.resize(no_polygons);
 
 	for (loop = 0; loop < no_polygons; loop++)
 	{
@@ -499,11 +499,11 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].edge0.size()))
+		if ((tmp < 1) || (tmp > mast.edge0.size()))
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		masterptr[object_no].poly0[poly_no-1] = tmp - 1;
+		mast.poly0[poly_no-1] = tmp - 1;
 
 		if (check(",") != OKAY)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
@@ -512,11 +512,11 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].edge0.size()))
+		if ((tmp < 1) || (tmp > mast.edge0.size()))
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		masterptr[object_no].poly1[poly_no-1] = tmp - 1;
+		mast.poly1[poly_no-1] = tmp - 1;
 		
 		if (check(",") != OKAY)
 			RESULT = error("0049", "Syntax error with edge command", lincnt);
@@ -525,11 +525,11 @@ int process_polys(struct master* masterptr, int no_polygons, int object_no)
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > masterptr[object_no].edge0.size()))
+		if ((tmp < 1) || (tmp > mast.edge0.size()))
 			RESULT = error("0052", "Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		masterptr[object_no].poly2[poly_no-1] = tmp - 1;
+		mast.poly2[poly_no-1] = tmp - 1;
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != BLANK)

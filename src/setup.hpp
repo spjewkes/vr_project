@@ -1,6 +1,6 @@
 #ifndef __SETUP_HPP__
 #define __SETUP_HPP__
 
-int create_object_instance(struct master *masterptr, struct instance *instanceptr, int instance_no, int master_no);
+int create_object_instance(master &mast, instance &inst);
 
 #endif // __SETUP_HPPx__

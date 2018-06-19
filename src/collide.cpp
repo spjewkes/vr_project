@@ -15,16 +15,42 @@
 #include "pfuncs.hpp"
 #include "sound.hpp"
 
-/************************************
-* forward declaration of prototypes *
-************************************/
-int collision(float locx, float locy, float locz, struct instance *instanceptr, int no_instances);
+/****************************************************************************
+* collision() - checks to see if the location is not inside any objects     *
+*               boundary boxes                                              *
+****************************************************************************/
+int collision(float pntx, float pnty, float pntz, std::vector<instance> &instances)
+{
+	int idx = 0;
+
+	for (auto inst : instances)
+	{
+		if (inst.is_solid)
+		{
+			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
+			if ((pntx >= inst.min.x()) &&
+			    (pnty >= inst.min.y()) &&
+			    (pntz >= inst.min.z()) &&
+			    (pntx <= inst.max.x()) &&
+			    (pnty <= inst.max.y()) &&
+			    (pntz <= inst.max.z()))
+			{
+				/* we have collided with a collision box */
+				/* send the number of the instance */
+				return idx;
+			}
+		}
+		idx++;
+	}
+	/* return an error to indicate that no collision occured */
+	return ERROR;
+}
 
 /*****************************************************************************
 * hit_object() - function that is initially called to start checking for     *
 *                any objects selected by the current mouse location          *
 *****************************************************************************/
-int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *instanceptr, int no_instances)
+int hit_object(int mpos_x, int mpos_y, viewer &user, std::vector<instance> &instances)
 {
 	float pntx, pnty, pntz, mouse_z;
 	float midx , midy;
@@ -57,7 +83,8 @@ int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *inst
 	dy = pnty - user.loc.y();
 	dz = pntz - user.loc.z();
 
-	/* now we have the vector start to examine the points on the line checking whether any of them collide with an object start at t = 0.0 and continue past t = 1.0 */
+	/* now we have the vector start to examine the points on the line checking whether any of
+	   them collide with an object start at t = 0.0 and continue past t = 1.0 */
 	for (t = 0.0; t < 150.0; t += 0.01)
 	{
 		/* calculate a point along the line */
@@ -66,66 +93,36 @@ int hit_object(int mpos_x, int mpos_y, struct viewer user, struct instance *inst
 		pntz = user.loc.z() + (t * dz);
 
 		/* now see if any instance has collided with the point */
-		which_instance = collision(pntx, pnty, pntz, instanceptr, no_instances);
+		which_instance = collision(pntx, pnty, pntz, instances);
 
 		if (which_instance != ERROR)
 		{
 			/* we've clicked on an object! */
-			return (which_instance);
+			return which_instance;
 		}
 	}
-	return (ERROR);
-}
-
-/****************************************************************************
-* collision() - checks to see if the location is not inside any objects     *
-*               boundary boxes                                              *
-****************************************************************************/
-int collision(float pntx, float pnty, float pntz, struct instance *instanceptr, int no_instances)
-{
-	int loop;
-	for (loop = 0; loop < no_instances; loop++)
-	{
-		if (instanceptr[loop].is_solid)
-		{
-			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
-			if ((pntx >= instanceptr[loop].min.x()) &&
-			    (pnty >= instanceptr[loop].min.y()) &&
-			    (pntz >= instanceptr[loop].min.z()) &&
-			    (pntx <= instanceptr[loop].max.x()) &&
-			    (pnty <= instanceptr[loop].max.y()) &&
-			    (pntz <= instanceptr[loop].max.z()))
-			{
-				/* we have collided with a collision box */
-				/* send the number of the instance */
-				return(loop);
-			}
-		}
-	}
-	/* return an error to indicate that no collision occured */
-	return(ERROR);
+	return ERROR;
 }
 
 /****************************************************************************
 * check col() - checks to see if the location is not inside any objects     *
 *               boundary boxes                                              *
 ****************************************************************************/
-bool check_col(float locx, float locy, float locz, struct instance *instanceptr, int no_instances, struct viewer user)
+bool check_col(float locx, float locy, float locz, viewer &user, std::vector<instance> &instances)
 {
-	int loop;
 	bool collide = false;
 
-	for (loop = 0; loop < no_instances; loop++)
+	for (auto inst : instances)
 	{
-		if (instanceptr[loop].is_solid)
+		if (inst.is_solid)
 		{
 			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
-			if (((locx+user.radius) >= instanceptr[loop].min.x()) &&
-			    ((locy+user.radius) >= instanceptr[loop].min.y()) &&
-			    ((locz+user.radius) >= instanceptr[loop].min.z()) &&
-			    ((locx-user.radius) <= instanceptr[loop].max.x()) &&
-			    ((locy-user.radius) <= instanceptr[loop].max.y()) &&
-			    ((locz-user.radius) <= instanceptr[loop].max.z()))
+			if (((locx+user.radius) >= inst.min.x()) &&
+			    ((locy+user.radius) >= inst.min.y()) &&
+			    ((locz+user.radius) >= inst.min.z()) &&
+			    ((locx-user.radius) <= inst.max.x()) &&
+			    ((locy-user.radius) <= inst.max.y()) &&
+			    ((locz-user.radius) <= inst.max.z()))
 			{
 				/* we have collided with the collision box */
 				/* make a beep */

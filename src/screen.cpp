@@ -89,9 +89,8 @@ int screen_open(int mode)
 *                 rough graphical form just a brief check to see if the     *
 *                 values are being stored correctly                         *
 ****************************************************************************/
-void draw_image(struct master *mptr, struct instance *iptr, int no_instances, struct viewer user)
+void draw_image(std::vector<master> &masters, std::vector<instance> &instances, viewer user)
 {
-	int loop1, loop2, loop3;
 	int master_no;
 	int edge0, edge1;
 	float x, y, z;
@@ -120,21 +119,21 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 
 	/* first depth sort all the objects */
 	/* do we want to remove those objects which are behind us? */
-	for (loop1 = 0; loop1 < no_instances; loop1++)
+	for (size_t loop1 = 0; loop1 < instances.size(); loop1++)
 	{
 		/* reference to which instance */
 		depth_array[loop1][0] = loop1;
 		/* the distance away from the viewer we use pythagoras */
 		/* here we dont't need to find the square root as all distances */
 		/* are still going to be relative */
-		Vector3d hyp1 = iptr[loop1].min - user.loc;
-		Vector3d hyp2 = iptr[loop1].max - user.loc;
+		Vector3d hyp1 = instances[loop1].min - user.loc;
+		Vector3d hyp2 = instances[loop1].max - user.loc;
 		depth_array[loop1][1] = static_cast<long>(std::fmax(hyp1.length2(), hyp2.length2()));
 	}
 
 	/* smallest values come first */
-	for (loop1 = 0; loop1 < no_instances; loop1++)
-		for (loop2 = 0; loop2 < no_instances-1; loop2++)
+	for (size_t loop1 = 0; loop1 < instances.size(); loop1++)
+		for (size_t loop2 = 0; loop2 < instances.size()-1; loop2++)
 		{
 			if (depth_array[loop2][1] < depth_array[loop2+1][1])
 			{
@@ -164,17 +163,17 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 	setcolor(user.ground);
 	bar(0, midy, getmaxx(), getmaxy());
 
-	for (loop1 = 0; loop1 < no_instances; loop1++)
+	for (size_t loop1 = 0; loop1 < instances.size(); loop1++)
 	{
 		/* make tmp hold the value of the current instance */
 		tmp = depth_array[loop1][0];
 
-		loop2 = 0;
+		int idx = 0;
 
 		/* for every instance */
 		/* rotate and translate all of the vertices so
 		   it's relative to the viewer */
-		for (auto vertex : iptr[tmp].vert)
+		for (auto vertex : instances[tmp].vert)
 		{
 			/* get the vertex point */
 			x = vertex.x();
@@ -191,24 +190,24 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 			y = y * ((-2.0 * vrp) / (75.0 * (vrp+BACK)));
 			z = z * (-1.0 / (vrp+BACK));
 			/* now store them in temporary instance space */
-			store[loop2][X] = x;
-			store[loop2][Y] = y;
-			store[loop2][Z] = z;
-			loop2++;
+			store[idx][X] = x;
+			store[idx][Y] = y;
+			store[idx][Z] = z;
+			idx++;
 		}
 
 		/* get the master no of the of master that stores
 		   the instance's object */
-		master_no = iptr[tmp].master_no;
+		master_no = instances[tmp].master_no;
 
 		/* now we check whether to draw the image as a wireframe or solid */
-		if (iptr[tmp].style == RenderStyle::WIREFRAME)
+		if (instances[tmp].style == RenderStyle::WIREFRAME)
 		{
-			for (size_t i = 0; i < mptr[master_no].edge0.size(); i++)
+			for (size_t i = 0; i < masters[master_no].edge0.size(); i++)
 			{
 				/* get the value of the start and ends of the edges */
-				edge0 = mptr[master_no].edge0[i];
-				edge1 = mptr[master_no].edge1[i];
+				edge0 = masters[master_no].edge0[i];
+				edge1 = masters[master_no].edge1[i];
 				/* get the first vertex of the edge */
 				x1 = store[edge0][X];
 				y1 = store[edge0][Y];
@@ -226,27 +225,27 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 					x2 = (((x2*-1.0)/z2) * midx) + midx;
 					y2 = (((y2*-1.0)/z2) * midy) + midy;
 					/* set its colour */
-					setcolor(iptr[tmp].edge_colour[i]);
+					setcolor(instances[tmp].edge_colour[i]);
 					/* draw line if it's in the viewing volume */
 					line(x1, y1, x2, y2);
 				}
 			}
 		}
-		else if (iptr[tmp].style == RenderStyle::SOLID)
+		else if (instances[tmp].style == RenderStyle::SOLID)
 		{
 			/* now let's examine the three edges */
-			for(size_t i = 0; i < mptr[master_no].poly0.size(); i++)
+			for(size_t i = 0; i < masters[master_no].poly0.size(); i++)
 			{
 				/* get the three edges that build up the polygon */
-				poly_no[0] = mptr[master_no].poly0[i];
-				poly_no[1] = mptr[master_no].poly1[i];
-				poly_no[2] = mptr[master_no].poly2[i];
+				poly_no[0] = masters[master_no].poly0[i];
+				poly_no[1] = masters[master_no].poly1[i];
+				poly_no[2] = masters[master_no].poly2[i];
 
 				/* before we go any further let's make
 				   sure the polygon is visible */
 				/* now let's deal with the first edge */
-				edge0 = mptr[master_no].edge0[(poly_no[0])];
-				edge1 = mptr[master_no].edge1[(poly_no[0])];
+				edge0 = masters[master_no].edge0[(poly_no[0])];
+				edge1 = masters[master_no].edge1[(poly_no[0])];
 				/* get the first vertex of that edge */
 				x1 = store[edge0][X];
 				y1 = store[edge0][Y];
@@ -257,7 +256,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 				z2 = store[edge1][Z];
 				/* we need a third point to find the normal to the plane */
 				/* so we'll get the end point of the second edge */
-				edge1 = mptr[master_no].edge1[(poly_no[1])];
+				edge1 = masters[master_no].edge1[(poly_no[1])];
 				x3 = store[edge1][X];
 				y3 = store[edge1][Y];
 				z3 = store[edge1][Z];
@@ -293,7 +292,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 					pre_array[1][Y] = y2;
 					pre_array[1][Z] = z2;
 					/* now get the start point of the second edge */
-					edge0 = mptr[master_no].edge0[(poly_no[1])];
+					edge0 = masters[master_no].edge0[(poly_no[1])];
 					pre_array[2][X] = store[edge0][X];
 					pre_array[2][Y] = store[edge0][Y];
 					pre_array[2][Z] = store[edge0][Z];
@@ -304,12 +303,12 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 					pre_array[3][Z] = z3;
 					/* now move on to the third edge */
 					/* the start point */
-					edge0 = mptr[master_no].edge0[(poly_no[2])];
+					edge0 = masters[master_no].edge0[(poly_no[2])];
 					pre_array[4][X] = store[edge0][X];
 					pre_array[4][Y] = store[edge0][Y];
 					pre_array[4][Z] = store[edge0][Z];
 					/* and now the end point */
-					edge1 = mptr[master_no].edge1[(poly_no[2])];
+					edge1 = masters[master_no].edge1[(poly_no[2])];
 					pre_array[5][X] = store[edge1][X];
 					pre_array[5][Y] = store[edge1][Y];
 					pre_array[5][Z] = store[edge1][Z];
@@ -332,11 +331,11 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 						/* set the polysize value to 0 */
 						polyptr = 0;
 						/* fill the polyarray with values in post_array */
-						for (loop3 = 0; loop3 < no_points; loop3++)
+						for (auto loop2 = 0; loop2 < no_points; loop2++)
 						{
-							x = post_array[loop3][X];
-							y = post_array[loop3][Y];
-							z = post_array[loop3][Z];
+							x = post_array[loop2][X];
+							y = post_array[loop2][Y];
+							z = post_array[loop2][Z];
 							/* project onto a 2D monitor */
 							x = (((x*-1.0)/z) * midx) + midx;
 							y = (((y*-1.0)/z) * midy) + midy;
@@ -351,7 +350,7 @@ void draw_image(struct master *mptr, struct instance *iptr, int no_instances, st
 						no_points++;
 						
 						/* firstly set the colour */
-						setcolor(iptr[tmp].poly_colour[i]);
+						setcolor(instances[tmp].poly_colour[i]);
 						/* now draw the polygon */
 						fillpoly(no_points, polyarray);
 					}

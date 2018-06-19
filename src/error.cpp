@@ -106,32 +106,33 @@ void debug(const char *string, int level)
 *                  contents of the master structure to the screen            *
 *                  let's just make sure that it's doing its job correctly    *
 *****************************************************************************/
-void check_master(struct master *ptr, int no_rows)
+void check_master(std::vector<master> &masters)
 {
-	int loop1;
 	debug ("check_master()", 1);
 
-	printf("\nThere are %d master(s).\n", no_rows);
+	printf("\nThere are %lu master(s).\n", masters.size());
 	printf("\nThe Master structure contains The following data:\n");
 
-	for (loop1 = 0; loop1 < no_rows; loop1++)
+	int i = 0;
+
+	for (auto mast : masters)
 	{
 		/* print which object in the master array */
-		printf("\nMaster object:\t%d", loop1);
+		printf("\nMaster object:\t%d", i++);
 		/* print the scale values */
-		printf("\nScale X:  %f,", ptr[loop1].scale.x());
-		printf("\tScale Y:  %f,", ptr[loop1].scale.y());
-		printf("\tScale Z:  %f", ptr[loop1].scale.z());
+		printf("\nScale X:  %f,", mast.scale.x());
+		printf("\tScale Y:  %f,", mast.scale.y());
+		printf("\tScale Z:  %f", mast.scale.z());
 		/* print the angle values */
-		printf("\nAngle X:  %f,", ptr[loop1].angle.x());
-		printf("\tAngle Y:  %f,", ptr[loop1].angle.y());
-		printf("\tAngle Z:  %f", ptr[loop1].angle.z());
+		printf("\nAngle X:  %f,", mast.angle.x());
+		printf("\tAngle Y:  %f,", mast.angle.y());
+		printf("\tAngle Z:  %f", mast.angle.z());
 		/* print the number of vertices that build up the object */
-		printf("\nNumber of vertices:\t%lu", ptr[loop1].vert.size());
+		printf("\nNumber of vertices:\t%lu", mast.vert.size());
 
 		int i = 0;
 		/* now list the coordinate values that built up the object */
-		for (auto vertex : ptr[loop1].vert)
+		for (auto vertex : mast.vert)
 		{
 			/* print the vertex number */
 			printf("\nVertex number:\t%d", i++);
@@ -141,27 +142,27 @@ void check_master(struct master *ptr, int no_rows)
 			printf(" %f", vertex.z());
 		}
 		/* print the number of edges that build up the object */
-		printf("\nNumber of edges:\t%lu", ptr[loop1].edge0.size());
+		printf("\nNumber of edges:\t%lu", mast.edge0.size());
 		/* now list the vertices that make up the edges */
-		for (size_t i = 0; i < ptr[loop1].edge0.size(); i++)
+		for (size_t i = 0; i < mast.edge0.size(); i++)
 		{
 			/* print the edge number */
 			printf("\nEdge number: \t%zu", i);
 			/* list the vertices that make up the edge */
-			printf("\nVertex one: %d", ptr[loop1].edge0[i]);
-			printf("\nVertex two: %d", ptr[loop1].edge1[i]);
+			printf("\nVertex one: %d", mast.edge0[i]);
+			printf("\nVertex two: %d", mast.edge1[i]);
 		}
 		/* print the number of polygons that build up the object */
-		printf ("\nNumber of polygons: \t%lu", ptr[loop1].poly0.size());
+		printf ("\nNumber of polygons: \t%lu", mast.poly0.size());
 		/* now list the edges that make up the polygon */
-		for (size_t i = 0; i < ptr[loop1].poly0.size(); i++)
+		for (size_t i = 0; i < mast.poly0.size(); i++)
 		{
 			/* print the polygon number */
 			printf("\nPolygon number: \t%zu", i);
 			/* list the edges that make up the polygon */
-			printf("\nEdge one: %d", ptr[loop1].poly0[i]);
-			printf("\nEdge two: %d", ptr[loop1].poly1[i]);
-			printf("\nEdge three: %d", ptr[loop1].poly2[i]);
+			printf("\nEdge one: %d", mast.poly0[i]);
+			printf("\nEdge two: %d", mast.poly1[i]);
+			printf("\nEdge three: %d", mast.poly2[i]);
 		}
 		printf("\n---------------------\n");
 	}
@@ -172,46 +173,46 @@ void check_master(struct master *ptr, int no_rows)
 *                    contents of the instance structure to the screen       *
 *                    let's just make sure that it's doing its job correctly *
 ****************************************************************************/
-void check_instance(struct instance *ptr, int no_rows)
+void check_instance(std::vector<instance> &instances)
 {
-	int loop1;
-
 	debug("check_instance ()", 1);
 
-	printf("\nThere are %d instance(s).\n", no_rows);
+	printf("\nThere are %lu instance(s).\n", instances.size());
 	printf("\nThe Instance structure contains the following data:\n");
 
-	for (loop1 = 0; loop1 < no_rows; loop1++)
+	int i = 0;
+
+	for (auto inst : instances)
 	{
 		/* print which object in the instance array */
-		printf("\nInstance object:\t%d", loop1);
+		printf("\nInstance object:\t%d", i++);
 		/* print which master object it is cased on */
-		printf("\nMaster object number:\t%d", ptr[loop1].master_no);
+		printf("\nMaster object number:\t%d", inst.master_no);
 		/* print the iocational values */
-		printf("\nX location:  %f,", ptr[loop1].pos.x());
-		printf("\tY location:  %f,", ptr[loop1].pos.y());
-		printf("\tZ location:  %f", ptr[loop1].pos.z());
+		printf("\nX location:  %f,", inst.pos.x());
+		printf("\tY location:  %f,", inst.pos.y());
+		printf("\tZ location:  %f", inst.pos.z());
 		/* print the minimum values */
-		printf("\nMinimum X:  %f,", ptr[loop1].min.x());
-		printf("\tMinimum Y:  %f,", ptr[loop1].min.y());
-		printf("\tMinimum Z:  %f", ptr[loop1].min.z());
+		printf("\nMinimum X:  %f,", inst.min.x());
+		printf("\tMinimum Y:  %f,", inst.min.y());
+		printf("\tMinimum Z:  %f", inst.min.z());
 		/* print the maximum values */
-		printf("\nMaximum X:  %f,", ptr[loop1].max.x());
-		printf("\tMaximum Y:  %f,", ptr[loop1].max.y());
-		printf("\tMaximum Z:  %f", ptr[loop1].max.z());
+		printf("\nMaximum X:  %f,", inst.max.x());
+		printf("\tMaximum Y:  %f,", inst.max.y());
+		printf("\tMaximum Z:  %f", inst.max.z());
 		/* print the angle values */
-		printf("\nAngle X:  %f,", ptr[loop1].angle.x());
-		printf("\tAngle Y:  %f,", ptr[loop1].angle.y());
-		printf("\tAngle Z:  %f", ptr[loop1].angle.z());
+		printf("\nAngle X:  %f,", inst.angle.x());
+		printf("\tAngle Y:  %f,", inst.angle.y());
+		printf("\tAngle Z:  %f", inst.angle.z());
 		/* print the scale values */
-		printf("\nScale X:  %f,", ptr[loop1].scale.x());
-		printf("\tScale Y:  %f,", ptr[loop1].scale.y());
-		printf("\tScale Z:  %f", ptr[loop1].scale.z());
+		printf("\nScale X:  %f,", inst.scale.x());
+		printf("\tScale Y:  %f,", inst.scale.y());
+		printf("\tScale Z:  %f", inst.scale.z());
 		/* print the number of vertices that build up the object */
-		printf("\nNumber of vertices:\t%lu", ptr[loop1].vert.size());
+		printf("\nNumber of vertices:\t%lu", inst.vert.size());
 		/* now list the coordinate values that built up the object */
 		int i = 0;
-		for (auto vertex : ptr[loop1].vert)
+		for (auto vertex : inst.vert)
 		{
 			/* print the vertex number */
 			printf("\nVertex number: \t%d", i++);
@@ -221,11 +222,11 @@ void check_instance(struct instance *ptr, int no_rows)
 			printf("  %f", vertex.z());
 		}
 		/* print the style number */
-		printf("\nStyle number:\t%d", ptr[loop1].style);
+		printf("\nStyle number:\t%d", inst.style);
 		/* print whether the object is to be solid or not */
-		printf("\nSolid?:\t%d", ptr[loop1].is_solid);
+		printf("\nSolid?:\t%d", inst.is_solid);
 		/* print the outcome string */
-		printf("\nOutcome string:\t>>%s<<", ptr[loop1].outcome.c_str());
+		printf("\nOutcome string:\t>>%s<<", inst.outcome.c_str());
 		printf("\n----------------\n");
 	}
 }

@@ -11,12 +11,12 @@ public:
 
 	int parse(char *filename);
 
-	int num_masters() const { return masters.size(); }
-	int num_instances() const { return instances.size(); }
+	int num_masters() const { return m_masters.size(); }
+	int num_instances() const { return m_instances.size(); }
 
-	master* master_ptr() const { return const_cast<master *>(&masters[0]); }
-	instance* instance_ptr() const { return const_cast<instance *>(&instances[0]); }
-	viewer& get_user() { return user; }
+	std::vector<master> &masters() { return m_masters; }
+	std::vector<instance> &instances() { return m_instances; }
+	viewer& get_user() { return m_user; }
 
 private:
 	int init_master(int no_masters);
@@ -36,9 +36,9 @@ private:
 	// for telling whether the master objects have been defined yet
 	bool masterdef_processed;
 
-	std::vector<master> masters;
-	std::vector<instance> instances;
-	viewer user;
+	std::vector<master> m_masters;
+	std::vector<instance> m_instances;
+	viewer m_user;
 };
 
 #endif // __PARSE_HPP__

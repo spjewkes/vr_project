@@ -337,13 +337,12 @@ void translate(float *pntx, float *pnty, float *pntz,
 * translation() - function to offset an entire instance by x, y and z      *
 *                 values (i.e. a tranlation of the object)                 *
 ***************************************************************************/
-void translation(struct instance *instanceptr, int instance_no,
-				 float locx, float locy, float locz)
+void translation(instance &inst, float locx, float locy, float locz)
 {
 	float x, y, z;
 
 	/* loop to translate the whole of an instance object */
-	for (auto &vertex : instanceptr[instance_no].vert)
+	for (auto &vertex : inst.vert)
 	{
 		x = vertex.x();
 		y = vertex.y();
@@ -359,36 +358,35 @@ void translation(struct instance *instanceptr, int instance_no,
 * set_colour() - function to set the colours of each facet of the obejct    *
 *                instance                                                   *
 ****************************************************************************/
-int set_colour(struct master *masterptr, struct instance *instanceptr,
-			   int instance_no, int master_no, int colour, float specularity)
+void set_colour(master &mast, instance &inst, int colour, float specularity)
 {
-	int no_edges, no_polygons, loop, offset, RESULT = OKAY;
+	int no_edges, no_polygons, loop, offset;
 	int poly_no[2], edge0, edge1;
 	float x1,y1,z1, x2,y2,z2, x3,y3,z3;
 	float dx1,dy1,dz1, dx2,dy2,dz2;
 	float A,B,C,D, normal, hyp, adj, cos_theta, kd;
 
-	no_edges = masterptr[instanceptr[instance_no].master_no].edge0.size();
-	no_polygons = masterptr[instanceptr[instance_no].master_no].poly0.size();
+	no_edges = mast.edge0.size();
+	no_polygons = mast.poly0.size();
 
 	/* create the arrays that will hold the colour values */
-	instanceptr[instance_no].edge_colour.resize(no_edges);
-	instanceptr[instance_no].poly_colour.resize(no_polygons);
+	inst.edge_colour.resize(no_edges);
+	inst.poly_colour.resize(no_polygons);
 
 	/* now fill the edge array with colour values */
 	for (loop = 0; loop < no_edges; loop++)
 	{
 		/* let's get the end and start points of the edge */
-		edge0 = masterptr[master_no].edge0[loop];
-		edge1 = masterptr[master_no].edge1[loop];
+		edge0 = mast.edge0[loop];
+		edge1 = mast.edge1[loop];
 		/* get the first vertex of that edge */
-		x1 = instanceptr[instance_no].vert[edge0].x();
-		y1 = instanceptr[instance_no].vert[edge0].y();
-		z1 = instanceptr[instance_no].vert[edge0].z();
+		x1 = inst.vert[edge0].x();
+		y1 = inst.vert[edge0].y();
+		z1 = inst.vert[edge0].z();
 		/* now get the second vertex of that edge */
-		x2 = instanceptr[instance_no].vert[edge1].x();
-		y2 = instanceptr[instance_no].vert[edge1].y();
-		z2 = instanceptr[instance_no].vert[edge1].z();
+		x2 = inst.vert[edge1].x();
+		y2 = inst.vert[edge1].y();
+		z2 = inst.vert[edge1].z();
 		/* now we calculate the changes between the first and */
 		/* second vertex */
 		dx1 = abs(x2 - x1);
@@ -410,7 +408,7 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 		if (offset > 15) offset = 15;
 		else if (offset < 0) offset = 0;
 		/* now set the colour of the edge */
-		instanceptr[instance_no].edge_colour[loop] = colour*16+(offset*0.5);
+		inst.edge_colour[loop] = colour*16+(offset*0.5);
 	}
 
 	/* now fill the polygon array with colour values */
@@ -419,26 +417,26 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 		/* we want to find the direction of the normal first */
 		/* so we know which light intensity to apply to the polygon */
 		/* get the two of the edges that build up the polygon */
-		poly_no[0] = masterptr[master_no].poly0[loop];
-		poly_no[1] = masterptr[master_no].poly1[loop];
+		poly_no[0] = mast.poly0[loop];
+		poly_no[1] = mast.poly1[loop];
 
 		/* now let's deal with the first edge */
-		edge0 = masterptr[master_no].edge0[poly_no[0]];
-		edge1 = masterptr[master_no].edge1[poly_no[0]];
+		edge0 = mast.edge0[poly_no[0]];
+		edge1 = mast.edge1[poly_no[0]];
 		/* get the first vertex of that edge */
-		x1 = instanceptr[instance_no].vert[edge0].x();
-		y1 = instanceptr[instance_no].vert[edge0].y();
-		z1 = instanceptr[instance_no].vert[edge0].z();
+		x1 = inst.vert[edge0].x();
+		y1 = inst.vert[edge0].y();
+		z1 = inst.vert[edge0].z();
 		/* now get the second vertex of that edge */
-		x2 = instanceptr[instance_no].vert[edge1].x();
-		y2 = instanceptr[instance_no].vert[edge1].y();
-		z2 = instanceptr[instance_no].vert[edge1].z();
+		x2 = inst.vert[edge1].x();
+		y2 = inst.vert[edge1].y();
+		z2 = inst.vert[edge1].z();
 		/* we need a third point to find the normal to the plane */
 		/* so we'll get the end point of the second edge */
-		edge1 = masterptr[master_no].edge1[(poly_no[1])];
-		x3 = instanceptr[instance_no].vert[edge1].x();
-		y3 = instanceptr[instance_no].vert[edge1].y();
-		z3 = instanceptr[instance_no].vert[edge1].z();
+		edge1 = mast.edge1[(poly_no[1])];
+		x3 = inst.vert[edge1].x();
+		y3 = inst.vert[edge1].y();
+		z3 = inst.vert[edge1].z();
 		/* now we calculate the changes between the first and */
 		/* second vertex */
 		dx1 = x2 - x1;
@@ -482,7 +480,7 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 			if (offset > 15) offset = 15;
 			else if (offset < 0) offset = 0;
 			/* this surface is facing downwards */
-			instanceptr[instance_no].poly_colour[loop] = colour*16+(offset*0.25);
+			inst.poly_colour[loop] = colour*16+(offset*0.25);
 		}
 		else if (normal >= 0.0)
 		{
@@ -505,34 +503,33 @@ int set_colour(struct master *masterptr, struct instance *instanceptr,
 			else if (offset < 0) offset = 0;
 			/* this surface is facing upwards */
 			/* the light intensity is half */
-			instanceptr[instance_no].poly_colour[loop] = colour*16+(offset*1.0);
+			inst.poly_colour[loop] = colour*16+(offset*1.0);
 		}
 	}
-	return (RESULT);
 }
 
 /****************************************************************************
 * set_bound() - function to set the minimum and maximum values of an object *
 *                  to allow collision detection                             *
 ****************************************************************************/
-void set_bound(struct instance *instanceptr, int instance_no)
+void set_bound(instance &inst)
 {
 	/* set the x,y and z min/max values to the values of the first vertex
 	   as an initial value */
 
 	/* minimum value of collision box */
-	float xmin = instanceptr[instance_no].vert[0].x();
-	float ymin = instanceptr[instance_no].vert[0].y();
-	float zmin = instanceptr[instance_no].vert[0].z();
+	float xmin = inst.vert[0].x();
+	float ymin = inst.vert[0].y();
+	float zmin = inst.vert[0].z();
 
 	/* maximum value of collision box */
-	float xmax = instanceptr[instance_no].vert[0].x();
-	float ymax = instanceptr[instance_no].vert[0].y();
-	float zmax = instanceptr[instance_no].vert[0].z();
+	float xmax = inst.vert[0].x();
+	float ymax = inst.vert[0].y();
+	float zmax = inst.vert[0].z();
 
 	/* now look at other values in the instances vertex list and alter the
 	   minimum and maximum values accordingly */
-	for (auto vertex : instanceptr[instance_no].vert)
+	for (auto vertex : inst.vert)
 	{
 		/* looking for the minimum x value */
 		xmin = std::fmin(xmin, vertex.x());
@@ -556,11 +553,11 @@ void set_bound(struct instance *instanceptr, int instance_no)
 	/* now set the instance values with the minimum x,y and z and the
 	   maximum x,y and z */
 	/* the minimum values */
-	instanceptr[instance_no].min.x(xmin);
-	instanceptr[instance_no].min.y(ymin);
-	instanceptr[instance_no].min.z(zmin);
+	inst.min.x(xmin);
+	inst.min.y(ymin);
+	inst.min.z(zmin);
 	/* the maximum values */
-	instanceptr[instance_no].max.x(xmax);
-	instanceptr[instance_no].max.y(ymax);
-	instanceptr[instance_no].max.z(zmax);
+	inst.max.x(xmax);
+	inst.max.y(ymax);
+	inst.max.z(zmax);
 }

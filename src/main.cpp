@@ -64,9 +64,9 @@ int main(int argc, char *argv[])
 		exit(0);
 
 	/* display the contents of the master structure */
-	/* check_master(script.master_ptr(), script.num_masters()); */
+	// check_master(script.masters()); 
 	/* display the contents of the instance structure */
-	/* check_instance(script.instance_ptr(), script.num_instances()); */
+	// check_instance(script.instances());
 	/* now let's start the really interesting bit */
 	printf("\nENTERING ANOTHER WORLD...\n");
 
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	if (init_audio() && screen_open(mode) == OKAY)
 	{
 		/* draw the initial position of all the objects */
-		draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances(), script.get_user());
+		draw_image(script.masters(), script.instances(), script.get_user());
 		/* set the value of c to a null value to begin with */
 
 		auto tp1 = std::chrono::system_clock::now();
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 					if (event.button.button & SDL_BUTTON_LEFT)
 					{
 						/* see if we hit an objeot and act accordingly */
-						instance = hit_object(mpos_x, mpos_y, script.get_user(), script.instance_ptr(), script.num_instances());
+						instance = hit_object(mpos_x, mpos_y, script.get_user(), script.instances());
 						/* if this is the second click on the same object then
 						   we run it */
 						if (instance == prev_inst)
@@ -132,9 +132,9 @@ int main(int argc, char *argv[])
 							draw_pointer(mpos_x, mpos_y);
 							/* now see if we can execute the program */
 							if (instance != ERROR)
-								program(instance, script.instance_ptr());
+								program(script.instances()[instance]);
 							/* draw the new image */
-							draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances(), script.get_user());
+							draw_image(script.masters(), script.instances(), script.get_user());
 							/* finally redraw the pointer */
 							draw_pointer(mpos_x, mpos_y);
 							/* so that another double click is needed */
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz - (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (!check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()))
+				if (!check_col(locx, locy, locz, script.get_user(), script.instances()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz + (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (!check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()))
+				if (!check_col(locx, locy, locz, script.get_user(), script.instances()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's posltion */
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
 				/* slide left */
 				locz = locz - (move * sin(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
-				if (!check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()))
+				if (!check_col(locx, locy, locz, script.get_user(), script.instances()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
 				/* slide right */
 				locz = locz + (move * sin(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
-				if (!check_col(locx, locy, locz, script.instance_ptr(), script.num_instances(), script.get_user()))
+				if (!check_col(locx, locy, locz, script.get_user(), script.instances()))
 				{
 					/* if user hasn't colllded wlth an object instance
 					   then update the user's position */
@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
 			}
 			
 			/* draw the new image */
-			draw_image(script.master_ptr(), script.instance_ptr(), script.num_instances(), script.get_user());
+			draw_image(script.masters(), script.instances(), script.get_user());
 
 			/* now draw the pointer */
 			draw_pointer(mpos_x, mpos_y);

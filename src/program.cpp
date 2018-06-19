@@ -35,7 +35,7 @@ static void spawnvp(int, const char *cmdname, const char *const *argv)
 *             and checks whether it is possible to execute it using the     *
 *             spawnvp() command                                             *
 ****************************************************************************/
-void program(int instance, struct instance *ptr)
+void program(instance &inst)
 {
 	char path[MAXLINE];
 	char *array[MAXARG];
@@ -50,7 +50,7 @@ void program(int instance, struct instance *ptr)
 	array[0] = NULL;
 
 	/* copy the outcome string to a char array we can play with */
-	strcpy(path, ptr[instance].outcome.c_str());
+	strcpy(path, inst.outcome.c_str());
 
 	/* if the string doesn't contain the string 'solid' then it must
 	   contain a program to execute */
