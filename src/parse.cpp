@@ -40,9 +40,9 @@ Parser::~Parser()
 *           Returns a pointer to a datastructure that contains the virtual  *
 *           world to be manipulated.                                        *
 ****************************************************************************/
-int Parser::parse(char *filename)
+Status Parser::parse(char *filename)
 {
-	int retcode;
+	MatchResult retcode;
 	debug("parse()", 1);
 
 	/* lincnt stores currently processed line */
@@ -52,21 +52,21 @@ int Parser::parse(char *filename)
 	{
 		/* error if can't open file */
 		error("0001", "Error opening file", lincnt);
-		return (ERROR);
+		return Error;
 	}
 	else
 	{
 		/* get the first line of the file */
 		retcode = getline();
 		/* getting lines from file until EOF */
-		while (retcode != EOF)
+		while (retcode != EoF)
 		{
-			if ((retcode != COMMENT) && (retcode != BLANK))
-				if (process () == ERROR)
+			if ((retcode != Comment) && (retcode != Blank))
+				if (process() == Error)
 				{
 					/* if error then stop parsing file */
 					error("0002", "Cannot parse file", lincnt);
-					return (ERROR);
+					return Error;
 				}
 			/* get next line */
 			retcode = getline();
@@ -74,13 +74,13 @@ int Parser::parse(char *filename)
 	}
 	/* close the open file */
 	fclose((FILE *)fp) ;
-	return (OKAY);
+	return Okay;
 }
 
 /*****************************************************************************
  * init_master() - initialises the array which will store the master objects *
  *****************************************************************************/
-int Parser::init_master(int no_masters)
+Status Parser::init_master(int no_masters)
 {
 	debug("init_master()", 1);
 
@@ -99,14 +99,14 @@ int Parser::init_master(int no_masters)
 		mast.angle.z(0.0);
 	}
 
-	return (OKAY);
+	return Okay;
 }
 
 /****************************************************************************
 * init_instance() - initialises the array which will store the instances of *
 *                   the master objects                                      *
 ****************************************************************************/
-int Parser::init_instance(int no_instances)
+Status Parser::init_instance(int no_instances)
 {
 	debug("init_instance()", 1);
 
@@ -144,7 +144,7 @@ int Parser::init_instance(int no_instances)
 		/* set up the default outcome string */
 		inst.outcome = "";
 	}
-	return (OKAY);
+	return Okay;
 }
 
 /*****************************************************************************
@@ -174,7 +174,7 @@ void Parser::init_user()
 *             ".masterdefs", ".instance defs" or ".userdefs"                *
 *             any other strings will-result in a syntax error               *
 ****************************************************************************/
-int Parser::process(void)
+Status Parser::process(void)
 {
 	char word[MAXLINE];
 
@@ -183,20 +183,22 @@ int Parser::process(void)
 	/* get the first word in LINE */
 	getword(word);
 
-	if (strcmp(word, ".masterdefs") == EQUAL)
+	if (strlen(word) == 0)
+		return Okay;
+	else if (strcmp(word, ".masterdefs") == 0)
 		/* a master block */
-		return (process_master());
-	else if (strcmp(word, ".instancedefs") == EQUAL)
+		return process_master();
+	else if (strcmp(word, ".instancedefs") == 0)
 		/* an instance block */
-		return (process_instance());
-	else if (strcmp(word, ".userdefs") == EQUAL)
+		return process_instance();
+	else if (strcmp(word, ".userdefs") == 0)
 		/* a user block */
-		return (process_user());
+		return process_user();
 	else
 	{
 		error("0003", "Syntax error", lincnt);
 		/* unknown block! */
-		return (ERROR);
+		return Error;
 	}
 }
 
@@ -204,9 +206,9 @@ int Parser::process(void)
 * process_master() - process a text block which contains definitions for    *
 *                    the master objects                                     *
 ****************************************************************************/
-int Parser::process_master()
+Status Parser::process_master()
 {
-	int RESULT = OKAY;
+	Status result = Okay;
 	char word[MAXLINE];
 	int no_masters;
 
@@ -214,30 +216,30 @@ int Parser::process_master()
 
 	skip_garbage();
 
-	if (check("no_objects") != OKAY)
-		RESULT = error("0005", "The no_objects definition is missing", lincnt);
+	if (check("no_objects") != Match)
+		result = error("0005", "The no_objects definition is missing", lincnt);
 	masterdef_processed = true;
 
-	if (check("=") != OKAY)
-		RESULT = error("0006", "Missing assignment symbol", lincnt);
+	if (check("=") != Match)
+		result = error("0006", "Missing assignment symbol", lincnt);
 
-	if ((no_masters = getnum()) == ERROR)
-		RESULT = error("0007", "Cannot parse number", lincnt);
+	if ((no_masters = getnum()) == Error)
+		result = error("0007", "Cannot parse number", lincnt);
 
-	if (check("") != BLANK)
-		RESULT = error("0041", "Syntax error with no_objects command", lincnt);
+	if (check("") != Blank)
+		result = error("0041", "Syntax error with no_objects command", lincnt);
 
 	if (no_masters > 0)
 	{
-		if (init_master(no_masters) == ERROR)
-			return (ERROR);
+		if (init_master(no_masters) == Error)
+			return Error;
 		skip_garbage();
 		/* process the master objects */
-		if (process_objects(no_masters) != OKAY)
-			RESULT = error("0008", "Error with master object definitions", lincnt);
+		if (process_objects(no_masters) != Okay)
+			result = error("0008", "Error with master object definitions", lincnt);
 	}
 	else if (no_masters < 0)
-		RESULT = error("0009", "The no_objects is less than zero", lincnt);
+		result = error("0009", "The no_objects is less than zero", lincnt);
 	else if (no_masters == 0)
 	{
 		warn("0001", "There are no master objects", lincnt);
@@ -247,23 +249,23 @@ int Parser::process_master()
 		getword(word);
 
 		/* check that the master definition block is ended */
-		if (strcmp(word, ".end_masterdefs") == EQUAL)
-			RESULT = OKAY;
+		if (strcmp(word, ".end_masterdefs") == 0)
+			result = Okay;
 		else
-			RESULT = error("0008", "Error with master object definitions", lincnt);
+			result = error("0008", "Error with master object definitions", lincnt);
 	}
 
 	/* return the result of parsing the master block */
-	return (RESULT);
+	return result;
 }
 
 /****************************************************************************
 * process_instance() - process a text block which contains definitions for  *
 *                      the instance objects                                 *
 ****************************************************************************/
-int Parser::process_instance(void)
+Status Parser::process_instance(void)
 {
-	int RESULT = OKAY;
+	Status result = Okay;
 	char word[MAXLINE];
 	int no_instances;
 
@@ -271,33 +273,33 @@ int Parser::process_instance(void)
 
 	/* error if the master objects haven't been defined */
 	if (!masterdef_processed)
-		RESULT = error("0011", "Master objects have not yet been defined", lincnt);
+		result = error("0011", "Master objects have not yet been defined", lincnt);
 
 	skip_garbage();
 
-	if (check("no_instances") != OKAY)
-		RESULT = error("0012", "The no_instances definition is missing", lincnt);
+	if (check("no_instances") != Match)
+		result = error("0012", "The no_instances definition is missing", lincnt);
 
-	if (check("=") != OKAY)
-		RESULT = error("0006", "Missing assignment symbol", lincnt);
+	if (check("=") != Match)
+		result = error("0006", "Missing assignment symbol", lincnt);
 
-	if ((no_instances = getnum()) == ERROR)
-		RESULT = error("0007", "Cannot parse number", lincnt);
+	if ((no_instances = getnum()) == Error)
+		result = error("0007", "Cannot parse number", lincnt);
 
-	if (check("") != BLANK)
-		RESULT = error("0042", "Syntax error with no_instances command", lincnt);
+	if (check("") != Blank)
+		result = error("0042", "Syntax error with no_instances command", lincnt);
 
 	if (no_instances > 0)
 	{
-		if (init_instance(no_instances) == ERROR)
-			return (ERROR);
+		if (init_instance(no_instances) == Error)
+			return Error;
 		skip_garbage();
 		/* process the instance objects */
-		if (process_object_instances(m_instances.size(), m_masters.size()) != OKAY)
-			RESULT = error("0013", "Error with instance object definitions", lincnt);
+		if (process_object_instances(m_instances.size(), m_masters.size()) != Okay)
+			result = error("0013", "Error with instance object definitions", lincnt);
 	}
 	else if (no_instances < 0)
-		RESULT = error("0014", "The no instances is less than zero", lincnt);
+		result = error("0014", "The no instances is less than zero", lincnt);
 	else if (no_instances == 0)
 	{
 		warn("0002", "There are no instance objects", lincnt);
@@ -306,21 +308,21 @@ int Parser::process_instance(void)
 		getword(word);
 
 		/* make sure that the instance definition block is correctly ended */
-		if (strcmp(word, ".end_instancedefs") == EQUAL)
-			RESULT = OKAY;
+		if (strcmp(word, ".end_instancedefs") == 0)
+			result = Okay;
 		else
-			RESULT = error("0042", "Syntax error with no_instances command", lincnt);
+			result = error("0042", "Syntax error with no_instances command", lincnt);
 	}
 
 	/* return the result of parsing the instance block */
-	return (RESULT);
+	return result;
 }
 
 /****************************************************************************
 * process_user() - process a text block which contains definitions for the  *
 *                  user object                                              *
 ****************************************************************************/
-int Parser::process_user(void)
+Status Parser::process_user(void)
 {
 	char word[MAXLINE];
 
@@ -338,40 +340,40 @@ int Parser::process_user(void)
 
 		getword(word);
 
-		if (strcmp(word, "location") == EQUAL)
+		if (strcmp(word, "location") == 0)
 		{
 			/* location command */
-			if (process_location(m_user.loc) == ERROR)
-				return (ERROR);
+			if (process_location(m_user.loc) == Error)
+				return Error;
 		}
-		else if (strcmp(word, "direction") == EQUAL)
+		else if (strcmp(word, "direction") == 0)
 		{
 			/* direction command */
-			if (process_direction(m_user.ang) == ERROR)
-				return (ERROR);
+			if (process_direction(m_user.ang) == Error)
+				return Error;
 		}
-		else if (strcmp (word, "radius") == EQUAL)
+		else if (strcmp (word, "radius") == 0)
 		{
 			/* radius command */
-			if (process_radius(&m_user.radius) == ERROR)
-				return (ERROR);
+			if (process_radius(&m_user.radius) == Error)
+				return Error;
 		}
-		else if (strcmp(word, "sky") == EQUAL)
+		else if (strcmp(word, "sky") == 0)
 		{
 			/* sky command */
-			if (process_sky(&m_user.sky) == ERROR)
-				return (ERROR);
+			if (process_sky(&m_user.sky) == Error)
+				return Error;
 		}
-		else if (strcmp(word, "ground") == EQUAL)
+		else if (strcmp(word, "ground") == 0)
 		{
 			/* ground command */
-			if (process_ground(&m_user.ground) == ERROR)
-				return (ERROR);
+			if (process_ground(&m_user.ground) == Error)
+				return Error;
 		}
-		else if (strcmp(word, ".end_userdefs") == EQUAL)
+		else if (strcmp(word, ".end_userdefs") == 0)
 		{
 			/* end of user block */
-			return (OKAY);
+			return Okay;
 		}
 		else
 			return(error("0016", "Syntax error in block .userdefs", lincnt));
@@ -383,41 +385,41 @@ int Parser::process_user(void)
 *                     definitions and create the master data structure      *
 *                     this structure is pointed to by 'master array'        *
 ****************************************************************************/
-int Parser::process_objects(int no_objects)
+Status Parser::process_objects(int no_objects)
 {
 	int loop, master_no;
-	int RESULT = OKAY;
+	Status result = Okay;
 
 	debug("process_objects()", 1);
 
 	for (loop = 0; loop < no_objects; loop++)
 	{
-		if (check("master_no") != OKAY)
-			RESULT = error("0020", "Error with master no command", lincnt);
+		if (check("master_no") != Match)
+			result = error("0020", "Error with master no command", lincnt);
 
-		if (check("=") != OKAY)
-			RESULT = error("0006", "Missing assignment symbol", lincnt);
+		if (check("=") != Match)
+			result = error("0006", "Missing assignment symbol", lincnt);
 
-		if ((master_no = getnum()) == ERROR)
-			RESULT = error("0007", "Cannot parse number", lincnt);
+		if ((master_no = getnum()) == Error)
+			result = error("0007", "Cannot parse number", lincnt);
 
 		if ((master_no < 0) || (master_no > no_objects))
-			RESULT = error("0021", "The-master no is incorrect", lincnt);
+			result = error("0021", "The-master no is incorrect", lincnt);
 
 		skip_garbage();
 
 		/* get the vertices, edges and polygons which define the object */
-		if (process_object_definition(master_no-1) != OKAY)
-			RESULT = ERROR;
+		if (process_object_definition(master_no-1) != Okay)
+			result = Error;
 
 		skip_garbage();
 
 		/* get any scale and angle commands */
-		if (check_object_values(master_no-1, loop, no_objects) != OKAY)
-			RESULT = ERROR;
+		if (check_object_values(master_no-1, loop, no_objects) != Okay)
+			result = Error;
 	}
 
-	return (RESULT);
+	return result;
 }
 
 /****************************************************************************
@@ -425,7 +427,7 @@ int Parser::process_objects(int no_objects)
 *                         the master object and see that it's definition is *
 *                         correctly terminated                              *
 ****************************************************************************/
-int Parser::check_object_values(int object_no, int object_pos, int no_objects)
+Status Parser::check_object_values(int object_no, int object_pos, int no_objects)
 {
 	char word[MAXLINE];
 
@@ -438,39 +440,39 @@ int Parser::check_object_values(int object_no, int object_pos, int no_objects)
 	{
 		getword(word);
 
-		if (strcmp(word, "angle") == EQUAL)
+		if (strcmp(word, "angle") == 0)
 		{
 			/* get object angle values from script */
-			if (process_angle(ang) == ERROR)
-				return(ERROR);
+			if (process_angle(ang) == Error)
+				return Error;
 			/* load master structure with angle values */
 			m_masters[object_no].angle = ang;
 		}
-		else if (strcmp(word, "scale") == EQUAL)
+		else if (strcmp(word, "scale") == 0)
 		{
 			/* get object scale values from script */
-			if (process_scale(scl) == ERROR)
-				return(ERROR);
+			if (process_scale(scl) == Error)
+				return Error;
 
 			/* fill master structure with scale values */
 			m_masters[object_no].scale = scl;
 		}
-		else if (strcmp(word, "master_no") == EQUAL)
+		else if (strcmp(word, "master_no") == 0)
 		{
 			/* make sure that we need to process more master objects */
 			if ((object_pos+1) < no_objects)
 			{
 				lineptr = 0;
-				return (OKAY);
+				return Okay;
 			}
 			else
 				return(error("0022", "Too many master no definitions", lincnt));
 		}
-		else if (strcmp (word, ".end_masterdefs") == EQUAL)
+		else if (strcmp (word, ".end_masterdefs") == 0)
 		{
 			/* make sure that we have no more master objects to process */
 			if ((object_pos+1) == no_objects)
-				return (OKAY);
+				return Okay;
 			else
 				return (error("0023", "Not all master objects have been defined", lincnt));
 		}
@@ -485,103 +487,103 @@ int Parser::check_object_values(int object_no, int object_pos, int no_objects)
 *                      construction of an object with sets of polygons      *
 *                      each polygon is three-sided                          *
 ****************************************************************************/
-int Parser::process_object_definition(int object_no)
+Status Parser::process_object_definition(int object_no)
 {
-	int RESULT = OKAY;
+	Status result = Okay;
 	int no_vert, no_edge, no_poly;
 
 	debug("process_polygons()", 1);
 
 	/* make sure that object block starts correctly */
-	if (check(".objectdef") != OKAY)
-		RESULT = error("0027", "Error with block .objectdef", lincnt);
+	if (check(".objectdef") != Match)
+		result = error("0027", "Error with block .objectdef", lincnt);
 
 	skip_garbage () ;
 
 	/* now retrieve the number of vertices that make up the object */
-	if (check("no_vertices") != OKAY)
-		RESULT = error("0045", "Error with no_vertices command", lincnt);
+	if (check("no_vertices") != Match)
+		result = error("0045", "Error with no_vertices command", lincnt);
 
-	if (check("=") != OKAY)
-		RESULT = error("0006", "Missing assignment symbol", lincnt);
+	if (check("=") != Match)
+		result = error("0006", "Missing assignment symbol", lincnt);
 
-	if ((no_vert = getnum()) == ERROR)
-		RESULT = error("0007", "Cannot parse number", lincnt);
+	if ((no_vert = getnum()) == Error)
+		result = error("0007", "Cannot parse number", lincnt);
 
 	if (no_vert > 0)
 	{
 		/* get the values of the vertices */
-		RESULT = process_verts(m_masters[object_no], no_vert);
+		result = process_verts(m_masters[object_no], no_vert);
 	}
 	else if (no_vert < 0)
 	{
 		/* generate an error if the no_vertices value is illegal */
-		RESULT = error("0045", "Error with the no vertices command", lincnt);
+		result = error("0045", "Error with the no vertices command", lincnt);
 	}
 
 	skip_garbage();
 
 	/* now retrieve the number of edges that make up the object */
-	if (check("no_edges") != OKAY)
-		RESULT = error("0046", "Error with no_edges command", lincnt);
+	if (check("no_edges") != Match)
+		result = error("0046", "Error with no_edges command", lincnt);
 
-	if (check("=") != OKAY)
-		RESULT = error("0006", "Missing assignment symbol", lincnt);
+	if (check("=") != Match)
+		result = error("0006", "Missing assignment symbol", lincnt);
 
-	if ((no_edge = getnum() ) == ERROR)
-		RESULT = error("0007", "Cannot parse number", lincnt);
+	if ((no_edge = getnum() ) == Error)
+		result = error("0007", "Cannot parse number", lincnt);
 
 	if (no_edge > 0)
 	{
 		/* get the values of the edges */
-		RESULT = process_edges(m_masters[object_no], no_edge);
+		result = process_edges(m_masters[object_no], no_edge);
 	}
 	else if (no_edge < 0)
 	{
 		/* generate an error if the no_edges value is illegal */
-		RESULT = error("0046", "Error with the no_edges command", lincnt);
+		result = error("0046", "Error with the no_edges command", lincnt);
 	}
 
 	skip_garbage();
 
 	/* now retrieve the number of polygons that make up the object */
-	if (check("no_polygons") != OKAY)
-		RESULT = error("0025", "Error with the no_polygons command", lincnt);
+	if (check("no_polygons") != Match)
+		result = error("0025", "Error with the no_polygons command", lincnt);
 
-	if (check("=") != OKAY)
-		RESULT = error("0006", "Missing assignment symbol", lincnt);
+	if (check("=") != Match)
+		result = error("0006", "Missing assignment symbol", lincnt);
 
-	if ((no_poly = getnum() ) == ERROR)
-		RESULT = error("0007", "Cannot parse number", lincnt);
+	if ((no_poly = getnum() ) == Error)
+		result = error("0007", "Cannot parse number", lincnt);
 
 	if (no_poly > 0)
 	{
 		/* get the values of the polygons */
-		RESULT = process_polys(m_masters[object_no], no_poly);
+		result = process_polys(m_masters[object_no], no_poly);
 	}
 	else if (no_poly < 0)
 	{
 		/* generate an error if the no polygons value is illegal */
-		RESULT = error("0025", "Error with the no_polygons command", lincnt);
+		result = error("0025", "Error with the no_polygons command", lincnt);
 	}
 
 	skip_garbage();
 
 	/* check that the object definition block is properly terminated */
-	if (check(".objectend") != OKAY)
-		RESULT = error("0028", "Error terminating object definition", lincnt);
+	if (check(".objectend") != Match)
+		result = error("0028", "Error terminating object definition", lincnt);
 
-	return (RESULT);
+	return result;
 }
 
 /****************************************************************************
 * process_object_instances () - function to process the list of instances   *
 *                               of master objects described                 *
 ****************************************************************************/
-int Parser::process_object_instances(int no_instances, int no_objects)
+Status Parser::process_object_instances(int no_instances, int no_objects)
 {
 	int loop, master_no;
-	int RESULT = OKAY;
+	Status result = Okay;
 
 	debug("process_object_instances()", 1);
 
@@ -592,17 +594,17 @@ int Parser::process_object_instances(int no_instances, int no_objects)
 		bool style_set = false;
 
 		/* check for the master no command */
-		if (check("master_no") != OKAY)
-			RESULT = error("0021", "The master no is incorrect", lincnt);
+		if (check("master_no") != Match)
+			result = error("0021", "The master no is incorrect", lincnt);
 
-		if (check("=") != OKAY)
-			RESULT = error("0006", "Missing assignment symbol", lincnt);
+		if (check("=") != Match)
+			result = error("0006", "Missing assignment symbol", lincnt);
 
-		if ((master_no = getnum()) == ERROR)
-			RESULT = error("0007", "Cannot parse number", lincnt);
+		if ((master_no = getnum()) == Error)
+			result = error("0007", "Cannot parse number", lincnt);
 
 		if ((master_no < 0) || (master_no > no_objects))
-			RESULT = error("0021", "The master_no is incorrect", lincnt);
+			result = error("0021", "The master_no is incorrect", lincnt);
 
 		/* store the master no value in the instance */
 		/* take one away to-match internal format of master object references */
@@ -614,23 +616,23 @@ int Parser::process_object_instances(int no_instances, int no_objects)
 		/* take one away from master no because that's the way they are */
 		/* stored in the master array */
 		if (check_instance_values(col_set, spec_set, style_set,
-								  loop, no_instances, master_no-1) != OKAY)
-			RESULT = ERROR;
+								  loop, no_instances, master_no-1) != Okay)
+			result = Error;
 		/* make sure that colour, specularity & style have been specified */
 		if (!col_set || !spec_set || !style_set)
 		{
-			RESULT = error("0030", "Either colour, specularity or style has not been set", lincnt);
+			result = error("0030", "Either colour, specularity or style has not been set", lincnt);
 		}
 	}
 
-	return (RESULT);
+	return result;
 }
 
 /****************************************************************************
 * check_instance_values() - process the optional and required commands for  *
 *                                  an instance of an object                 *
 ****************************************************************************/
-int Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no)
+Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no)
 {
 	char word[MAXLINE] ;
 	float specularity;
@@ -647,51 +649,51 @@ int Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set
 	{
 		getword(word);
 
-		if (strcmp(word, "location") == EQUAL)
+		if (strcmp(word, "location") == 0)
 		{
 			/* get the instance location from the file */
-			if (process_location(loc) == ERROR)
-				return (ERROR);
+			if (process_location(loc) == Error)
+				return Error;
 			/* fill instance location values into the instance structure */
 			m_instances[instance_pos].pos = loc;
 		}
-		else if (strcmp(word, "angle") == EQUAL)
+		else if (strcmp(word, "angle") == 0)
 		{
-			if (process_angle(ang) == ERROR)
-				return (ERROR);
+			if (process_angle(ang) == Error)
+				return Error;
 			m_instances[instance_pos].angle = ang;
 		}
-		else if (strcmp(word, "scale") == EQUAL)
+		else if (strcmp(word, "scale") == 0)
 		{
-			if (process_scale(scl) == ERROR)
-				return (ERROR);
+			if (process_scale(scl) == Error)
+				return Error;
 			m_instances[instance_pos].scale = scl;
 		}
-		else if (strcmp(word, "colour") == EQUAL)
+		else if (strcmp(word, "colour") == 0)
 		{
 			/* process the colour value */
-			if (process_colour(&colour) == ERROR)
-				return (ERROR);
+			if (process_colour(&colour) == Error)
+				return Error;
 			col_set = true;
 		}
-		else if (strcmp(word, "specularity") == EQUAL)
+		else if (strcmp(word, "specularity") == 0)
 		{
 			/* process the specularity value */
-			if (process_specularity(&specularity) == ERROR)
-				return (ERROR);
+			if (process_specularity(&specularity) == Error)
+				return Error;
 			spec_set = true;
 		}
-		else if (strcmp(word, "style") == EQUAL)
+		else if (strcmp(word, "style") == 0)
 		{
 			/* get the instance style from the file */
-			if (process_style(m_instances[instance_pos].style) == ERROR)
-				return (ERROR);
+			if (process_style(m_instances[instance_pos].style) == Error)
+				return Error;
 			style_set = true;
 		}
-		else if (strcmp(word, "outcome") == EQUAL)
+		else if (strcmp(word, "outcome") == 0)
 		{
 			if (!process_outcome(m_instances[instance_pos].outcome))
-				return (ERROR);
+				return Error;
 			/* now we should check whether we want
 			   the object to be solid or not */
 			if (m_instances[instance_pos].outcome == "")
@@ -703,39 +705,37 @@ int Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set
 			else
 				m_instances[instance_pos].is_solid = true;
 		}
-		else if (strcmp(word, "master_no") == EQUAL)
+		else if (strcmp(word, "master_no") == 0)
 		{
 			if ((instance_pos+1) < no_instances)
 			{
 				lineptr = 0;
 				/* set up the instance of the master object */
-				if (create_object_instance(m_masters[master_no], m_instances[instance_pos]) == ERROR)
-					return (ERROR);
+				create_object_instance(m_masters[master_no], m_instances[instance_pos]);
 				/* translate the instance */
 				translation(m_instances[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colours of the instances facets (polygons) */
 				set_colour(m_masters[master_no], m_instances[instance_pos], colour, specularity);
 				/* finially we set up the collision box around the object */
 				set_bound(m_instances[instance_pos]);
-				return (OKAY);
+				return Okay;
 			}
 			else
 				return (error("0031", "Too many instance definitions", lincnt));
 		}
-		else if (strcmp (word, ".end_instancedefs") == EQUAL)
+		else if (strcmp (word, ".end_instancedefs") == 0)
 		{
 			if ((instance_pos+1) == no_instances)
 			{
 				/* set up the instance of the master object */
-				if (create_object_instance(m_masters[master_no], m_instances[instance_pos]) == ERROR)
-					return (ERROR);
+				create_object_instance(m_masters[master_no], m_instances[instance_pos]);
 				/* translate the instance */
 				translation(m_instances[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colours if the instances facets */
 				set_colour(m_masters[master_no], m_instances[instance_pos], colour, specularity);
 				/* finially we set up the collision box around the object */
 				set_bound(m_instances[instance_pos]);
-				return (OKAY);
+				return Okay;
 			}
 			else
 				return(error("0032", "Not all instances have been defined", lincnt));

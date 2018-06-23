@@ -38,7 +38,8 @@ int main(int argc, char *argv[])
 {
 	float locx, locy, locz;
 	float angle;
-	int mode, instance, prev_inst;
+	int mode, instance;
+	int prev_inst = -1;
 
 	/* variables for the mouse */
 	int mpos_x, mpos_y;
@@ -60,8 +61,10 @@ int main(int argc, char *argv[])
 	Parser script;
 
 	/* if parsing script results in an error then leave program */
-	if (script.parse(argv[1]) == ERROR)
+	if (script.parse(argv[1]) == Error)
+	{
 		exit(0);
+	}
 
 	/* display the contents of the master structure */
 	// check_master(script.masters()); 
@@ -71,7 +74,7 @@ int main(int argc, char *argv[])
 	printf("\nENTERING ANOTHER WORLD...\n");
 
 	/* open up the graphics screen */
-	if (init_audio() && screen_open(mode) == OKAY)
+	if ((init_audio() == Okay) && (screen_open(mode) == Okay))
 	{
 		/* draw the initial position of all the objects */
 		draw_image(script.masters(), script.instances(), script.get_user());
@@ -131,14 +134,16 @@ int main(int argc, char *argv[])
 							/* first let's clear the pointer */
 							draw_pointer(mpos_x, mpos_y);
 							/* now see if we can execute the program */
-							if (instance != ERROR)
+							if (instance != -1)
+							{
 								program(script.instances()[instance]);
+							}
 							/* draw the new image */
 							draw_image(script.masters(), script.instances(), script.get_user());
 							/* finally redraw the pointer */
 							draw_pointer(mpos_x, mpos_y);
 							/* so that another double click is needed */
-							prev_inst = ERROR;
+							prev_inst = -1;
 						}
 						else
 						{
@@ -353,5 +358,5 @@ int main(int argc, char *argv[])
 
 	debug("END OF PROGRAM", 3);
 
-	return (OKAY);
+	return 0;
 }

@@ -3,7 +3,9 @@
 #ifndef __SOUND_HPP__
 #define __SOUND_HPP__
 
-bool init_audio();
+#include "defs.hpp"
+
+Status init_audio();
 void term_audio();
 
 void start_blip();

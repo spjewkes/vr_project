@@ -24,19 +24,19 @@ void audio_callback(void *, Uint8 *stream, int _len)
 	play_pos -= len;
 }
 
-bool init_audio()
+Status init_audio()
 {
-	bool success = true;
+	Status success = Okay;
 
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
-		success = false;
+		success = Error;
 	}
 
 	if (success && SDL_LoadWAV("./res/blip.wav", &wav_spec, &wav_data, &wav_len) == NULL)
 	{
 		std::cerr << "Failed to load ./res/blip.wav\n";
-		success = false;
+		success = Error;
 	}
 
 	if (success)

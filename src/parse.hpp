@@ -9,7 +9,7 @@ public:
 	Parser();
 	~Parser();
 
-	int parse(char *filename);
+    Status parse(char *filename);
 
 	int num_masters() const { return m_masters.size(); }
 	int num_instances() const { return m_instances.size(); }
@@ -19,19 +19,19 @@ public:
 	viewer& get_user() { return m_user; }
 
 private:
-	int init_master(int no_masters);
-	int init_instance(int no_instances);
+	Status init_master(int no_masters);
+	Status init_instance(int no_instances);
 	void init_user();
 
-	int process(void);
-	int process_master(void);
-	int process_instance(void);
-	int process_user(void);
-	int process_objects(int no_objects);
-	int check_object_values(int object_no, int object_pos, int no_objects);
-	int process_object_definition(int object_no);
-	int process_object_instances(int no_instances, int no_objects);
-	int check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no);
+	Status process(void);
+	Status process_master(void);
+	Status process_instance(void);
+	Status process_user(void);
+	Status process_objects(int no_objects);
+	Status check_object_values(int object_no, int object_pos, int no_objects);
+	Status process_object_definition(int object_no);
+	Status process_object_instances(int no_instances, int no_objects);
+	Status check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no);
 
 	// for telling whether the master objects have been defined yet
 	bool masterdef_processed;

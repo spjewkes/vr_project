@@ -20,9 +20,8 @@
 *                            the master object and the angle and scale that *
 *                            that needs to transform the instance           *
 ****************************************************************************/
-int create_object_instance(master &mast, instance &inst)
+void create_object_instance(master &mast, instance &inst)
 {
-	int RESULT = OKAY;
 	int loop;
 	float xpnt, ypnt, zpnt;
 
@@ -63,6 +62,5 @@ int create_object_instance(master &mast, instance &inst)
 		inst.vert[loop].y(ypnt);
 		inst.vert[loop].z(zpnt);
 	}
-	return RESULT;
 }
 

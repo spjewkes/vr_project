@@ -42,8 +42,9 @@ int collision(float pntx, float pnty, float pntz, std::vector<instance> &instanc
 		}
 		idx++;
 	}
+
 	/* return an error to indicate that no collision occured */
-	return ERROR;
+	return -1;
 }
 
 /*****************************************************************************
@@ -95,13 +96,13 @@ int hit_object(int mpos_x, int mpos_y, viewer &user, std::vector<instance> &inst
 		/* now see if any instance has collided with the point */
 		which_instance = collision(pntx, pnty, pntz, instances);
 
-		if (which_instance != ERROR)
+		if (which_instance != -1)
 		{
 			/* we've clicked on an object! */
 			return which_instance;
 		}
 	}
-	return ERROR;
+	return -1;
 }
 
 /****************************************************************************

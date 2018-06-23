@@ -54,7 +54,7 @@ void program(instance &inst)
 
 	/* if the string doesn't contain the string 'solid' then it must
 	   contain a program to execute */
-	if (strcmp(path, "solid") != EQUAL)
+	if (strcmp(path, "solid") != 0)
 	{
 		/* first skip any blanks */
 		while ((*chptr == ' ') || (*chptr == '\t'))

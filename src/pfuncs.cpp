@@ -15,6 +15,7 @@
 #include <math.h>
 #include "defs.hpp"
 #include "error.hpp"
+#include "pfuncs.hpp"
 
 /* Global variables */
 static char LINE[MAXLINE];
@@ -23,33 +24,30 @@ extern void *fp;
 /*************************
 * prototype declarations *
 *************************/
-int getline(void);
 void skip_garbage(void);
-int check(const char *ptr);
 void getword(char *word);
 int getnum(void);
 float fgetnum(void);
-int get_point(float *pntx, float *pnty, float *pntz);
 
 /****************************************************************************
 * getline() - function takes the next line from the file pointed to by '*fp'*
 *             and stores it in the char array 'LINE'                        *
 *             A return code tells if the line is a comment, blank,          *
 *             end-of-file or something else.                                *
-*             returns: EOF if the file is at the end                        *
-*                      COMMENT if the line is a comment                     *
-*                      BLANK if the line contains nothing                   *
-*                      OTHER if the line contains something other than a    *
+*             returns: EoF if the file is at the end                        *
+*                      Comment if the line is a comment                     *
+*                      Blank if the line contains nothing                   *
+*                      Other if the line contains something other than a    *
 *                      comment                                              *
 ****************************************************************************/
-int getline(void)
+MatchResult getline(void)
 {
-	int retcode;
+	MatchResult retcode;
 
 	debug("getline()", 1);
 
 	if ((fgets(LINE, MAXLINE, (FILE *)fp)) == NULL)
-		return (EOF);
+		return EoF;
 
 	lincnt++;
 	lineptr = 0;
@@ -58,12 +56,12 @@ int getline(void)
 
 	debug(LINE, 2);
 
-	if (retcode == OKAY)
-		return (COMMENT);
-	else if (retcode == BLANK)
-		return (BLANK);
+	if (retcode == Match)
+		return Comment;
+	else if (retcode == Blank)
+		return Blank;
 	else
-		return (OTHER);
+		return Other;
 }
 
 /****************************************************************************
@@ -78,25 +76,25 @@ void skip_garbage(void)
 
 	retcode = getline();
 
-	while ((retcode == COMMENT) || (retcode == BLANK))
+	while ((retcode == Comment) || (retcode == Blank))
 		retcode = getline();
 
-	if (retcode == EOF)
+	if (retcode == EoF)
 	{
 		error("0038", "Unexpected end of file", lincnt);
 		fclose((FILE *)fp);
-		exit(ERROR);
+		exit(-1);
 	}
 }
 
 /****************************************************************************
 * check() - function to check that the next string in the array 'LINE'      *
 *           matches with a string passed into the function.                 *
-*           returns: OKAY if there is a match                               *
-*                    ERROR is there is a string but it does not match       *
-*                    BLANK if there is nothing in the LINE to match         *
+*           returns: Match if there is a match                              *
+*                    NoMatch is there is a string but it does not match     *
+*                    Blank if there is nothing in the LINE to match         *
 ****************************************************************************/
-int check(const char *ptr)
+MatchResult check(const char *ptr)
 {
 	debug("check()", 1);
 
@@ -104,7 +102,7 @@ int check(const char *ptr)
 		lineptr++;
 
 	if (LINE[lineptr] == '\n')
-		return (BLANK);
+		return Blank;
 
 	while ((*ptr != '\0') && (*ptr == LINE[lineptr]))
 	{
@@ -113,9 +111,9 @@ int check(const char *ptr)
 	}
 
 	if (*ptr != '\0')
-		return (ERROR);
+		return NoMatch;
 	else
-		return (OKAY);
+		return Match;
 }
 
 /****************************************************************************
@@ -148,10 +146,10 @@ void getword(char *word)
 * getstring() - function retrieves a string - this is defined as a series   *
 *               characters inside a pair of double quotes                   *
 ****************************************************************************/
-int getstring(char *word)
+Status getstring(char *word)
 {
 	char *tptr;
-	int RESULT = ERROR;
+	Status result = Error;
 
 	debug("getstring()", 1);
 
@@ -167,7 +165,7 @@ int getstring(char *word)
 
 	/* check that there's a double quote character there */
 	if (LINE[lineptr++] != '\"')
-		return (RESULT);
+		return result;
 
 	debug("now get the string", 2);
 
@@ -177,7 +175,7 @@ int getstring(char *word)
 		/* check to make sure that we haven't reached the end of the
 		   line retrieved from the file */
 		if (LINE[lineptr] == '\0')
-			return (RESULT);
+			return result;
 
 		/* otherwise we put the value into the char array pointed to by tptr */
 		*tptr++ = LINE[lineptr++];
@@ -188,9 +186,9 @@ int getstring(char *word)
 	/* terminate the char array pointed to by tptr with a null value */
 	*tptr = '\0';
 
-	RESULT = OKAY;
+	result = Okay;
 
-	return (RESULT);
+	return result;
 }
 
 /****************************************************************************
@@ -207,7 +205,7 @@ int getnum(void)
 		lineptr++;
 
 	if (LINE[lineptr] == '\n')
-		return (ERROR);
+		return -1;
 
 	numline[tptr++] = LINE[lineptr++];
 
@@ -255,28 +253,28 @@ float fgetnum(void)
 * get_point - function to retrieve point definition which is an X, Y and Z  *
 *             coordinate - three of these describe a polygon in 3d space    *
 ****************************************************************************/
-int get_point(float *pntx, float *pnty, float *pntz)
+Status get_point(float *pntx, float *pnty, float *pntz)
 {
-	int RESULT = OKAY;
+	Status result = Okay;
 
 	debug("get_point()", 1);
 
 	*pntx = fgetnum();
 
-	if (check(",") != OKAY)
-		RESULT = ERROR;
+	if (check(",") != Match)
+		result = Error;
 
 	*pnty = fgetnum();
 
-	if (check(",") != OKAY)
-		RESULT = ERROR;
+	if (check(",") != Match)
+		result = Error;
 
 	*pntz = fgetnum();
 
-	if (check("") != BLANK)
-		RESULT = ERROR;
+	if (check("") != Blank)
+		result = Error;
 
-	return (RESULT);
+	return result;
 }
 
 /***************************************************************************

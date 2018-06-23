@@ -13,14 +13,6 @@
 #define MAXLINE (4096)
 #define MAXARG  (260)
 
-#define ERROR   (-1)
-#define OKAY    (1)
-#define BLANK   (2)
-#define COMMENT (3)
-#define OTHER   (4)
-
-#define EQUAL (0)
-
 #define MSIZE (8)
 
 #define EVER (;;)
@@ -29,6 +21,16 @@
 
 /* External variables */
 extern int lincnt, lineptr;
+
+//
+// Define type for returning a status from functions
+//
+typedef enum status { Error, Okay } Status;
+
+//
+// Define type for checking string matches
+//
+typedef enum match_result { Match, NoMatch, Blank, Comment, Other, EoF } MatchResult;
 
 //
 // Define object's render style

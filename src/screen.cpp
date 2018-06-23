@@ -34,7 +34,7 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz);
 *                 mode are: 0 - 320x200    1 - 640x400    2 - 640x480       *
 *                           3 - 800x600    4 - 1024x768                     *
 ****************************************************************************/
-int screen_open(int mode)
+Status screen_open(int mode)
 {
 	/* make sure that mode is of a legal value between 0 and 4 */
 	if ((mode < 0) && (mode > 4))
@@ -78,10 +78,10 @@ int screen_open(int mode)
 	int retcode = create_graphics(width, height);
 	if (retcode < 0)
 	{
-		return (ERROR);
+		return Error;
 	}
 
-	return (OKAY);
+	return Okay;
 }
 
 /****************************************************************************

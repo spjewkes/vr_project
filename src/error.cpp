@@ -31,7 +31,7 @@ void set_debug_mode(int mode)
 *           containing the error message and a relevant line number          *
 *           keeps the same format for all error messages                     *
 *****************************************************************************/
-int error(const char *errno, const char *message, int line_no)
+Status error(const char *errno, const char *message, int line_no)
 {
 	debug("error()", 1);
 
@@ -43,7 +43,7 @@ int error(const char *errno, const char *message, int line_no)
 	printf("\t%s.\n\n", message);
 
 	/* return an error to caller */
-	return(ERROR);
+	return Error;
 }
 
 /*****************************************************************************
