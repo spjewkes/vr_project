@@ -21,14 +21,6 @@
 static char LINE[MAXLINE];
 extern void *fp;
 
-/*************************
-* prototype declarations *
-*************************/
-void skip_garbage(void);
-void getword(char *word);
-int getnum(void);
-float fgetnum(void);
-
 /****************************************************************************
 * getline() - function takes the next line from the file pointed to by '*fp'*
 *             and stores it in the char array 'LINE'                        *

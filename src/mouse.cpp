@@ -15,35 +15,6 @@
 #include "defs.hpp"
 
 /*****************************************************************************
-* mouse_info() - this function sends the offsets of the mouse position in    *
-*                relation to its last position and information on the        *
-*                current status of the mouse buttons:                        *
-*                1 = left; 2 = right; 3 = both                               *
-*****************************************************************************/
-int mouse_info(int *x, int *y)
-{
-	// THIS WILL NEED COMPLETELY REWRITING SO COMMENT OUT FOR NOW
-	// union REGS regs;
-	// /* we want to call the BIOS function that tells us the physical
-	//    movement of the mouse pointer */
-	// regs.x.ax = 0x0b;
-	// /* interrupt call */
-	// int86(MOUSE, &regs, &regs);
-	// /* now load the returning values to the parameters */
-	// *x = regs.x.cx;
-	// *y = regs.x.dx;
-	// /* we want to call the BIOS function that tells us the button-press
-	//    information of the mouse */
-	// regs.x.ax = 0x03;
-	// /* interrupt call */
-	// int86(MOUSE, &regs, &regs);
-	// /* now return the button status */
-	(void)x;
-	(void)y;
-	return (0);
-}
-
-/*****************************************************************************
 * draw_pointer() - function which simply draws the mouse pointer onto the    *
 *                  screen - it can be anything at all as long as it fits     *
 *                  inside the MSIZE defined boundary                         *

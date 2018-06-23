@@ -12,12 +12,10 @@
 ****************/
 #include <stdio.h>
 #include "defs.hpp"
+#include "error.hpp"
 
 /* global debug mode */
 int debug_mode = TEST;
-
-/* forward declare prototypes */
-void debug(const char *string, int level);
 
 /* Set debug mode */
 void set_debug_mode(int mode)
