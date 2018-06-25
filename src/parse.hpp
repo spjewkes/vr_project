@@ -33,6 +33,21 @@ private:
 	Status process_object_instances(int no_instances, int no_objects);
 	Status check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no);
 
+	Status process_location(Vector3d &loc);
+	Status process_direction(Vector3d &ang);
+	Status process_radius(float *radius);
+	Status process_angle(Vector3d &ang);
+	Status process_scale(Vector3d &scl);
+	Status process_colour(int *colour);
+	Status process_specularity(float *specularity);
+	bool process_outcome(std::string &outcome);
+	Status process_style(RenderStyle &style);
+	Status process_verts(master &mast, int no_vertices);
+	Status process_edges(master &mast, int no_edges);
+	Status process_polys(master &mast, int no_polygons);
+	Status process_sky(int *colour);
+	Status process_ground(int *colour);
+
 	// for telling whether the master objects have been defined yet
 	bool masterdef_processed;
 
