@@ -61,7 +61,9 @@ private:
 	void set_colour(master &mast, instance &inst, int colour, float specularity);
 	void set_bound(instance &inst);
 
-	// Global variables
+	// Variables for managing reading the file to parse
+	int lincnt;
+	int lineptr;
 	void *fp;
 	char LINE[MAXLINE];
 

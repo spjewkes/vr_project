@@ -25,12 +25,6 @@
 #include "setup.hpp"
 #include "sound.hpp"
 
-/*******************
-* global variables *
-*******************/
-int lincnt;
-int lineptr;
-
 /************
 * functions *
 ************/

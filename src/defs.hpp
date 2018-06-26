@@ -19,9 +19,6 @@
 
 #define MOVE_SPEED (25.0f)
 
-/* External variables */
-extern int lincnt, lineptr;
-
 //
 // Define type for returning a status from functions
 //
