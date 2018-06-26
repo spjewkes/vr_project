@@ -44,7 +44,9 @@ Status Parser::parse()
 	/* lincnt stores currently processed line */
 	lincnt = 0;
 
-	if ((fp = (FILE *)fopen(filename.c_str(), "r")) == NULL)
+	file.open(filename, std::ios::in);
+
+	if (!file.is_open())
 	{
 		/* error if can't open file */
 		error("0001", "Error opening file", lincnt);
@@ -54,6 +56,7 @@ Status Parser::parse()
 	{
 		/* get the first line of the file */
 		retcode = getline();
+
 		/* getting lines from file until EOF */
 		while (retcode != EoF)
 		{
@@ -68,8 +71,9 @@ Status Parser::parse()
 			retcode = getline();
 		}
 	}
-	/* close the open file */
-	fclose((FILE *)fp) ;
+
+	file.close();
+
 	return Okay;
 }
 
@@ -1179,26 +1183,30 @@ Status Parser::process_polys(master &mast, int no_polygons)
 ****************************************************************************/
 MatchResult Parser::getline(void)
 {
-	MatchResult retcode;
-
 	debug("getline()", 1);
 
-	if ((fgets(LINE, MAXLINE, (FILE *)fp)) == NULL)
+	std::getline(file, line);
+
+	if (file.eof())
+	{
 		return EoF;
+	}
 
 	lincnt++;
 	lineptr = 0;
-	retcode = check("#");
-	lineptr = 0;
 
-	debug(LINE, 2);
+	debug(line.c_str(), 2);
 
-	if (retcode == Match)
+	if (line.find_first_of("#") == 0)
+	{
 		return Comment;
-	else if (retcode == Blank)
+	}
+	else if (line.find_first_not_of("\t\n ") == std::string::npos)
+	{
 		return Blank;
-	else
-		return Other;
+	}
+
+	return Other;
 }
 
 /****************************************************************************
@@ -1219,7 +1227,7 @@ void Parser::skip_garbage(void)
 	if (retcode == EoF)
 	{
 		error("0038", "Unexpected end of file", lincnt);
-		fclose((FILE *)fp);
+		file.close();
 		exit(-1);
 	}
 }
@@ -1235,22 +1243,21 @@ MatchResult Parser::check(const char *ptr)
 {
 	debug("check()", 1);
 
-	while ((LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
+	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
 		lineptr++;
 
-	if (LINE[lineptr] == '\n')
+	if (static_cast<unsigned int>(lineptr) == line.size())
 		return Blank;
 
-	while ((*ptr != '\0') && (*ptr == LINE[lineptr]))
+	if (line.find_first_of(ptr, lineptr) == static_cast<unsigned int>(lineptr))
 	{
-		lineptr++;
-		ptr++;
-	}
-
-	if (*ptr != '\0')
-		return NoMatch;
-	else
+		lineptr += strlen(ptr);
 		return Match;
+	}
+	else
+	{
+		return NoMatch;
+	}
 }
 
 /****************************************************************************
@@ -1266,14 +1273,14 @@ void Parser::getword(char *word)
 
 	tptr = word;
 
-	while ((LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
+	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
 		lineptr++;
 
-	while (LINE[lineptr] != '\0')
+	while (line[lineptr] != '\0')
 	{
-		if ((LINE[lineptr] == '\n') || (LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
+		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t'))
 			break;
-		*tptr++ = LINE[lineptr++];
+		*tptr++ = line[lineptr++];
 	}
 
 	*tptr = '\0';
@@ -1295,27 +1302,27 @@ Status Parser::getstring(char *word)
 	debug("before while loop", 2);
 
 	/* skip any spaces or tabs before the string starts */
-	while ((LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
+	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
 		lineptr++;
 
 	debug("now check for double quote mark", 2);
 
 	/* check that there's a double quote character there */
-	if (LINE[lineptr++] != '\"')
+	if (line[lineptr++] != '\"')
 		return result;
 
 	debug("now get the string", 2);
 
 	/* now put the rest of the line into char array pointed to by tptr */
-	while (LINE[lineptr] != '\"')
+	while (line[lineptr] != '\"')
 	{
 		/* check to make sure that we haven't reached the end of the
 		   line retrieved from the file */
-		if (LINE[lineptr] == '\0')
+		if (line[lineptr] == '\0')
 			return result;
 
 		/* otherwise we put the value into the char array pointed to by tptr */
-		*tptr++ = LINE[lineptr++];
+		*tptr++ = line[lineptr++];
 	}
 
 	debug("string has been fetched", 2);
@@ -1338,19 +1345,19 @@ int Parser::getnum(void)
 
 	debug("getnum()", 1);
 
-	while ((LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
+	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
 		lineptr++;
 
-	if (LINE[lineptr] == '\n')
+	if (line[lineptr] == '\n')
 		return -1;
 
-	numline[tptr++] = LINE[lineptr++];
+	numline[tptr++] = line[lineptr++];
 
-	while (LINE[lineptr] != '\0')
+	while (line[lineptr] != '\0')
 	{
-		if ((LINE[lineptr] == '\n') || (LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
+		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t'))
 			break;
-		numline[tptr++] = LINE[lineptr++];
+		numline[tptr++] = line[lineptr++];
 	}
 
 	numline[tptr] = '\0';
@@ -1369,16 +1376,16 @@ float Parser::fgetnum(void)
 
 	debug("fgetnum()", 1);
 
-	while ((LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
+	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
 		lineptr++;
 
-	fnumline[tptr++] = LINE[lineptr++];
+	fnumline[tptr++] = line[lineptr++];
 
-	while (LINE[lineptr] != '\0')
+	while (line[lineptr] != '\0')
 	{
-		if ((LINE[lineptr] == '\n') || (LINE[lineptr] == ' ') || (LINE[lineptr] == '\t'))
+		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t'))
 			break;
-		fnumline[tptr++] = LINE[lineptr++];
+		fnumline[tptr++] = line[lineptr++];
 	}
 
 	fnumline[tptr] = '\0';

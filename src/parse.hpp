@@ -1,6 +1,7 @@
 #ifndef __PARSE_HPP__
 #define __PARSE_HPP__
 
+#include <fstream>
 #include <string>
 #include "defs.hpp"
 #include "world.hpp"
@@ -53,10 +54,11 @@ private:
 	void set_bound(instance &inst);
 
 	// Variables for managing reading the file to parse
+	std::ifstream file;
+	std::string line;
+
 	int lincnt;
 	int lineptr;
-	void *fp;
-	char LINE[MAXLINE];
 
 	std::string filename;
 	World &world;
