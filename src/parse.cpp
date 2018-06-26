@@ -20,12 +20,6 @@
 #include "setup.hpp"
 #include "vector3d.hpp"
 
-/* Global variables */
-void *fp;
-static char LINE[MAXLINE];
-extern void *fp;
-
-
 /* Constructor */
 Parser::Parser() : masterdef_processed(false)
 {

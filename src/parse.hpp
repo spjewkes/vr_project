@@ -61,6 +61,10 @@ private:
 	void set_colour(master &mast, instance &inst, int colour, float specularity);
 	void set_bound(instance &inst);
 
+	// Global variables
+	void *fp;
+	char LINE[MAXLINE];
+
 	// for telling whether the master objects have been defined yet
 	bool masterdef_processed;
 
