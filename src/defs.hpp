@@ -62,9 +62,10 @@ struct viewer
 	Vector3d ang;
 	Vector3d loc;
 
-	float radius;
+	float radius = { 1.0f };
 
-	int sky, ground;
+	int sky = { 0 };
+	int ground = { 0 };
 };
 
 /****************************
@@ -72,23 +73,23 @@ struct viewer
 ****************************/
 struct instance
 {
-	int master_no;
+	int master_no = { 0 };
 
-	Vector3d pos;
-	Vector3d min;
-	Vector3d max;
-	Vector3d angle;
-	Vector3d scale;
+	Vector3d pos = { 0.0f, 0.0f, 0.0f };
+	Vector3d min = { 0.0f, 0.0f, 0.0f };
+	Vector3d max = { 0.0f, 0.0f, 0.0f };
+	Vector3d angle = { 0.0f, 0.0f, 0.0f };
+	Vector3d scale = { 1.0f, 1.0f, 1.0f };
 
 	std::vector<Vector3d> vert;
 
 	std::vector<unsigned int> edge_colour;
 	std::vector<unsigned int> poly_colour;
 
-	RenderStyle style;
-	bool is_solid;
+	RenderStyle style = { RenderStyle::WIREFRAME };
+	bool is_solid = { false };
 
-	std::string outcome;
+	std::string outcome = { "" };
 };
 
 /**************************
@@ -96,8 +97,8 @@ struct instance
 **************************/
 struct master
 {
-	Vector3d scale;
-	Vector3d angle;
+	Vector3d scale = { 1.0f, 1.0f, 1.0f };
+	Vector3d angle = { 0.0f, 0.0f, 0.0f };
 
 	std::vector<Vector3d> vert;
 

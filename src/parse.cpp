@@ -73,97 +73,6 @@ Status Parser::parse(char *filename)
 	return Okay;
 }
 
-/*****************************************************************************
- * init_master() - initialises the array which will store the master objects *
- *****************************************************************************/
-Status Parser::init_master(int no_masters)
-{
-	debug("init_master()", 1);
-
-	/* create the space required for the master objects */
-	m_masters.resize(no_masters);
-
-	for (auto &mast : m_masters)
-	{
-		/* set all the object's scales to 1.0 */
-		mast.scale.x(1.0);
-		mast.scale.y(1.0);
-		mast.scale.z(1.0);
-		/* set all the obJect's angles to 0.0 */
-		mast.angle.x(0.0);
-		mast.angle.y(0.0);
-		mast.angle.z(0.0);
-	}
-
-	return Okay;
-}
-
-/****************************************************************************
-* init_instance() - initialises the array which will store the instances of *
-*                   the master objects                                      *
-****************************************************************************/
-Status Parser::init_instance(int no_instances)
-{
-	debug("init_instance()", 1);
-
-	/* create the space required to store the instance objects */
-	m_instances.resize(no_instances);
-
-	for (auto &inst : m_instances)
-	{
-		/* set the initial location of all the objects to 0 */
-		inst.pos.x(0.0);
-		inst.pos.y(0.0);
-		inst.pos.z(0.0);
-		/* set all the minimum values of all the object to 0 */
-		inst.min.x(0.0);
-		inst.min.y(0.0);
-		inst.min.z(0.0);
-		/* set all the maximum values of all the objects to 0 */
-		inst.max.x(0.0);
-		inst.max.y(0.0);
-		inst.max.z(0.0);
-		/* set all the instance's scales to 1.0 */
-		inst.scale.x(1.0);
-		inst.scale.y(1.0);
-		inst.scale.z(1.0);
-		/* set all the instance's angles to 0.0 */
-		inst.angle.x(0.0);
-		inst.angle.y(0.0);
-		inst.angle.z(0.0);
-		/* default master no should be set to 0 (this will be changed though */
-		inst.master_no = 0;
-		/* set the default style of the object to wlreframe */
-		inst.style = RenderStyle::WIREFRAME;
-		/* set the default solidity of the object to false */
-		inst.is_solid = false;
-		/* set up the default outcome string */
-		inst.outcome = "";
-	}
-	return Okay;
-}
-
-/*****************************************************************************
-* init_user() - initialises user variables                                   *
-*****************************************************************************/
-void Parser::init_user()
-{
-	debug("init_user()", 1);
-
-	m_user.loc.x(0.0);
-	m_user.loc.y(0.0);
-	m_user.loc.z(0.0);
-
-	m_user.ang.x(0.0);
-	m_user.ang.y(0.0);
-	m_user.ang.z(0.0);
-
-	m_user.radius = 1.0;
-
-	m_user.sky = 0;
-	m_user.ground = 0;
-}
-
 /****************************************************************************
 * process() - function to process any commands that may occur in the file   *
 *             at this level it searches for one of three headers:           *
@@ -227,8 +136,9 @@ Status Parser::process_master()
 
 	if (no_masters > 0)
 	{
-		if (init_master(no_masters) == Error)
-			return Error;
+		/* create the space required for the master objects */
+		m_masters.resize(no_masters);
+
 		skip_garbage();
 		/* process the master objects */
 		if (process_objects(no_masters) != Okay)
@@ -287,8 +197,9 @@ Status Parser::process_instance(void)
 
 	if (no_instances > 0)
 	{
-		if (init_instance(no_instances) == Error)
-			return Error;
+		/* create the space required to store the instance objects */
+		m_instances.resize(no_instances);
+
 		skip_garbage();
 		/* process the instance objects */
 		if (process_object_instances(m_instances.size(), m_masters.size()) != Okay)
@@ -327,8 +238,6 @@ Status Parser::process_user(void)
 	/* error if the master objects have already been defined */
 	if (masterdef_processed)
 		return (error("0004", "Master objects have already been defined", lincnt));
-
-	init_user();
 
 	for EVER
 	{

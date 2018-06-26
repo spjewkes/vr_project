@@ -19,10 +19,6 @@ public:
 	viewer& get_user() { return m_user; }
 
 private:
-	Status init_master(int no_masters);
-	Status init_instance(int no_instances);
-	void init_user();
-
 	Status process(void);
 	Status process_master(void);
 	Status process_instance(void);
