@@ -63,9 +63,6 @@ private:
 	void *fp;
 	char LINE[MAXLINE];
 
-	// for telling whether the master objects have been defined yet
-	bool masterdef_processed;
-
 	std::vector<master> m_masters;
 	std::vector<instance> m_instances;
 	viewer m_user;

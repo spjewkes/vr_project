@@ -21,7 +21,7 @@
 #include "vector3d.hpp"
 
 /* Constructor */
-Parser::Parser() : masterdef_processed(false)
+Parser::Parser()
 {
 }
 
@@ -123,7 +123,6 @@ Status Parser::process_master()
 
 	if (check("no_objects") != Match)
 		result = error("0005", "The no_objects definition is missing", lincnt);
-	masterdef_processed = true;
 
 	if (check("=") != Match)
 		result = error("0006", "Missing assignment symbol", lincnt);
@@ -178,7 +177,7 @@ Status Parser::process_instance(void)
 	debug("process_instance()", 1);
 
 	/* error if the master objects haven't been defined */
-	if (!masterdef_processed)
+	if (m_masters.empty())
 		result = error("0011", "Master objects have not yet been defined", lincnt);
 
 	skip_garbage();
@@ -236,7 +235,7 @@ Status Parser::process_user(void)
 	debug("process_user()", 1);
 
 	/* error if the master objects have already been defined */
-	if (masterdef_processed)
+	if (!m_masters.empty())
 		return (error("0004", "Master objects have already been defined", lincnt));
 
 	for EVER
