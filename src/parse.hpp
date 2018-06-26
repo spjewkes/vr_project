@@ -1,22 +1,17 @@
 #ifndef __PARSE_HPP__
 #define __PARSE_HPP__
 
+#include <string>
 #include "defs.hpp"
+#include "world.hpp"
 
 class Parser
 {
 public:
-	Parser();
+	Parser(const char *_filename, World &_world);
 	~Parser();
 
-    Status parse(char *filename);
-
-	int num_masters() const { return m_masters.size(); }
-	int num_instances() const { return m_instances.size(); }
-
-	std::vector<master> &masters() { return m_masters; }
-	std::vector<instance> &instances() { return m_instances; }
-	viewer& get_user() { return m_user; }
+    Status parse();
 
 private:
 	Status process(void);
@@ -63,9 +58,8 @@ private:
 	void *fp;
 	char LINE[MAXLINE];
 
-	std::vector<master> m_masters;
-	std::vector<instance> m_instances;
-	viewer m_user;
+	std::string filename;
+	World &world;
 };
 
 #endif // __PARSE_HPP__

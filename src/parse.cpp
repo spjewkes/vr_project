@@ -21,7 +21,7 @@
 #include "vector3d.hpp"
 
 /* Constructor */
-Parser::Parser()
+Parser::Parser(const char *_filename, World &_world) : filename(_filename), world(_world)
 {
 }
 
@@ -36,7 +36,7 @@ Parser::~Parser()
 *           Returns a pointer to a datastructure that contains the virtual  *
 *           world to be manipulated.                                        *
 ****************************************************************************/
-Status Parser::parse(char *filename)
+Status Parser::parse()
 {
 	MatchResult retcode;
 	debug("parse()", 1);
@@ -44,7 +44,7 @@ Status Parser::parse(char *filename)
 	/* lincnt stores currently processed line */
 	lincnt = 0;
 
-	if ((fp = (FILE *)fopen(filename, "r")) == NULL)
+	if ((fp = (FILE *)fopen(filename.c_str(), "r")) == NULL)
 	{
 		/* error if can't open file */
 		error("0001", "Error opening file", lincnt);
@@ -136,7 +136,7 @@ Status Parser::process_master()
 	if (no_masters > 0)
 	{
 		/* create the space required for the master objects */
-		m_masters.resize(no_masters);
+		world.masters().resize(no_masters);
 
 		skip_garbage();
 		/* process the master objects */
@@ -177,7 +177,7 @@ Status Parser::process_instance(void)
 	debug("process_instance()", 1);
 
 	/* error if the master objects haven't been defined */
-	if (m_masters.empty())
+	if (world.masters().empty())
 		result = error("0011", "Master objects have not yet been defined", lincnt);
 
 	skip_garbage();
@@ -197,11 +197,11 @@ Status Parser::process_instance(void)
 	if (no_instances > 0)
 	{
 		/* create the space required to store the instance objects */
-		m_instances.resize(no_instances);
+		world.instances().resize(no_instances);
 
 		skip_garbage();
 		/* process the instance objects */
-		if (process_object_instances(m_instances.size(), m_masters.size()) != Okay)
+		if (process_object_instances(world.instances().size(), world.masters().size()) != Okay)
 			result = error("0013", "Error with instance object definitions", lincnt);
 	}
 	else if (no_instances < 0)
@@ -235,7 +235,7 @@ Status Parser::process_user(void)
 	debug("process_user()", 1);
 
 	/* error if the master objects have already been defined */
-	if (!m_masters.empty())
+	if (!world.masters().empty())
 		return (error("0004", "Master objects have already been defined", lincnt));
 
 	for EVER
@@ -247,31 +247,31 @@ Status Parser::process_user(void)
 		if (strcmp(word, "location") == 0)
 		{
 			/* location command */
-			if (process_location(m_user.loc) == Error)
+			if (process_location(world.user().loc) == Error)
 				return Error;
 		}
 		else if (strcmp(word, "direction") == 0)
 		{
 			/* direction command */
-			if (process_direction(m_user.ang) == Error)
+			if (process_direction(world.user().ang) == Error)
 				return Error;
 		}
 		else if (strcmp (word, "radius") == 0)
 		{
 			/* radius command */
-			if (process_radius(&m_user.radius) == Error)
+			if (process_radius(&world.user().radius) == Error)
 				return Error;
 		}
 		else if (strcmp(word, "sky") == 0)
 		{
 			/* sky command */
-			if (process_sky(&m_user.sky) == Error)
+			if (process_sky(&world.user().sky) == Error)
 				return Error;
 		}
 		else if (strcmp(word, "ground") == 0)
 		{
 			/* ground command */
-			if (process_ground(&m_user.ground) == Error)
+			if (process_ground(&world.user().ground) == Error)
 				return Error;
 		}
 		else if (strcmp(word, ".end_userdefs") == 0)
@@ -350,7 +350,7 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 			if (process_angle(ang) == Error)
 				return Error;
 			/* load master structure with angle values */
-			m_masters[object_no].angle = ang;
+			world.masters()[object_no].angle = ang;
 		}
 		else if (strcmp(word, "scale") == 0)
 		{
@@ -359,7 +359,7 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 				return Error;
 
 			/* fill master structure with scale values */
-			m_masters[object_no].scale = scl;
+			world.masters()[object_no].scale = scl;
 		}
 		else if (strcmp(word, "master_no") == 0)
 		{
@@ -417,7 +417,7 @@ Status Parser::process_object_definition(int object_no)
 	if (no_vert > 0)
 	{
 		/* get the values of the vertices */
-		result = process_verts(m_masters[object_no], no_vert);
+		result = process_verts(world.masters()[object_no], no_vert);
 	}
 	else if (no_vert < 0)
 	{
@@ -440,7 +440,7 @@ Status Parser::process_object_definition(int object_no)
 	if (no_edge > 0)
 	{
 		/* get the values of the edges */
-		result = process_edges(m_masters[object_no], no_edge);
+		result = process_edges(world.masters()[object_no], no_edge);
 	}
 	else if (no_edge < 0)
 	{
@@ -463,7 +463,7 @@ Status Parser::process_object_definition(int object_no)
 	if (no_poly > 0)
 	{
 		/* get the values of the polygons */
-		result = process_polys(m_masters[object_no], no_poly);
+		result = process_polys(world.masters()[object_no], no_poly);
 	}
 	else if (no_poly < 0)
 	{
@@ -512,7 +512,7 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 
 		/* store the master no value in the instance */
 		/* take one away to-match internal format of master object references */
-		m_instances[loop].master_no = master_no - 1;
+		world.instances()[loop].master_no = master_no - 1;
 
 		skip_garbage();
 
@@ -559,19 +559,19 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			if (process_location(loc) == Error)
 				return Error;
 			/* fill instance location values into the instance structure */
-			m_instances[instance_pos].pos = loc;
+			world.instances()[instance_pos].pos = loc;
 		}
 		else if (strcmp(word, "angle") == 0)
 		{
 			if (process_angle(ang) == Error)
 				return Error;
-			m_instances[instance_pos].angle = ang;
+			world.instances()[instance_pos].angle = ang;
 		}
 		else if (strcmp(word, "scale") == 0)
 		{
 			if (process_scale(scl) == Error)
 				return Error;
-			m_instances[instance_pos].scale = scl;
+			world.instances()[instance_pos].scale = scl;
 		}
 		else if (strcmp(word, "colour") == 0)
 		{
@@ -590,24 +590,24 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 		else if (strcmp(word, "style") == 0)
 		{
 			/* get the instance style from the file */
-			if (process_style(m_instances[instance_pos].style) == Error)
+			if (process_style(world.instances()[instance_pos].style) == Error)
 				return Error;
 			style_set = true;
 		}
 		else if (strcmp(word, "outcome") == 0)
 		{
-			if (!process_outcome(m_instances[instance_pos].outcome))
+			if (!process_outcome(world.instances()[instance_pos].outcome))
 				return Error;
 			/* now we should check whether we want
 			   the object to be solid or not */
-			if (m_instances[instance_pos].outcome == "")
-				m_instances[instance_pos].is_solid = false;
-			else if (m_instances[instance_pos].outcome == "ignore")
-				m_instances[instance_pos].is_solid = false;
-			else if (m_instances[instance_pos].outcome == "solid")
-				m_instances[instance_pos].is_solid = true;
+			if (world.instances()[instance_pos].outcome == "")
+				world.instances()[instance_pos].is_solid = false;
+			else if (world.instances()[instance_pos].outcome == "ignore")
+				world.instances()[instance_pos].is_solid = false;
+			else if (world.instances()[instance_pos].outcome == "solid")
+				world.instances()[instance_pos].is_solid = true;
 			else
-				m_instances[instance_pos].is_solid = true;
+				world.instances()[instance_pos].is_solid = true;
 		}
 		else if (strcmp(word, "master_no") == 0)
 		{
@@ -615,13 +615,13 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			{
 				lineptr = 0;
 				/* set up the instance of the master object */
-				create_object_instance(m_masters[master_no], m_instances[instance_pos]);
+				create_object_instance(world.masters()[master_no], world.instances()[instance_pos]);
 				/* translate the instance */
-				translation(m_instances[instance_pos], loc.x(), loc.y(), loc.z());
+				translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colours of the instances facets (polygons) */
-				set_colour(m_masters[master_no], m_instances[instance_pos], colour, specularity);
+				set_colour(world.masters()[master_no], world.instances()[instance_pos], colour, specularity);
 				/* finially we set up the collision box around the object */
-				set_bound(m_instances[instance_pos]);
+				set_bound(world.instances()[instance_pos]);
 				return Okay;
 			}
 			else
@@ -632,13 +632,13 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			if ((instance_pos+1) == no_instances)
 			{
 				/* set up the instance of the master object */
-				create_object_instance(m_masters[master_no], m_instances[instance_pos]);
+				create_object_instance(world.masters()[master_no], world.instances()[instance_pos]);
 				/* translate the instance */
-				translation(m_instances[instance_pos], loc.x(), loc.y(), loc.z());
+				translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colours if the instances facets */
-				set_colour(m_masters[master_no], m_instances[instance_pos], colour, specularity);
+				set_colour(world.masters()[master_no], world.instances()[instance_pos], colour, specularity);
 				/* finially we set up the collision box around the object */
-				set_bound(m_instances[instance_pos]);
+				set_bound(world.instances()[instance_pos]);
 				return Okay;
 			}
 			else

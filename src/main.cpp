@@ -52,18 +52,19 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	Parser script;
+	World world;
+	Parser script(argv[1], world);;
 
 	/* if parsing script results in an error then leave program */
-	if (script.parse(argv[1]) == Error)
+	if (script.parse() == Error)
 	{
 		exit(0);
 	}
 
 	/* display the contents of the master structure */
-	// check_master(script.masters()); 
+	// check_master(world.masters()); 
 	/* display the contents of the instance structure */
-	// check_instance(script.instances());
+	// check_instance(world.instances());
 	/* now let's start the really interesting bit */
 	printf("\nENTERING ANOTHER WORLD...\n");
 
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
 	if ((init_audio() == Okay) && (screen_open(mode) == Okay))
 	{
 		/* draw the initial position of all the objects */
-		draw_image(script.masters(), script.instances(), script.get_user());
+		draw_image(world.masters(), world.instances(), world.user());
 		/* set the value of c to a null value to begin with */
 
 		auto tp1 = std::chrono::system_clock::now();
@@ -87,9 +88,9 @@ int main(int argc, char *argv[])
 
 		/* get temporary values of position of user to check collision
 		   with any object instances */
-		locx = script.get_user().loc.x();
-		locy = script.get_user().loc.y();
-		locz = script.get_user().loc.z();
+		locx = world.user().loc.x();
+		locy = world.user().loc.y();
+		locz = world.user().loc.z();
 
 		bool key_state[keyboard_state::KEY_MAX] = { false };
 		float move;
@@ -120,7 +121,7 @@ int main(int argc, char *argv[])
 					if (event.button.button & SDL_BUTTON_LEFT)
 					{
 						/* see if we hit an objeot and act accordingly */
-						instance = hit_object(mpos_x, mpos_y, script.get_user(), script.instances());
+						instance = hit_object(mpos_x, mpos_y, world.user(), world.instances());
 						/* if this is the second click on the same object then
 						   we run it */
 						if (instance == prev_inst)
@@ -130,10 +131,10 @@ int main(int argc, char *argv[])
 							/* now see if we can execute the program */
 							if (instance != -1)
 							{
-								program(script.instances()[instance]);
+								program(world.instances()[instance]);
 							}
 							/* draw the new image */
-							draw_image(script.masters(), script.instances(), script.get_user());
+							draw_image(world.masters(), world.instances(), world.user());
 							/* finally redraw the pointer */
 							draw_pointer(mpos_x, mpos_y);
 							/* so that another double click is needed */
@@ -255,16 +256,16 @@ int main(int argc, char *argv[])
 			{
 				/* walk forward */
 				/* angle 0 is facing forwards so must decrement by 90 */
-				angle = script.get_user().ang.y() + 90.0;
+				angle = world.user().ang.y() + 90.0;
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz - (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx - (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (!check_col(locx, locy, locz, script.get_user(), script.instances()))
+				if (!check_col(locx, locy, locz, world.user(), world.instances()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
-					script.get_user().loc.x(locx);
-					script.get_user().loc.z(locz);
+					world.user().loc.x(locx);
+					world.user().loc.z(locz);
 				}
 			}
 
@@ -272,59 +273,59 @@ int main(int argc, char *argv[])
 			{
 				/* walk backwards */
 				/* angle 0 is facing forwards so nust increment by 90 */
-				angle = script.get_user().ang.y() + 90.0;
+				angle = world.user().ang.y() + 90.0;
 				if (angle > 360.0) angle -= 360.0;
 				locz = locz + (move * sin(angle / RADCONST) * elapsed_time.count());
 				locx = locx + (move * cos(angle / RADCONST) * elapsed_time.count());
-				if (!check_col(locx, locy, locz, script.get_user(), script.instances()))
+				if (!check_col(locx, locy, locz, world.user(), world.instances()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's posltion */
-					script.get_user().loc.x(locx);
-					script.get_user().loc.z(locz);
+					world.user().loc.x(locx);
+					world.user().loc.z(locz);
 				}
 			}
 
 			if (key_state[keyboard_state::KEY_LEFT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide left */
-				locz = locz - (move * sin(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
-				locx = locx - (move * cos(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
-				if (!check_col(locx, locy, locz, script.get_user(), script.instances()))
+				locz = locz - (move * sin(world.user().ang.y() / RADCONST) * elapsed_time.count());
+				locx = locx - (move * cos(world.user().ang.y() / RADCONST) * elapsed_time.count());
+				if (!check_col(locx, locy, locz, world.user(), world.instances()))
 				{
 					/* if user hasn't collided with an object instance
 					   then update the user's position */
-					script.get_user().loc.x(locx);
-					script.get_user().loc.z(locz);
+					world.user().loc.x(locx);
+					world.user().loc.z(locz);
 				}
 			}
 			else if (key_state[keyboard_state::KEY_LEFT])
 			{
 				/* turn to the left */
-				script.get_user().ang.y(script.get_user().ang.y() - (move * elapsed_time.count()));
-				if (script.get_user().ang.y() < 0.0)
-					script.get_user().ang.y(script.get_user().ang.y() + 360.0);
+				world.user().ang.y(world.user().ang.y() - (move * elapsed_time.count()));
+				if (world.user().ang.y() < 0.0)
+					world.user().ang.y(world.user().ang.y() + 360.0);
 			}
 
 			if (key_state[keyboard_state::KEY_RIGHT] && key_state[keyboard_state::KEY_LALT])
 			{
 				/* slide right */
-				locz = locz + (move * sin(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
-				locx = locx + (move * cos(script.get_user().ang.y() / RADCONST) * elapsed_time.count());
-				if (!check_col(locx, locy, locz, script.get_user(), script.instances()))
+				locz = locz + (move * sin(world.user().ang.y() / RADCONST) * elapsed_time.count());
+				locx = locx + (move * cos(world.user().ang.y() / RADCONST) * elapsed_time.count());
+				if (!check_col(locx, locy, locz, world.user(), world.instances()))
 				{
 					/* if user hasn't colllded wlth an object instance
 					   then update the user's position */
-					script.get_user().loc.x(locx);
-					script.get_user().loc.z(locz);
+					world.user().loc.x(locx);
+					world.user().loc.z(locz);
 				}
 			}
 			else if (key_state[keyboard_state::KEY_RIGHT])
 			{
 				/* turn to the right */
-				script.get_user().ang.y(script.get_user().ang.y() + (move * elapsed_time.count()));
-				if (script.get_user().ang.y() > 360.0)
-					script.get_user().ang.y(script.get_user().ang.y() - 360.0);
+				world.user().ang.y(world.user().ang.y() + (move * elapsed_time.count()));
+				if (world.user().ang.y() > 360.0)
+					world.user().ang.y(world.user().ang.y() - 360.0);
 			}
 
 			if (key_state[keyboard_state::KEY_QUIT])
@@ -333,7 +334,7 @@ int main(int argc, char *argv[])
 			}
 			
 			/* draw the new image */
-			draw_image(script.masters(), script.instances(), script.get_user());
+			draw_image(world.masters(), world.instances(), world.user());
 
 			/* now draw the pointer */
 			draw_pointer(mpos_x, mpos_y);
