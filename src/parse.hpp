@@ -48,6 +48,19 @@ private:
 	Status process_sky(int *colour);
 	Status process_ground(int *colour);
 
+	MatchResult getline(void);
+	void skip_garbage(void);
+	MatchResult check(const char *ptr);
+
+	void getword(char *word);
+	int getnum(void);
+	float fgetnum(void);
+	Status getstring(char *word);
+	Status get_point(float *pntx, float *pnty, float *pntz);
+
+	void set_colour(master &mast, instance &inst, int colour, float specularity);
+	void set_bound(instance &inst);
+
 	// for telling whether the master objects have been defined yet
 	bool masterdef_processed;
 
