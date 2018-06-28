@@ -7,9 +7,6 @@
 
 #define RADCONST (57.295779513082321)
 
-#define TEST  (1)
-#define FINAL (2)
-
 #define MAXLINE (4096)
 #define MAXARG  (260)
 

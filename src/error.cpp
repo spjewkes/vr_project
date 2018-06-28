@@ -16,12 +16,12 @@
 #include "error.hpp"
 
 /* global debug mode */
-int debug_mode = TEST;
+bool g_debug_mode = false;
 
 /* Set debug mode */
-void set_debug_mode(int mode)
+void set_debug_mode(bool debug_mode)
 {
-	debug_mode = mode;
+	g_debug_mode = debug_mode;
 }
 
 /*****************************************************************************
@@ -56,7 +56,7 @@ void warn(const std::string &message, int line_no)
 *****************************************************************************/
 void debug(const std::string &string, int level)
 {
-	if (debug_mode == TEST)
+	if (g_debug_mode)
 	{
 		/* print the debug message at a particular level */
 		switch (level)
@@ -76,7 +76,7 @@ void debug(const std::string &string, int level)
 		}
 		}
 	}
-	else if (debug_mode == FINAL)
+	else
 	{
 		/* we do nothing here because this is final stage of the program */
 	}

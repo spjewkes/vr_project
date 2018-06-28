@@ -3,7 +3,7 @@
 
 #include "defs.hpp"
 
-void set_debug_mode(int mode);
+void set_debug_mode(bool debug_mode);
 
 Status error(const std::string &message, int line_no);
 void warn(const std::string &message, int line_no);

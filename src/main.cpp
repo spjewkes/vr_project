@@ -38,9 +38,7 @@ int main(int argc, char *argv[])
 	/* variables for the mouse */
 	int mpos_x, mpos_y;
 	/* set phase of implementation */
-	/* TEST: prints debug messages */
-	/* FINAL: doesn't show any of the parsing */
-	set_debug_mode(FINAL);
+	set_debug_mode(false);
 	debug("START OF PROGRAM", 3);
 	debug("main()", 1);
 	/* set mode to a value of 0 - resolution 320x200 */
