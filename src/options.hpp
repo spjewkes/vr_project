@@ -11,6 +11,7 @@ public:
 
 	std::string get_file() { return file; }
 	bool get_debug_mode() { return debug_mode; }
+	bool get_dump_mode() { return dump_mode; }
 
 private:
 	Options() =delete;
@@ -23,6 +24,7 @@ private:
 
 	std::string file = "";
 	bool debug_mode = false;
+	bool dump_mode = false;
 };
 
 #endif // __OPTIONS_HPP__

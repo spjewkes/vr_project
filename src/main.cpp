@@ -65,10 +65,14 @@ int main(int argc, char *argv[])
 		exit(-1);
 	}
 
-	/* display the contents of the master structure */
-	// check_master(world.masters()); 
-	/* display the contents of the instance structure */
-	// check_instance(world.instances());
+	if (options.get_dump_mode())
+	{
+		/* display the contents of the master structure */
+		check_master(world.masters()); 
+		/* display the contents of the instance structure */
+		check_instance(world.instances());
+	}
+	
 	/* now let's start the really interesting bit */
 	printf("\nENTERING ANOTHER WORLD...\n");
 
