@@ -45,7 +45,7 @@ Status screen_open(int mode)
 		printf("\t2 -  640x480\n");
 		printf("\t3 -  800x600\n");
 		printf("\t4 -  1024x768\n");
-		return(error("0100", "Illegal graphics mode", 0));
+		return(error("Illegal graphics mode", 0));
 	}
 
 	int width = 0;

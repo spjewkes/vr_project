@@ -48,8 +48,8 @@ int main(int argc, char *argv[])
 	/* if there are more than 2 arguments then error */
 	if (argc > 2)
 	{
-		error("0037", "Too many parameters", 0);
-		exit(0);
+		error("Too many parameters", 0);
+		exit(-1);
 	}
 
 	World world;
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	/* if parsing script results in an error then leave program */
 	if (script.parse() == Error)
 	{
-		exit(0);
+		exit(-1);
 	}
 
 	/* display the contents of the master structure */

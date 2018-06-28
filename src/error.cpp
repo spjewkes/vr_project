@@ -10,6 +10,7 @@
 /****************
 * include files *
 ****************/
+#include <iostream>
 #include <stdio.h>
 #include "defs.hpp"
 #include "error.hpp"
@@ -29,18 +30,12 @@ void set_debug_mode(int mode)
 *           containing the error message and a relevant line number          *
 *           keeps the same format for all error messages                     *
 *****************************************************************************/
-Status error(const char *errno, const char *message, int line_no)
+Status error(const char *message, int line_no)
 {
 	debug("error()", 1);
 
-	/* print error number */
-	printf("ERROR: %s - ", errno);
-	/* print line number */
-	printf("Line number - %d\n", line_no);
-	/* and print error message */
-	printf("\t%s.\n\n", message);
+	std::cerr << "ERROR: " << message << "   Line number: " << line_no << std::endl;
 
-	/* return an error to caller */
 	return Error;
 }
 
@@ -48,16 +43,11 @@ Status error(const char *errno, const char *message, int line_no)
 * warn() - in principle the same as error() only it displays just warnings   *
 *          and does not return anything                                      *
 *****************************************************************************/
-void warn(const char *warnno, const char *message, int line_no)
+void warn(const char *message, int line_no)
 {
 	debug("warn()", 1);
 
-	/* print warning number */
-	printf("WARNING: %s - ", warnno);
-	/* print line number */
-	printf("Line number: %d\n", line_no);
-	/* and print warning message */
-	printf("\t%s.inkn", message);
+	std::cerr << "WARN: " << message << "   Line number: " << line_no << std::endl;
 }
 
 /*****************************************************************************

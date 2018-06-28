@@ -5,8 +5,8 @@
 
 void set_debug_mode(int mode);
 
-Status error(const char *errno, const char *message, int line_no);
-void warn(const char *warnno, const char *message, int line_no);
+Status error(const char *message, int line_no);
+void warn(const char *message, int line_no);
 void debug(const char *string, int level);
 
 void check_master(std::vector<master> &masters);

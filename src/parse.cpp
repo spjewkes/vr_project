@@ -46,7 +46,7 @@ Status Parser::parse()
 	if (!file.is_open())
 	{
 		/* error if can't open file */
-		error("0001", "Error opening file", lincnt);
+		error("Error opening file", lincnt);
 		return Error;
 	}
 	else
@@ -61,7 +61,7 @@ Status Parser::parse()
 				if (process() == Error)
 				{
 					/* if error then stop parsing file */
-					error("0002", "Cannot parse file", lincnt);
+					error("Cannot parse file", lincnt);
 					return Error;
 				}
 			/* get next line */
@@ -102,7 +102,7 @@ Status Parser::process(void)
 		return process_user();
 	else
 	{
-		error("0003", "Syntax error", lincnt);
+		error("Syntax error", lincnt);
 		/* unknown block! */
 		return Error;
 	}
@@ -122,16 +122,16 @@ Status Parser::process_master()
 	skip_garbage();
 
 	if (check("no_objects") != Match)
-		result = error("0005", "The no_objects definition is missing", lincnt);
+		result = error("The no_objects definition is missing", lincnt);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	if ((no_masters = getnum()) == Error)
-		result = error("0007", "Cannot parse number", lincnt);
+		result = error("Cannot parse number", lincnt);
 
 	if (check("") != Blank)
-		result = error("0041", "Syntax error with no_objects command", lincnt);
+		result = error("Syntax error with no_objects command", lincnt);
 
 	if (no_masters > 0)
 	{
@@ -141,13 +141,13 @@ Status Parser::process_master()
 		skip_garbage();
 		/* process the master objects */
 		if (process_objects(no_masters) != Okay)
-			result = error("0008", "Error with master object definitions", lincnt);
+			result = error("Error with master object definitions", lincnt);
 	}
 	else if (no_masters < 0)
-		result = error("0009", "The no_objects is less than zero", lincnt);
+		result = error("The no_objects is less than zero", lincnt);
 	else if (no_masters == 0)
 	{
-		warn("0001", "There are no master objects", lincnt);
+		warn("There are no master objects", lincnt);
 
 		skip_garbage();
 
@@ -158,7 +158,7 @@ Status Parser::process_master()
 		if (word == ".end_masterdefs")
 			result = Okay;
 		else
-			result = error("0008", "Error with master object definitions", lincnt);
+			result = error("Error with master object definitions", lincnt);
 	}
 
 	/* return the result of parsing the master block */
@@ -178,21 +178,21 @@ Status Parser::process_instance(void)
 
 	/* error if the master objects haven't been defined */
 	if (world.masters().empty())
-		result = error("0011", "Master objects have not yet been defined", lincnt);
+		result = error("Master objects have not yet been defined", lincnt);
 
 	skip_garbage();
 
 	if (check("no_instances") != Match)
-		result = error("0012", "The no_instances definition is missing", lincnt);
+		result = error("The no_instances definition is missing", lincnt);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	if ((no_instances = getnum()) == Error)
-		result = error("0007", "Cannot parse number", lincnt);
+		result = error("Cannot parse number", lincnt);
 
 	if (check("") != Blank)
-		result = error("0042", "Syntax error with no_instances command", lincnt);
+		result = error("Syntax error with no_instances command", lincnt);
 
 	if (no_instances > 0)
 	{
@@ -202,13 +202,13 @@ Status Parser::process_instance(void)
 		skip_garbage();
 		/* process the instance objects */
 		if (process_object_instances(world.instances().size(), world.masters().size()) != Okay)
-			result = error("0013", "Error with instance object definitions", lincnt);
+			result = error("Error with instance object definitions", lincnt);
 	}
 	else if (no_instances < 0)
-		result = error("0014", "The no instances is less than zero", lincnt);
+		result = error("The no instances is less than zero", lincnt);
 	else if (no_instances == 0)
 	{
-		warn("0002", "There are no instance objects", lincnt);
+		warn("There are no instance objects", lincnt);
 		skip_garbage();
 
 		std::string word;
@@ -218,7 +218,7 @@ Status Parser::process_instance(void)
 		if (word == ".end_instancedefs")
 			result = Okay;
 		else
-			result = error("0042", "Syntax error with no_instances command", lincnt);
+			result = error("Syntax error with no_instances command", lincnt);
 	}
 
 	/* return the result of parsing the instance block */
@@ -235,7 +235,7 @@ Status Parser::process_user(void)
 
 	/* error if the master objects have already been defined */
 	if (!world.masters().empty())
-		return (error("0004", "Master objects have already been defined", lincnt));
+		return (error("Master objects have already been defined", lincnt));
 
 	for EVER
 	{
@@ -280,7 +280,7 @@ Status Parser::process_user(void)
 			return Okay;
 		}
 		else
-			return(error("0016", "Syntax error in block .userdefs", lincnt));
+			return(error("Syntax error in block .userdefs", lincnt));
 	}
 }
 
@@ -299,16 +299,16 @@ Status Parser::process_objects(int no_objects)
 	for (loop = 0; loop < no_objects; loop++)
 	{
 		if (check("master_no") != Match)
-			result = error("0020", "Error with master no command", lincnt);
+			result = error("Error with master no command", lincnt);
 
 		if (check("=") != Match)
-			result = error("0006", "Missing assignment symbol", lincnt);
+			result = error("Missing assignment symbol", lincnt);
 
 		if ((master_no = getnum()) == Error)
-			result = error("0007", "Cannot parse number", lincnt);
+			result = error("Cannot parse number", lincnt);
 
 		if ((master_no < 0) || (master_no > no_objects))
-			result = error("0021", "The-master no is incorrect", lincnt);
+			result = error("The-master no is incorrect", lincnt);
 
 		skip_garbage();
 
@@ -369,7 +369,7 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 				return Okay;
 			}
 			else
-				return(error("0022", "Too many master no definitions", lincnt));
+				return(error("Too many master no definitions", lincnt));
 		}
 		else if (word == ".end_masterdefs")
 		{
@@ -377,10 +377,10 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 			if ((object_pos+1) == no_objects)
 				return Okay;
 			else
-				return (error("0023", "Not all master objects have been defined", lincnt));
+				return (error("Not all master objects have been defined", lincnt));
 		}
 		else
-			return(error("0039", "Syntax error in block .masterdefs", lincnt));
+			return(error("Syntax error in block .masterdefs", lincnt));
 		skip_garbage();
 	}
 }
@@ -399,19 +399,19 @@ Status Parser::process_object_definition(int object_no)
 
 	/* make sure that object block starts correctly */
 	if (check(".objectdef") != Match)
-		result = error("0027", "Error with block .objectdef", lincnt);
+		result = error("Error with block .objectdef", lincnt);
 
 	skip_garbage () ;
 
 	/* now retrieve the number of vertices that make up the object */
 	if (check("no_vertices") != Match)
-		result = error("0045", "Error with no_vertices command", lincnt);
+		result = error("Error with no_vertices command", lincnt);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	if ((no_vert = getnum()) == Error)
-		result = error("0007", "Cannot parse number", lincnt);
+		result = error("Cannot parse number", lincnt);
 
 	if (no_vert > 0)
 	{
@@ -421,20 +421,20 @@ Status Parser::process_object_definition(int object_no)
 	else if (no_vert < 0)
 	{
 		/* generate an error if the no_vertices value is illegal */
-		result = error("0045", "Error with the no vertices command", lincnt);
+		result = error("Error with the no vertices command", lincnt);
 	}
 
 	skip_garbage();
 
 	/* now retrieve the number of edges that make up the object */
 	if (check("no_edges") != Match)
-		result = error("0046", "Error with no_edges command", lincnt);
+		result = error("Error with no_edges command", lincnt);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	if ((no_edge = getnum() ) == Error)
-		result = error("0007", "Cannot parse number", lincnt);
+		result = error("Cannot parse number", lincnt);
 
 	if (no_edge > 0)
 	{
@@ -444,20 +444,20 @@ Status Parser::process_object_definition(int object_no)
 	else if (no_edge < 0)
 	{
 		/* generate an error if the no_edges value is illegal */
-		result = error("0046", "Error with the no_edges command", lincnt);
+		result = error("Error with the no_edges command", lincnt);
 	}
 
 	skip_garbage();
 
 	/* now retrieve the number of polygons that make up the object */
 	if (check("no_polygons") != Match)
-		result = error("0025", "Error with the no_polygons command", lincnt);
+		result = error("Error with the no_polygons command", lincnt);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	if ((no_poly = getnum() ) == Error)
-		result = error("0007", "Cannot parse number", lincnt);
+		result = error("Cannot parse number", lincnt);
 
 	if (no_poly > 0)
 	{
@@ -467,14 +467,14 @@ Status Parser::process_object_definition(int object_no)
 	else if (no_poly < 0)
 	{
 		/* generate an error if the no polygons value is illegal */
-		result = error("0025", "Error with the no_polygons command", lincnt);
+		result = error("Error with the no_polygons command", lincnt);
 	}
 
 	skip_garbage();
 
 	/* check that the object definition block is properly terminated */
 	if (check(".objectend") != Match)
-		result = error("0028", "Error terminating object definition", lincnt);
+		result = error("Error terminating object definition", lincnt);
 
 	return result;
 }
@@ -498,16 +498,16 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 
 		/* check for the master no command */
 		if (check("master_no") != Match)
-			result = error("0021", "The master no is incorrect", lincnt);
+			result = error("The master no is incorrect", lincnt);
 
 		if (check("=") != Match)
-			result = error("0006", "Missing assignment symbol", lincnt);
+			result = error("Missing assignment symbol", lincnt);
 
 		if ((master_no = getnum()) == Error)
-			result = error("0007", "Cannot parse number", lincnt);
+			result = error("Cannot parse number", lincnt);
 
 		if ((master_no < 0) || (master_no > no_objects))
-			result = error("0021", "The master_no is incorrect", lincnt);
+			result = error("The master_no is incorrect", lincnt);
 
 		/* store the master no value in the instance */
 		/* take one away to-match internal format of master object references */
@@ -524,7 +524,7 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 		/* make sure that colour, specularity & style have been specified */
 		if (!col_set || !spec_set || !style_set)
 		{
-			result = error("0030", "Either colour, specularity or style has not been set", lincnt);
+			result = error("Either colour, specularity or style has not been set", lincnt);
 		}
 	}
 
@@ -624,7 +624,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 				return Okay;
 			}
 			else
-				return (error("0031", "Too many instance definitions", lincnt));
+				return (error("Too many instance definitions", lincnt));
 		}
 		else if (word == ".end_instancedefs")
 		{
@@ -641,10 +641,10 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 				return Okay;
 			}
 			else
-				return(error("0032", "Not all instances have been defined", lincnt));
+				return(error("Not all instances have been defined", lincnt));
 		}
 		else
-			return (error ("0040", "Syntax error in block .instancedefs", lincnt));
+			return (error("Syntax error in block .instancedefs", lincnt));
 
 		skip_garbage();
 	}
@@ -661,22 +661,22 @@ Status Parser::process_location(Vector3d &loc)
 	debug("process_location()", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	loc.x(fgetnum());
 
 	if (check(",") != Match)
-		result = error("0017", "Syntax error with location definition", lincnt);
+		result = error("Syntax error with location definition", lincnt);
 
 	loc.y(fgetnum());
 
 	if (check(",") != Match)
-		result = error("0017", "Syntax error with location definition", lincnt);
+		result = error("Syntax error with location definition", lincnt);
         
 	loc.z(fgetnum());
 
 	if (check("") != Blank)
-		result = error("0017", "Syntax error with location definition", lincnt);
+		result = error("Syntax error with location definition", lincnt);
 
 	return result;
 }
@@ -692,22 +692,22 @@ Status Parser::process_direction(Vector3d &ang)
 	debug("process_direction", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
         
 	ang.x(fgetnum());
 
 	if (check(",") != Match)
-		result = error("0018", "Syntax error with user direction definition", lincnt);
+		result = error("Syntax error with user direction definition", lincnt);
         
 	ang.y(fgetnum());
 
 	if (check(",") != Match)
-		result = error("0018", "Syntax error with user direction definition", lincnt);
+		result = error("Syntax error with user direction definition", lincnt);
         
 	ang.z(fgetnum());
 
 	if (check("") != Blank)
-		result = error("0018", "Syntax error with user direction definition", lincnt);
+		result = error("Syntax error with user direction definition", lincnt);
 
 	return result;
 }
@@ -723,12 +723,12 @@ Status Parser::process_radius(float *radius)
 	debug("process_radius()", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
         
 	*radius = fgetnum();
 
 	if (check("") != Blank)
-		result = error("0019", "Syntax error with user radius definition", lincnt);
+		result = error("Syntax error with user radius definition", lincnt);
 
 	return result;
 }
@@ -744,22 +744,22 @@ Status Parser::process_angle(Vector3d &ang)
 	debug("process_angle()", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	ang.x(fgetnum());
 
 	if (check(",") != Match)
-		result = error("0023", "Syntax error with angle command", lincnt);
+		result = error("Syntax error with angle command", lincnt);
 
 	ang.y(fgetnum());
 
 	if (check(", ") != Match)
-		result = error("0023", "Syntax error with angle command", lincnt);
+		result = error("Syntax error with angle command", lincnt);
 
 	ang.z(fgetnum());
 
 	if (check("") != Blank)
-		result = error("0023", "Syntax error with angle command", lincnt);
+		result = error("Syntax error with angle command", lincnt);
 
 	return result;
 }
@@ -775,22 +775,22 @@ Status Parser::process_scale(Vector3d &scl)
 	debug("process_scale()", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	scl.x(fgetnum());
 
 	if (check(",") != Match)
-		result = error("0024", "Syntax error with scale command", lincnt);
+		result = error("Syntax error with scale command", lincnt);
 
 	scl.y(fgetnum());
 
 	if (check(",") != Match)
-		result = error("0024", "Syntax error with scale command", lincnt);
+		result = error("Syntax error with scale command", lincnt);
 
 	scl.z(fgetnum());
 
 	if (check("") != Blank)
-		result = error("0024", "Syntax error with scale command", lincnt);
+		result = error("Syntax error with scale command", lincnt);
 
 	return result;
 }
@@ -805,13 +805,13 @@ Status Parser::process_sky(int *colour)
 	debug("process_sky()", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	if ((*colour = getnum()) == Error)
-		result = error("0054", "Syntax error with sky colour definition", lincnt);
+		result = error("Syntax error with sky colour definition", lincnt);
 
 	if (check("") != Blank)
-		result = error("0054", "Syntax error with sky colour definition", lincnt);
+		result = error("Syntax error with sky colour definition", lincnt);
 
 	return result;
 }
@@ -827,13 +827,13 @@ Status Parser::process_ground(int *colour)
 	debug("process_ground()", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	if ((*colour = getnum()) == Error)
-		result = error("0055", "Syntax error with ground colour definition", lincnt);
+		result = error("Syntax error with ground colour definition", lincnt);
 
 	if (check("") != Blank)
-		result = error("0055", "Syntax error with ground colour definition", lincnt);
+		result = error("Syntax error with ground colour definition", lincnt);
 
 	return result;
 }
@@ -850,7 +850,7 @@ Status Parser::process_colour(int *colour)
 	debug("process_colour()", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	getword(word);
 
@@ -888,13 +888,13 @@ Status Parser::process_colour(int *colour)
 	else if ((word == "WHITE") || (word == "15"))
 		*colour = 15;
 	else
-		result = error("0044", "Invalid colour value", lincnt);
+		result = error("Invalid colour value", lincnt);
 
 	if (check("") != Blank)
-		result = error("0033", "Syntax error with colour command", lincnt);
+		result = error("Syntax error with colour command", lincnt);
 
 	if ((*colour < 0) || (*colour > 15))
-		result = error("0044", "Invalid colour value", lincnt);
+		result = error("Invalid colour value", lincnt);
 
 	return result;
 }
@@ -912,7 +912,7 @@ Status Parser::process_specularity(float *specularity)
 
 	/* make sure that there is an equals sign */
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	*specularity = fgetnum();
 
@@ -920,11 +920,11 @@ Status Parser::process_specularity(float *specularity)
 	rest_of_line = check("%");
 
 	if ((rest_of_line != Blank) && (rest_of_line != Match))
-		result = error("0034", "Syntax error with specularity command", lincnt);
+		result = error("Syntax error with specularity command", lincnt);
 
 	/* make sure the specularity value is a percentage */
 	if ((*specularity < 0.0) || (*specularity > 100.0))
-		result = error("0035", "Invalid specularity number", lincnt);
+		result = error("Invalid specularity number", lincnt);
 
 	return result;
 }
@@ -943,7 +943,7 @@ bool Parser::process_outcome(std::string &outcome)
 	/* make sure that there is an equals sign */
 	if (check("=") != Match)
 	{
-		error("0006", "Missing assignment symbol", lincnt);
+		error("Missing assignment symbol", lincnt);
 		return false;
 	}
 	
@@ -952,7 +952,7 @@ bool Parser::process_outcome(std::string &outcome)
 	/* if the string is in error then return error */
 	if (getstring(outcome) == Error)
 	{
-		error("0053", "Syntax error with outcome string", lincnt);
+		error("Syntax error with outcome string", lincnt);
 		return false;
 	}
 
@@ -971,7 +971,7 @@ Status Parser::process_style(RenderStyle &style)
 	debug("process_style()", 1);
 
 	if (check("=") != Match)
-		result = error("0006", "Missing assignment symbol", lincnt);
+		result = error("Missing assignment symbol", lincnt);
 
 	getword(word);
 
@@ -980,7 +980,7 @@ Status Parser::process_style(RenderStyle &style)
 	else if (word == "WIREFRAME")
 		style = RenderStyle::WIREFRAME;
 	else
-		result = error("0036", "Unknown style type", lincnt);
+		result = error("Unknown style type", lincnt);
 
 	return result;
 }
@@ -1003,30 +1003,30 @@ Status Parser::process_verts(master &mast, int no_vertices)
 
 		/* get the number of the vertex to set */
 		if ((vert_no = getnum()) == Error)
-			result = error("0047", "Syntax error with vertex command", lincnt);
+			result = error("Syntax error with vertex command", lincnt);
 
 		if ((vert_no < 1) || (vert_no > no_vertices))
-			result = error("0047", "Syntax error with vertex command", lincnt);
+			result = error("Syntax error with vertex command", lincnt);
 
 		if (check("=") != Match)
-			result = error("0006", "Missing assignment symbol", lincnt);
+			result = error("Missing assignment symbol", lincnt);
 
 		/* now we get the x, y and z values of the vertex */
 		mast.vert[vert_no-1].x(fgetnum());
 
 		if (check(",") != Match)
-			result = error("0047", "Syntax error with vertex command", lincnt);
+			result = error("Syntax error with vertex command", lincnt);
 
 		mast.vert[vert_no-1].y(fgetnum());
 
 		if (check(",") != Match)
-			result = error("0047", "Syntax error with vertex command", lincnt);
+			result = error("Syntax error with vertex command", lincnt);
 
 		mast.vert[vert_no-1].z(fgetnum());
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != Blank)
-			result = error("0047", "Syntax error with vertex command", lincnt);
+			result = error("Syntax error with vertex command", lincnt);
 	}
 
 	return result;
@@ -1051,39 +1051,39 @@ Status Parser::process_edges(master &mast, int no_edges)
 
 		/* get the number of the vertex to set */
 		if ((edge_no = getnum()) == Error)
-			result = error("0049", "Syntax error with edge command", lincnt);
+			result = error("Syntax error with edge command", lincnt);
 
 		if ((edge_no < 1) || (edge_no > no_edges))
-			result = error("0049", "Syntax error with edge command", lincnt);
+			result = error("Syntax error with edge command", lincnt);
 
 		if (check("=") != Match)
-			result = error("0006", "Missing assignment symbol", lincnt);
+			result = error("Missing assignment symbol", lincnt);
 
 		/* now we get the start and end vertices of the edge */
 		size_t edge_val = getnum();
 
 		/* now make sure that it is a valid vertex reference */
 		if ((edge_val < 1) || (edge_val > mast.vert.size()))
-			result = error("0050", "Illegal edge value", lincnt);
+			result = error("Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
 		mast.edge0[edge_no-1] = edge_val - 1;
 
 		if (check(",") != Match)
-			result = error("0049", "Syntax error with edge command", lincnt);
+			result = error("Syntax error with edge command", lincnt);
 
 		edge_val = getnum();
 
 		/* now make sure that it is a valid vertex reference */
 		if ((edge_val < 1) || (edge_val > mast.vert.size()))
-			result = error("0050", "Illegal edge value", lincnt);
+			result = error("Illegal edge value", lincnt);
 
 		/* remember to take one from values to match array structure */
 		mast.edge1[edge_no-1] = edge_val - 1;
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != Blank)
-			result = error("0049", "Syntax error with edge command", lincnt);
+			result = error("Syntax error with edge command", lincnt);
 	}
 
 	return result;
@@ -1110,53 +1110,53 @@ Status Parser::process_polys(master &mast, int no_polygons)
 
 		/* get the number of the polygon to set */
 		if ((poly_no = getnum()) == Error)
-			result = error("0051", "Syntax error with polygon command", lincnt);
+			result = error("Syntax error with polygon command", lincnt);
 
 		if ((poly_no < 1) || (poly_no > no_polygons))
-			result = error("0051", "Syntax error with polygon command", lincnt);
+			result = error("Syntax error with polygon command", lincnt);
 
 		if (check("=") != Match)
-			result = error("0006", "MAssing assignment symbol", lincnt);
+			result = error("MAssing assignment symbol", lincnt);
 
 		/* now we get the three edges that make up the polygon */
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
 		if ((tmp < 1) || (tmp > mast.edge0.size()))
-			result = error("0052", "Illegal polygon value", lincnt);
+			result = error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
 		mast.poly0[poly_no-1] = tmp - 1;
 
 		if (check(",") != Match)
-			result = error("0049", "Syntax error with edge command", lincnt);
+			result = error("Syntax error with edge command", lincnt);
 
 		/* next edge reference */
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
 		if ((tmp < 1) || (tmp > mast.edge0.size()))
-			result = error("0052", "Illegal polygon value", lincnt);
+			result = error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
 		mast.poly1[poly_no-1] = tmp - 1;
 		
 		if (check(",") != Match)
-			result = error("0049", "Syntax error with edge command", lincnt);
+			result = error("Syntax error with edge command", lincnt);
 
 		/* final edge reference */
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
 		if ((tmp < 1) || (tmp > mast.edge0.size()))
-			result = error("0052", "Illegal polygon value", lincnt);
+			result = error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
 		mast.poly2[poly_no-1] = tmp - 1;
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != Blank)
-			result = error("0049", "Syntax error with edge command", lincnt);
+			result = error("Syntax error with edge command", lincnt);
 	}
 
 	return result;
@@ -1218,7 +1218,7 @@ void Parser::skip_garbage(void)
 
 	if (retcode == EoF)
 	{
-		error("0038", "Unexpected end of file", lincnt);
+		error("Unexpected end of file", lincnt);
 		file.close();
 		exit(-1);
 	}
