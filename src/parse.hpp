@@ -42,12 +42,12 @@ private:
 
 	MatchResult getline(void);
 	void skip_garbage(void);
-	MatchResult check(const char *ptr);
+	MatchResult check(const std::string &string);
 
-	void getword(char *word);
+	void getword(std::string &word);
 	int getnum(void);
 	float fgetnum(void);
-	Status getstring(char *word);
+	Status getstring(std::string &word);
 	Status get_point(float *pntx, float *pnty, float *pntz);
 
 	void set_colour(master &mast, instance &inst, int colour, float specularity);

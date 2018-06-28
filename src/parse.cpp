@@ -85,22 +85,22 @@ Status Parser::parse()
 ****************************************************************************/
 Status Parser::process(void)
 {
-	char word[MAXLINE];
+	std::string word;
 
 	debug("process()", 1);
 
 	/* get the first word in LINE */
 	getword(word);
 
-	if (strlen(word) == 0)
+	if (word.size() == 0)
 		return Okay;
-	else if (strcmp(word, ".masterdefs") == 0)
+	else if (word == ".masterdefs")
 		/* a master block */
 		return process_master();
-	else if (strcmp(word, ".instancedefs") == 0)
+	else if (word == ".instancedefs")
 		/* an instance block */
 		return process_instance();
-	else if (strcmp(word, ".userdefs") == 0)
+	else if (word == ".userdefs")
 		/* a user block */
 		return process_user();
 	else
@@ -118,7 +118,6 @@ Status Parser::process(void)
 Status Parser::process_master()
 {
 	Status result = Okay;
-	char word[MAXLINE];
 	int no_masters;
 
 	debug("process_master()", 1);
@@ -155,10 +154,11 @@ Status Parser::process_master()
 
 		skip_garbage();
 
+		std::string word;
 		getword(word);
 
 		/* check that the master definition block is ended */
-		if (strcmp(word, ".end_masterdefs") == 0)
+		if (word == ".end_masterdefs")
 			result = Okay;
 		else
 			result = error("0008", "Error with master object definitions", lincnt);
@@ -175,7 +175,6 @@ Status Parser::process_master()
 Status Parser::process_instance(void)
 {
 	Status result = Okay;
-	char word[MAXLINE];
 	int no_instances;
 
 	debug("process_instance()", 1);
@@ -215,10 +214,11 @@ Status Parser::process_instance(void)
 		warn("0002", "There are no instance objects", lincnt);
 		skip_garbage();
 
+		std::string word;
 		getword(word);
 
 		/* make sure that the instance definition block is correctly ended */
-		if (strcmp(word, ".end_instancedefs") == 0)
+		if (word == ".end_instancedefs")
 			result = Okay;
 		else
 			result = error("0042", "Syntax error with no_instances command", lincnt);
@@ -234,8 +234,6 @@ Status Parser::process_instance(void)
 ****************************************************************************/
 Status Parser::process_user(void)
 {
-	char word[MAXLINE];
-
 	debug("process_user()", 1);
 
 	/* error if the master objects have already been defined */
@@ -246,39 +244,40 @@ Status Parser::process_user(void)
 	{
 		skip_garbage();
 
+		std::string word;
 		getword(word);
 
-		if (strcmp(word, "location") == 0)
+		if (word == "location")
 		{
 			/* location command */
 			if (process_location(world.user().loc) == Error)
 				return Error;
 		}
-		else if (strcmp(word, "direction") == 0)
+		else if (word == "direction")
 		{
 			/* direction command */
 			if (process_direction(world.user().ang) == Error)
 				return Error;
 		}
-		else if (strcmp (word, "radius") == 0)
+		else if (word == "radius")
 		{
 			/* radius command */
 			if (process_radius(&world.user().radius) == Error)
 				return Error;
 		}
-		else if (strcmp(word, "sky") == 0)
+		else if (word == "sky")
 		{
 			/* sky command */
 			if (process_sky(&world.user().sky) == Error)
 				return Error;
 		}
-		else if (strcmp(word, "ground") == 0)
+		else if (word == "ground")
 		{
 			/* ground command */
 			if (process_ground(&world.user().ground) == Error)
 				return Error;
 		}
-		else if (strcmp(word, ".end_userdefs") == 0)
+		else if (word ==".end_userdefs")
 		{
 			/* end of user block */
 			return Okay;
@@ -337,8 +336,6 @@ Status Parser::process_objects(int no_objects)
 ****************************************************************************/
 Status Parser::check_object_values(int object_no, int object_pos, int no_objects)
 {
-	char word[MAXLINE];
-
 	Vector3d ang;
 	Vector3d scl;
 
@@ -346,9 +343,10 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 
 	for EVER
 	{
+		std::string word;
 		getword(word);
 
-		if (strcmp(word, "angle") == 0)
+		if (word == "angle")
 		{
 			/* get object angle values from script */
 			if (process_angle(ang) == Error)
@@ -356,7 +354,7 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 			/* load master structure with angle values */
 			world.masters()[object_no].angle = ang;
 		}
-		else if (strcmp(word, "scale") == 0)
+		else if (word == "scale")
 		{
 			/* get object scale values from script */
 			if (process_scale(scl) == Error)
@@ -365,7 +363,7 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 			/* fill master structure with scale values */
 			world.masters()[object_no].scale = scl;
 		}
-		else if (strcmp(word, "master_no") == 0)
+		else if (word == "master_no")
 		{
 			/* make sure that we need to process more master objects */
 			if ((object_pos+1) < no_objects)
@@ -376,7 +374,7 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 			else
 				return(error("0022", "Too many master no definitions", lincnt));
 		}
-		else if (strcmp (word, ".end_masterdefs") == 0)
+		else if (word == ".end_masterdefs")
 		{
 			/* make sure that we have no more master objects to process */
 			if ((object_pos+1) == no_objects)
@@ -542,7 +540,6 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 ****************************************************************************/
 Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no)
 {
-	char word[MAXLINE] ;
 	float specularity;
 	int colour;
 
@@ -555,9 +552,10 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 
 	for EVER
 	{
+		std::string word;
 		getword(word);
 
-		if (strcmp(word, "location") == 0)
+		if (word == "location")
 		{
 			/* get the instance location from the file */
 			if (process_location(loc) == Error)
@@ -565,40 +563,40 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			/* fill instance location values into the instance structure */
 			world.instances()[instance_pos].pos = loc;
 		}
-		else if (strcmp(word, "angle") == 0)
+		else if (word == "angle")
 		{
 			if (process_angle(ang) == Error)
 				return Error;
 			world.instances()[instance_pos].angle = ang;
 		}
-		else if (strcmp(word, "scale") == 0)
+		else if (word == "scale")
 		{
 			if (process_scale(scl) == Error)
 				return Error;
 			world.instances()[instance_pos].scale = scl;
 		}
-		else if (strcmp(word, "colour") == 0)
+		else if (word == "colour")
 		{
 			/* process the colour value */
 			if (process_colour(&colour) == Error)
 				return Error;
 			col_set = true;
 		}
-		else if (strcmp(word, "specularity") == 0)
+		else if (word == "specularity")
 		{
 			/* process the specularity value */
 			if (process_specularity(&specularity) == Error)
 				return Error;
 			spec_set = true;
 		}
-		else if (strcmp(word, "style") == 0)
+		else if (word == "style")
 		{
 			/* get the instance style from the file */
 			if (process_style(world.instances()[instance_pos].style) == Error)
 				return Error;
 			style_set = true;
 		}
-		else if (strcmp(word, "outcome") == 0)
+		else if (word == "outcome")
 		{
 			if (!process_outcome(world.instances()[instance_pos].outcome))
 				return Error;
@@ -613,7 +611,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			else
 				world.instances()[instance_pos].is_solid = true;
 		}
-		else if (strcmp(word, "master_no") == 0)
+		else if (word == "master_no")
 		{
 			if ((instance_pos+1) < no_instances)
 			{
@@ -631,7 +629,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			else
 				return (error("0031", "Too many instance definitions", lincnt));
 		}
-		else if (strcmp (word, ".end_instancedefs") == 0)
+		else if (word == ".end_instancedefs")
 		{
 			if ((instance_pos+1) == no_instances)
 			{
@@ -850,7 +848,7 @@ Status Parser::process_ground(int *colour)
 Status Parser::process_colour(int *colour)
 {
 	Status result = Okay;
-	char word[MAXLINE];
+	std::string word;
 
 	debug("process_colour()", 1);
 
@@ -860,37 +858,37 @@ Status Parser::process_colour(int *colour)
 	getword(word);
 
 	/* get the colour value from the colour command */
-	if ((strcmp(word, "BLACK") == 0) || (strcmp(word, "0") == 0))
+	if ((word == "BLACK") || (word == "0"))
 		*colour = 0;
-	else if ((strcmp(word, "BLUE") == 0) || (strcmp(word, "1") == 0))
+	else if ((word == "BLUE") || (word == "1"))
 		*colour = 1;
-	else if ((strcmp(word, "GREEN") == 0) || (strcmp(word, "2") == 0))
+	else if ((word == "GREEN") || (word == "2"))
 		*colour = 2;
-	else if ((strcmp(word, "CYAN") == 0) || (strcmp(word, "3") == 0))
+	else if ((word == "CYAN") || (word == "3"))
 		*colour = 3;
-	else if ((strcmp(word, "RED") == 0) || (strcmp(word, "4") == 0))
+	else if ((word == "RED") || (word == "4"))
 		*colour = 4;
-	else if ((strcmp(word, "MAGENTA") == 0) || (strcmp(word, "5") == 0))
+	else if ((word == "MAGENTA") || (word == "5"))
 		*colour = 5;
-	else if ((strcmp(word, "BROWN") == 0) || (strcmp(word, "6") == 0))
+	else if ((word == "BROWN") || (word == "6"))
 		*colour = 6;
-	else if ((strcmp(word, "LIGHTGREY") == 0) || (strcmp(word, "7") == 0))
+	else if ((word == "LIGHTGREY") || (word == "7"))
 		*colour = 7;
-	else if ((strcmp(word, "DARKGREY") == 0) || (strcmp(word, "8") == 0))
+	else if ((word == "DARKGREY") || (word == "8"))
 		*colour = 8;
-	else if ((strcmp(word, "LIGHTBLUE") == 0) || (strcmp(word, "9") == 0))
+	else if ((word == "LIGHTBLUE") || (word == "9"))
 		*colour = 9;
-	else if ((strcmp(word, "LIGHTGREEN") == 0) || (strcmp(word, "10") == 0))
+	else if ((word == "LIGHTGREEN") || (word == "10"))
 		*colour = 10;
-	else if ((strcmp(word, "LIGHTCYAN") == 0) || (strcmp(word, "11") == 0))
+	else if ((word == "LIGHTCYAN") || (word == "11"))
 		*colour = 11;
-	else if ((strcmp(word, "LIGHTRED") == 0) || (strcmp(word, "12") == 0))
+	else if ((word == "LIGHTRED") || (word == "12"))
 		*colour = 12;
-	else if ((strcmp(word, "LIGHTMAGENTA") == 0) || (strcmp(word, "13") == 0))
+	else if ((word == "LIGHTMAGENTA") || (word == "13"))
 		*colour = 13;
-	else if ((strcmp(word, "YELLOW") == 0) || (strcmp(word, "14") == 0))
+	else if ((word == "YELLOW") || (word == "14"))
 		*colour = 14;
-	else if ((strcmp(word, "WHITE") == 0) || (strcmp(word, "15") == 0))
+	else if ((word == "WHITE") || (word == "15"))
 		*colour = 15;
 	else
 		result = error("0044", "Invalid colour value", lincnt);
@@ -943,8 +941,6 @@ Status Parser::process_specularity(float *specularity)
 ****************************************************************************/
 bool Parser::process_outcome(std::string &outcome)
 {
-	char word[MAXLINE];
-
 	debug("process_outcome()", 1);
 
 	/* make sure that there is an equals sign */
@@ -953,16 +949,15 @@ bool Parser::process_outcome(std::string &outcome)
 		error("0006", "Missing assignment symbol", lincnt);
 		return false;
 	}
+	
+	outcome.clear();
 
 	/* if the string is in error then return error */
-	if (getstring(word) == Error)
+	if (getstring(outcome) == Error)
 	{
 		error("0053", "Syntax error with outcome string", lincnt);
 		return false;
 	}
-
-	/* copy array over to outcome string */
-	outcome = word;
 
 	return true;
 }
@@ -974,7 +969,7 @@ bool Parser::process_outcome(std::string &outcome)
 Status Parser::process_style(RenderStyle &style)
 {
 	Status result = Okay;
-	char word[MAXLINE];
+	std::string word;
 
 	debug("process_style()", 1);
 
@@ -983,9 +978,9 @@ Status Parser::process_style(RenderStyle &style)
 
 	getword(word);
 
-	if (strcmp(word, "SOLID") == 0)
+	if (word == "SOLID")
 		style = RenderStyle::SOLID;
-	else if (strcmp(word, "WIREFRAME") == 0)
+	else if (word == "WIREFRAME")
 		style = RenderStyle::WIREFRAME;
 	else
 		result = error("0036", "Unknown style type", lincnt);
@@ -1239,7 +1234,7 @@ void Parser::skip_garbage(void)
 *                    NoMatch is there is a string but it does not match     *
 *                    Blank if there is nothing in the LINE to match         *
 ****************************************************************************/
-MatchResult Parser::check(const char *ptr)
+MatchResult Parser::check(const std::string &string)
 {
 	debug("check()", 1);
 
@@ -1249,9 +1244,9 @@ MatchResult Parser::check(const char *ptr)
 	if (static_cast<unsigned int>(lineptr) == line.size())
 		return Blank;
 
-	if (line.find_first_of(ptr, lineptr) == static_cast<unsigned int>(lineptr))
+	if (line.find_first_of(string, lineptr) == static_cast<unsigned int>(lineptr))
 	{
-		lineptr += strlen(ptr);
+		lineptr += string.size();
 		return Match;
 	}
 	else
@@ -1265,13 +1260,9 @@ MatchResult Parser::check(const char *ptr)
 *             a word is defined as a string of characters surrounded by     *
 *             white space characters and end-of-line characters             *
 ****************************************************************************/
-void Parser::getword(char *word)
+void Parser::getword(std::string &word)
 {
-	char *tptr;
-
 	debug("getword()", 1);
-
-	tptr = word;
 
 	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
 		lineptr++;
@@ -1280,25 +1271,19 @@ void Parser::getword(char *word)
 	{
 		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t'))
 			break;
-		*tptr++ = line[lineptr++];
+		word.push_back(line[lineptr++]);
 	}
-
-	*tptr = '\0';
 }
 
 /****************************************************************************
 * getstring() - function retrieves a string - this is defined as a series   *
 *               characters inside a pair of double quotes                   *
 ****************************************************************************/
-Status Parser::getstring(char *word)
+Status Parser::getstring(std::string &word)
 {
-	char *tptr;
 	Status result = Error;
 
 	debug("getstring()", 1);
-
-	tptr = word;
-
 	debug("before while loop", 2);
 
 	/* skip any spaces or tabs before the string starts */
@@ -1322,13 +1307,10 @@ Status Parser::getstring(char *word)
 			return result;
 
 		/* otherwise we put the value into the char array pointed to by tptr */
-		*tptr++ = line[lineptr++];
+		word.push_back(line[lineptr++]);
 	}
 
 	debug("string has been fetched", 2);
-
-	/* terminate the char array pointed to by tptr with a null value */
-	*tptr = '\0';
 
 	result = Okay;
 
