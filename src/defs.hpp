@@ -12,8 +12,6 @@
 
 #define MSIZE (8)
 
-#define EVER (;;)
-
 #define MOVE_SPEED (25.0f)
 
 //

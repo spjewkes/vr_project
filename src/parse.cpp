@@ -237,7 +237,7 @@ Status Parser::process_user(void)
 	if (!world.masters().empty())
 		return (error("Master objects have already been defined", lincnt));
 
-	for EVER
+	while (1)
 	{
 		skip_garbage();
 
@@ -338,7 +338,7 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 
 	debug("check_object_values()", 1);
 
-	for EVER
+	while (1)
 	{
 		std::string word;
 		getword(word);
@@ -547,7 +547,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 
 	debug("check_instance_values()", 1);
 
-	for EVER
+	while (1)
 	{
 		std::string word;
 		getword(word);
