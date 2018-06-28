@@ -6,10 +6,10 @@ EXE=run_vr_project
 OBJ_DIR=obj
 SRC_DIR=src
 
-_DEPS=collide.hpp defs.hpp error.hpp graphics.hpp mouse.hpp palette.hpp parse.hpp pfuncs.hpp program.hpp screen.hpp setup.hpp sound.hpp vector3d.hpp world.hpp
+_DEPS=collide.hpp defs.hpp error.hpp graphics.hpp mouse.hpp options.hpp palette.hpp parse.hpp pfuncs.hpp program.hpp screen.hpp setup.hpp sound.hpp vector3d.hpp world.hpp
 DEPS=$(patsubst %,$(SRC_DIR)/%,$(_DEPS))
 
-_OBJ=collide.o error.o graphics.o main.o mouse.o palette.o parse.o pfuncs.o program.o screen.o setup.o sound.o vector3d.o
+_OBJ=collide.o error.o graphics.o main.o mouse.o options.o palette.o parse.o pfuncs.o program.o screen.o setup.o sound.o vector3d.o
 OBJ=$(patsubst %,$(OBJ_DIR)/%,$(_OBJ))
 
 OS := $(shell uname)

@@ -9,7 +9,7 @@
 class Parser
 {
 public:
-	Parser(const char *_filename, World &_world);
+	Parser(const std::string &_filename, World &_world);
 	~Parser();
 
     Status parse();

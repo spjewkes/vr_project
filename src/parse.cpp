@@ -18,7 +18,7 @@
 #include "vector3d.hpp"
 
 /* Constructor */
-Parser::Parser(const char *_filename, World &_world) : filename(_filename), world(_world)
+Parser::Parser(const std::string &_filename, World &_world) : filename(_filename), world(_world)
 {
 }
 

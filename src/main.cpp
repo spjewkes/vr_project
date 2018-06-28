@@ -19,6 +19,7 @@
 #include "error.hpp"
 #include "graphics.hpp"
 #include "mouse.hpp"
+#include "options.hpp"
 #include "parse.hpp"
 #include "program.hpp"
 #include "screen.hpp"
@@ -35,23 +36,28 @@ int main(int argc, char *argv[])
 	int mode, instance;
 	int prev_inst = -1;
 
+	Options options(argc, argv);
+
 	/* variables for the mouse */
 	int mpos_x, mpos_y;
-	/* set phase of implementation */
-	set_debug_mode(false);
+
+	set_debug_mode(options.get_debug_mode());
+
 	debug("START OF PROGRAM", 3);
 	debug("main()", 1);
+
 	/* set mode to a value of 0 - resolution 320x200 */
 	mode = 4;
+
 	/* if there are more than 2 arguments then error */
-	if (argc > 2)
+	if (options.get_file().empty())
 	{
-		error("Too many parameters", 0);
+		error("No world specified to load", 0);
 		exit(-1);
 	}
 
 	World world;
-	Parser script(argv[1], world);;
+	Parser script(options.get_file(), world);;
 
 	/* if parsing script results in an error then leave program */
 	if (script.parse() == Error)
