@@ -10,25 +10,10 @@
 /****************
 * include files *
 ****************/
+#include <vector>
+#include <string>
 #include <iostream>
-#include <string.h>
-#include <stddef.h>
 #include "defs.hpp"
-
-#define P_WAIT (0)
-
-static void spawnvp(int, const char *cmdname, const char *const *argv)
-{
-	// Not currently implemented but print commnads to stdout
-	// to show what was to have been executed.
-	std::cout << "Running: " << cmdname << " with the following args:\n";
-	int i = 0;
-	while (argv[i])
-	{
-		std::cout << "\t" << argv[i] << std::endl;
-		i++;
-	}
-}
 
 /****************************************************************************
 * program() - this function looks at the string for a particular instance   *
@@ -37,98 +22,29 @@ static void spawnvp(int, const char *cmdname, const char *const *argv)
 ****************************************************************************/
 void program(instance &inst)
 {
-	char path[MAXLINE];
-	char *array[MAXARG];
-	char *chptr;
-	int loop, flag;
-	bool inparam = false;
-
-	/* point to the start of the array */
-	chptr = path;
-
-	/* set the first pointer in array to be NULL */
-	array[0] = NULL;
-
-	/* copy the outcome string to a char array we can play with */
-	strcpy(path, inst.outcome.c_str());
-
-	/* if the string doesn't contain the string 'solid' then it must
-	   contain a program to execute */
-	if (strcmp(path, "solid") != 0)
+	if (inst.outcome != "solid")
 	{
-		/* first skip any blanks */
-		while ((*chptr == ' ') || (*chptr == '\t'))
-			chptr++;
+		std::string delims = " \t";
+		std::vector<std::string> args;
 
-		/* now get the first word - which we assume to be the executable */
-		while ((*chptr != ' ') && (*chptr != '\t') && (*chptr != '\0'))
-			chptr++;
+		size_t start = inst.outcome.find_first_not_of(delims);
+		size_t end = 0;
 
-		if (*chptr != '\0')
+		while ((end = inst.outcome.find_first_of(delims, start)) != std::string::npos)
 		{
-			/* then we may have some parameters to deal with */
-			/* first we want to put a null terminator after the executable's
-			   name and move along the pointer */
-			/* *chptr++ = '\0'; */
-			/* reset the chptr because the first parameter has to be the
-			   name of the executable */
-			chptr = path;
-
-			/* now we start filling the array of char pointers */
-			for (loop = 0; loop < MAXARG-2; loop++)
-			{
-				/* skip any more blanks */
-				while ((*chptr == ' ') || (*chptr == '\t'))
-					chptr++;
-
-				/* get the array to point to the next parameter */
-				array[loop] = chptr;
-				array[loop+1] = NULL;
-
-				/* set flag to zero and start processing string */
-				flag = 0;
-				inparam = false;
-				
-				/* now we want to loop to pick up more parameters */
-				while (flag == 0)
-				{
-					switch (*chptr)
-					{
-					case '\0':
-						/* the end of the array of characters */
-						if (!inparam)
-						{
-							array[loop] = NULL;
-						}
-
-						/* terminate string */
-						*chptr++ = '\0';
-
-						/* now leave the while loop */
-						goto exit;
-
-					case ' ':
-					case '\t':
-						/* end of a parameter */
-						inparam = false;
-						/* terminate the string */
-						*chptr++ = '\0';
-						/* end this for..loop */
-						flag = 1;
-						break;
-
-					default:
-						/* we're in a parameter */
-						inparam = true;
-						/* increment pointer */
-						chptr++;
-						break;
-					}
-				}
-			}
+			args.push_back(inst.outcome.substr(start, end - start));
+			start = inst.outcome.find_first_not_of(delims, end);
 		}
-		/* this is where we spawn the program */
-	exit:
-		spawnvp(P_WAIT, path, array);
+
+		if (start != std::string::npos)
+		{
+			args.push_back(inst.outcome.substr(start));
+		}
+
+		std::cout << "Running:\n";
+		for (auto &arg : args)
+		{
+			std::cout << "\t" << arg.c_str() << std::endl;
+		}
 	}
 }

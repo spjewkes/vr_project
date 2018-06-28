@@ -8,7 +8,6 @@
 #define RADCONST (57.295779513082321)
 
 #define MAXLINE (4096)
-#define MAXARG  (260)
 
 #define MSIZE (8)
 
