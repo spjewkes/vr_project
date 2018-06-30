@@ -41,27 +41,27 @@ void close_graphics()
 }
 
 /****************************************************************************
-* function that simply displays the contents of the colour look up table on *
-* a graphics display capable of showing all 256 colours (use something like *
+* function that simply displays the contents of the color look up table on  *
+* a graphics display capable of showing all 256 colors (use something like  *
 * a vesa bgi driver or other svga type)                                     *
 ****************************************************************************/
 void check_palette(void)
 {
 	int loop1, loop2;
-	int dx, dy, colour;
+	int dx, dy, color;
 
 	/* set the rate of change horizontally
 	   and vertically acrOsS the screen */
 	dx = getmaxx() / 16;
 	dy = getmaxy() / 16;
 
-	/* set initial colour to zero */
-	colour = 0;
+	/* set initial color to zero */
+	color = 0;
 	for (loop1 = 0; loop1 < 16; loop1++)
 		for (loop2 = 0; loop2 < 16; loop2++)
 		{
-			/* draw a coloured box */
-			setcolor(colour++);
+			/* draw a colored box */
+			setcolor(color++);
 			bar(loop2*dx, loop1*dy, loop2*dx+dx, loop1*dy+dy);
 		}
 }

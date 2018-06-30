@@ -77,8 +77,8 @@ struct instance
 
 	std::vector<Vector3d> vert;
 
-	std::vector<unsigned int> edge_colour;
-	std::vector<unsigned int> poly_colour;
+	std::vector<unsigned int> edge_color;
+	std::vector<unsigned int> poly_color;
 
 	RenderStyle style = { RenderStyle::WIREFRAME };
 	bool is_solid = { false };

@@ -521,10 +521,10 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 		if (check_instance_values(col_set, spec_set, style_set,
 								  loop, no_instances, master_no-1) != Okay)
 			result = Error;
-		/* make sure that colour, specularity & style have been specified */
+		/* make sure that color, specularity & style have been specified */
 		if (!col_set || !spec_set || !style_set)
 		{
-			result = error("Either colour, specularity or style has not been set", lincnt);
+			result = error("Either color, specularity or style has not been set", lincnt);
 		}
 	}
 
@@ -538,7 +538,7 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no)
 {
 	float specularity;
-	int colour;
+	int color;
 
 	/* set the angles, scales and locations defaults */
 	Vector3d loc;
@@ -572,10 +572,10 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 				return Error;
 			world.instances()[instance_pos].scale = scl;
 		}
-		else if (word == "colour")
+		else if (word == "color")
 		{
-			/* process the colour value */
-			if (process_colour(&colour) == Error)
+			/* process the color value */
+			if (process_color(&color) == Error)
 				return Error;
 			col_set = true;
 		}
@@ -617,8 +617,8 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 				create_object_instance(world.masters()[master_no], world.instances()[instance_pos]);
 				/* translate the instance */
 				translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
-				/* set the colours of the instances facets (polygons) */
-				set_colour(world.masters()[master_no], world.instances()[instance_pos], colour, specularity);
+				/* set the colors of the instances facets (polygons) */
+				set_color(world.masters()[master_no], world.instances()[instance_pos], color, specularity);
 				/* finially we set up the collision box around the object */
 				set_bound(world.instances()[instance_pos]);
 				return Okay;
@@ -634,8 +634,8 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 				create_object_instance(world.masters()[master_no], world.instances()[instance_pos]);
 				/* translate the instance */
 				translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
-				/* set the colours if the instances facets */
-				set_colour(world.masters()[master_no], world.instances()[instance_pos], colour, specularity);
+				/* set the colors if the instances facets */
+				set_color(world.masters()[master_no], world.instances()[instance_pos], color, specularity);
 				/* finially we set up the collision box around the object */
 				set_bound(world.instances()[instance_pos]);
 				return Okay;
@@ -796,9 +796,9 @@ Status Parser::process_scale(Vector3d &scl)
 }
 
 /****************************************************************************
-* process sky - process the command which defines the colour of the sky     *
+* process sky - process the command which defines the color of the sky      *
 ****************************************************************************/
-Status Parser::process_sky(int *colour)
+Status Parser::process_sky(int *color)
 {
 	Status result = Okay;
 
@@ -807,20 +807,20 @@ Status Parser::process_sky(int *colour)
 	if (check("=") != Match)
 		result = error("Missing assignment symbol", lincnt);
 
-	if ((*colour = getnum()) == Error)
-		result = error("Syntax error with sky colour definition", lincnt);
+	if ((*color = getnum()) == Error)
+		result = error("Syntax error with sky color definition", lincnt);
 
 	if (check("") != Blank)
-		result = error("Syntax error with sky colour definition", lincnt);
+		result = error("Syntax error with sky color definition", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_ground - process the command which defines the colour of the      *
+* process_ground - process the command which defines the color of the       *
 *                  ground                                                   *
 ****************************************************************************/
-Status Parser::process_ground(int *colour)
+Status Parser::process_ground(int *color)
 {
 	Status result = Okay;
 
@@ -829,72 +829,72 @@ Status Parser::process_ground(int *colour)
 	if (check("=") != Match)
 		result = error("Missing assignment symbol", lincnt);
 
-	if ((*colour = getnum()) == Error)
-		result = error("Syntax error with ground colour definition", lincnt);
+	if ((*color = getnum()) == Error)
+		result = error("Syntax error with ground color definition", lincnt);
 
 	if (check("") != Blank)
-		result = error("Syntax error with ground colour definition", lincnt);
+		result = error("Syntax error with ground color definition", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_colour() - process the command which defines the instance         *
-*                    object' s colour                                       *
+* process_color() - process the command which defines the instance          *
+*                    object' s color                                        *
 ****************************************************************************/
-Status Parser::process_colour(int *colour)
+Status Parser::process_color(int *color)
 {
 	Status result = Okay;
 	std::string word;
 
-	debug("process_colour()", 1);
+	debug("process_color()", 1);
 
 	if (check("=") != Match)
 		result = error("Missing assignment symbol", lincnt);
 
 	getword(word);
 
-	/* get the colour value from the colour command */
+	/* get the color value from the color command */
 	if ((word == "BLACK") || (word == "0"))
-		*colour = 0;
+		*color = 0;
 	else if ((word == "BLUE") || (word == "1"))
-		*colour = 1;
+		*color = 1;
 	else if ((word == "GREEN") || (word == "2"))
-		*colour = 2;
+		*color = 2;
 	else if ((word == "CYAN") || (word == "3"))
-		*colour = 3;
+		*color = 3;
 	else if ((word == "RED") || (word == "4"))
-		*colour = 4;
+		*color = 4;
 	else if ((word == "MAGENTA") || (word == "5"))
-		*colour = 5;
+		*color = 5;
 	else if ((word == "BROWN") || (word == "6"))
-		*colour = 6;
+		*color = 6;
 	else if ((word == "LIGHTGREY") || (word == "7"))
-		*colour = 7;
+		*color = 7;
 	else if ((word == "DARKGREY") || (word == "8"))
-		*colour = 8;
+		*color = 8;
 	else if ((word == "LIGHTBLUE") || (word == "9"))
-		*colour = 9;
+		*color = 9;
 	else if ((word == "LIGHTGREEN") || (word == "10"))
-		*colour = 10;
+		*color = 10;
 	else if ((word == "LIGHTCYAN") || (word == "11"))
-		*colour = 11;
+		*color = 11;
 	else if ((word == "LIGHTRED") || (word == "12"))
-		*colour = 12;
+		*color = 12;
 	else if ((word == "LIGHTMAGENTA") || (word == "13"))
-		*colour = 13;
+		*color = 13;
 	else if ((word == "YELLOW") || (word == "14"))
-		*colour = 14;
+		*color = 14;
 	else if ((word == "WHITE") || (word == "15"))
-		*colour = 15;
+		*color = 15;
 	else
-		result = error("Invalid colour value", lincnt);
+		result = error("Invalid color value", lincnt);
 
 	if (check("") != Blank)
-		result = error("Syntax error with colour command", lincnt);
+		result = error("Syntax error with color command", lincnt);
 
-	if ((*colour < 0) || (*colour > 15))
-		result = error("Invalid colour value", lincnt);
+	if ((*color < 0) || (*color > 15))
+		result = error("Invalid color value", lincnt);
 
 	return result;
 }
@@ -1401,10 +1401,10 @@ Status Parser::get_point(float *pntx, float *pnty, float *pntz)
 }
 
 /****************************************************************************
-* set_colour() - function to set the colours of each facet of the obejct    *
-*                instance                                                   *
+* set_color() - function to set the colors of each facet of the obejct      *
+*               instance                                                    *
 ****************************************************************************/
-void Parser::set_colour(master &mast, instance &inst, int colour, float specularity)
+void Parser::set_color(master &mast, instance &inst, int color, float specularity)
 {
 	int no_edges, no_polygons, loop, offset;
 	int poly_no[2], edge0, edge1;
@@ -1415,11 +1415,11 @@ void Parser::set_colour(master &mast, instance &inst, int colour, float specular
 	no_edges = mast.edge0.size();
 	no_polygons = mast.poly0.size();
 
-	/* create the arrays that will hold the colour values */
-	inst.edge_colour.resize(no_edges);
-	inst.poly_colour.resize(no_polygons);
+	/* create the arrays that will hold the color values */
+	inst.edge_color.resize(no_edges);
+	inst.poly_color.resize(no_polygons);
 
-	/* now fill the edge array with colour values */
+	/* now fill the edge array with color values */
 	for (loop = 0; loop < no_edges; loop++)
 	{
 		/* let's get the end and start points of the edge */
@@ -1448,16 +1448,16 @@ void Parser::set_colour(master &mast, instance &inst, int colour, float specular
 			cos_theta = adj / hyp;
 		/* calculate the diffuse-reflection coeffiecient */
 		kd = specularity / 100.0;
-		/* now calculate the colour offset from the base value */
+		/* now calculate the color offset from the base value */
 		offset = 15*kd*cos_theta;
-		/* make sure the offset is within the 15 colour values */
+		/* make sure the offset is within the 15 color values */
 		if (offset > 15) offset = 15;
 		else if (offset < 0) offset = 0;
-		/* now set the colour of the edge */
-		inst.edge_colour[loop] = colour*16+(offset*0.5);
+		/* now set the color of the edge */
+		inst.edge_color[loop] = color*16+(offset*0.5);
 	}
 
-	/* now fill the polygon array with colour values */
+	/* now fill the polygon array with color values */
 	for (loop = 0; loop < no_polygons; loop++)
 	{
 		/* we want to find the direction of the normal first */
@@ -1520,13 +1520,13 @@ void Parser::set_colour(master &mast, instance &inst, int colour, float specular
 			/* abs() is used in case the Y(B) value of the normal is negative */
 			/* calculate the diffuse-reflection coeffiecient */
 			kd = specularity / 100.0;
-			/* now calculate the colour offset from the base value */
+			/* now calculate the color offset from the base value */
 			offset = 15*kd*cos_theta;
-			/* make sure the offset is within the 15 colour values */
+			/* make sure the offset is within the 15 color values */
 			if (offset > 15) offset = 15;
 			else if (offset < 0) offset = 0;
 			/* this surface is facing downwards */
-			inst.poly_colour[loop] = colour*16+(offset*0.25);
+			inst.poly_color[loop] = color*16+(offset*0.25);
 		}
 		else if (normal >= 0.0)
 		{
@@ -1542,14 +1542,14 @@ void Parser::set_colour(master &mast, instance &inst, int colour, float specular
 
 			/* calculate the diffuse-reflection coeffiecient */
 			kd = specularity / 100.0;
-			/* now calculate the colour offset from the base value */
+			/* now calculate the color offset from the base value */
 			offset = 15*kd*cos_theta;
-			/* make sure the offset is within the 15 colour values */
+			/* make sure the offset is within the 15 color values */
 			if (offset > 15) offset = 15;
 			else if (offset < 0) offset = 0;
 			/* this surface is facing upwards */
 			/* the light intensity is half */
-			inst.poly_colour[loop] = colour*16+(offset*1.0);
+			inst.poly_color[loop] = color*16+(offset*1.0);
 		}
 	}
 }

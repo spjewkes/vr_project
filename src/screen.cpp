@@ -224,8 +224,8 @@ void draw_image(std::vector<master> &masters, std::vector<instance> &instances, 
 					y1 = (((y1*-1.0)/z1) * midy) + midy;
 					x2 = (((x2*-1.0)/z2) * midx) + midx;
 					y2 = (((y2*-1.0)/z2) * midy) + midy;
-					/* set its colour */
-					setcolor(instances[tmp].edge_colour[i]);
+					/* set its color */
+					setcolor(instances[tmp].edge_color[i]);
 					/* draw line if it's in the viewing volume */
 					line(x1, y1, x2, y2);
 				}
@@ -349,8 +349,8 @@ void draw_image(std::vector<master> &masters, std::vector<instance> &instances, 
 
 						no_points++;
 						
-						/* firstly set the colour */
-						setcolor(instances[tmp].poly_colour[i]);
+						/* firstly set the color */
+						setcolor(instances[tmp].poly_color[i]);
 						/* now draw the polygon */
 						fillpoly(no_points, polyarray);
 					}

@@ -30,15 +30,15 @@ private:
 	Status process_radius(float *radius);
 	Status process_angle(Vector3d &ang);
 	Status process_scale(Vector3d &scl);
-	Status process_colour(int *colour);
+	Status process_color(int *color);
 	Status process_specularity(float *specularity);
 	bool process_outcome(std::string &outcome);
 	Status process_style(RenderStyle &style);
 	Status process_verts(master &mast, int no_vertices);
 	Status process_edges(master &mast, int no_edges);
 	Status process_polys(master &mast, int no_polygons);
-	Status process_sky(int *colour);
-	Status process_ground(int *colour);
+	Status process_sky(int *color);
+	Status process_ground(int *color);
 
 	MatchResult getline(void);
 	void skip_garbage(void);
@@ -50,7 +50,7 @@ private:
 	Status getstring(std::string &word);
 	Status get_point(float *pntx, float *pnty, float *pntz);
 
-	void set_colour(master &mast, instance &inst, int colour, float specularity);
+	void set_color(master &mast, instance &inst, int color, float specularity);
 	void set_bound(instance &inst);
 
 	// Variables for managing reading the file to parse

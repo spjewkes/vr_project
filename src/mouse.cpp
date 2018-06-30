@@ -21,7 +21,7 @@
 *****************************************************************************/
 void draw_pointer(int x, int y)
 {
-	/* set the mouse colour to white */
+	/* set the mouse color to white */
 	setcolor(WHITE);
 	/* now draw the mouse pointer */
 	line(x,y-MSIZE,x,y+MSIZE);
