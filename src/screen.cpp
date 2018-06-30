@@ -13,10 +13,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "defs.hpp"
 #include "error.hpp"
 #include "graphics.hpp"
 #include "pfuncs.hpp"
+#include "screen.hpp"
 
 #define X  0
 #define Y  1
@@ -89,7 +89,7 @@ Status screen_open(int mode)
 *                 rough graphical form just a brief check to see if the     *
 *                 values are being stored correctly                         *
 ****************************************************************************/
-void draw_image(std::vector<master> &masters, std::vector<instance> &instances, viewer user)
+void draw_image(std::vector<Master> &masters, std::vector<Instance> &instances, Viewer &user)
 {
 	int master_no;
 	int edge0, edge1;

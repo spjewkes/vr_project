@@ -988,7 +988,7 @@ Status Parser::process_style(RenderStyle &style)
 /****************************************************************************
 * process_vertices() - process the object's vertices                        *
 ****************************************************************************/
-Status Parser::process_verts(master &mast, int no_vertices)
+Status Parser::process_verts(Master &mast, int no_vertices)
 {
 	Status result = Okay;
 	int loop, vert_no;
@@ -1035,7 +1035,7 @@ Status Parser::process_verts(master &mast, int no_vertices)
 /****************************************************************************
 * process_edges() - process the object's edges                              *
 ****************************************************************************/
-Status Parser::process_edges(master &mast, int no_edges)
+Status Parser::process_edges(Master &mast, int no_edges)
 {
 	Status result = Okay;
 	int loop, edge_no;
@@ -1092,7 +1092,7 @@ Status Parser::process_edges(master &mast, int no_edges)
 /****************************************************************************
 * process_polygons() - process the object's polygons                        *
 ****************************************************************************/
-Status Parser::process_polys(master &mast, int no_polygons)
+Status Parser::process_polys(Master &mast, int no_polygons)
 {
 	Status result = Okay;
 	int loop, poly_no;
@@ -1404,7 +1404,7 @@ Status Parser::get_point(float *pntx, float *pnty, float *pntz)
 * set_color() - function to set the colors of each facet of the obejct      *
 *               instance                                                    *
 ****************************************************************************/
-void Parser::set_color(master &mast, instance &inst, int color, float specularity)
+void Parser::set_color(Master &mast, Instance &inst, int color, float specularity)
 {
 	int no_edges, no_polygons, loop, offset;
 	int poly_no[2], edge0, edge1;
@@ -1558,7 +1558,7 @@ void Parser::set_color(master &mast, instance &inst, int color, float specularit
 * set_bound() - function to set the minimum and maximum values of an object *
 *                  to allow collision detection                             *
 ****************************************************************************/
-void Parser::set_bound(instance &inst)
+void Parser::set_bound(Instance &inst)
 {
 	/* set the x,y and z min/max values to the values of the first vertex
 	   as an initial value */

@@ -4,6 +4,8 @@
 #include <fstream>
 #include <string>
 #include "defs.hpp"
+#include "instance.hpp"
+#include "master.hpp"
 #include "world.hpp"
 
 class Parser
@@ -34,9 +36,9 @@ private:
 	Status process_specularity(float *specularity);
 	bool process_outcome(std::string &outcome);
 	Status process_style(RenderStyle &style);
-	Status process_verts(master &mast, int no_vertices);
-	Status process_edges(master &mast, int no_edges);
-	Status process_polys(master &mast, int no_polygons);
+	Status process_verts(Master &mast, int no_vertices);
+	Status process_edges(Master &mast, int no_edges);
+	Status process_polys(Master &mast, int no_polygons);
 	Status process_sky(int *color);
 	Status process_ground(int *color);
 
@@ -50,8 +52,8 @@ private:
 	Status getstring(std::string &word);
 	Status get_point(float *pntx, float *pnty, float *pntz);
 
-	void set_color(master &mast, instance &inst, int color, float specularity);
-	void set_bound(instance &inst);
+	void set_color(Master &mast, Instance &inst, int color, float specularity);
+	void set_bound(Instance &inst);
 
 	// Variables for managing reading the file to parse
 	std::ifstream file;

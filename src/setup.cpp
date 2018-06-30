@@ -20,7 +20,7 @@
 *                            the master object and the angle and scale that *
 *                            that needs to transform the instance           *
 ****************************************************************************/
-void create_object_instance(master &mast, instance &inst)
+void create_object_instance(Master &mast, Instance &inst)
 {
 	int loop;
 	float xpnt, ypnt, zpnt;

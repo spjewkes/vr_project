@@ -2,8 +2,11 @@
 #define __SCREEN_HPP__
 
 #include "defs.hpp"
+#include "instance.hpp"
+#include "master.hpp"
+#include "viewer.hpp"
 
 Status screen_open(int mode);
-void draw_image(std::vector<master> &mptr, std::vector<instance> &iptr, viewer user);
+void draw_image(std::vector<Master> &mptr, std::vector<Instance> &iptr, Viewer &user);
 
 #endif // __SCREEN_HPP__

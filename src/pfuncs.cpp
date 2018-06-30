@@ -75,7 +75,7 @@ void translate(float *pntx, float *pnty, float *pntz,
 * translation() - function to offset an entire instance by x, y and z      *
 *                 values (i.e. a tranlation of the object)                 *
 ***************************************************************************/
-void translation(instance &inst, float locx, float locy, float locz)
+void translation(Instance &inst, float locx, float locy, float locz)
 {
 	float x, y, z;
 

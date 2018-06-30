@@ -87,7 +87,7 @@ void debug(const std::string &string, int level)
 *                  contents of the master structure to the screen            *
 *                  let's just make sure that it's doing its job correctly    *
 *****************************************************************************/
-void check_master(std::vector<master> &masters)
+void check_master(std::vector<Master> &masters)
 {
 	debug ("check_master()", 1);
 
@@ -154,7 +154,7 @@ void check_master(std::vector<master> &masters)
 *                    contents of the instance structure to the screen       *
 *                    let's just make sure that it's doing its job correctly *
 ****************************************************************************/
-void check_instance(std::vector<instance> &instances)
+void check_instance(std::vector<Instance> &instances)
 {
 	debug("check_instance ()", 1);
 

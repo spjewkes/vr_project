@@ -13,14 +13,14 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "defs.hpp"
+#include "program.hpp"
 
 /****************************************************************************
 * program() - this function looks at the string for a particular instance   *
 *             and checks whether it is possible to execute it using the     *
 *             spawnvp() command                                             *
 ****************************************************************************/
-void program(instance &inst)
+void program(Instance &inst)
 {
 	if (inst.outcome != "solid")
 	{

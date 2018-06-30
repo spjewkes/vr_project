@@ -12,14 +12,16 @@
 ****************/
 #include "defs.hpp"
 #include "graphics.hpp"
+#include "instance.hpp"
 #include "pfuncs.hpp"
 #include "sound.hpp"
+#include "viewer.hpp"
 
 /****************************************************************************
 * collision() - checks to see if the location is not inside any objects     *
 *               boundary boxes                                              *
 ****************************************************************************/
-int collision(float pntx, float pnty, float pntz, std::vector<instance> &instances)
+int collision(float pntx, float pnty, float pntz, std::vector<Instance> &instances)
 {
 	int idx = 0;
 
@@ -51,7 +53,7 @@ int collision(float pntx, float pnty, float pntz, std::vector<instance> &instanc
 * hit_object() - function that is initially called to start checking for     *
 *                any objects selected by the current mouse location          *
 *****************************************************************************/
-int hit_object(int mpos_x, int mpos_y, viewer &user, std::vector<instance> &instances)
+int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &instances)
 {
 	float pntx, pnty, pntz, mouse_z;
 	float midx , midy;
@@ -109,7 +111,7 @@ int hit_object(int mpos_x, int mpos_y, viewer &user, std::vector<instance> &inst
 * check col() - checks to see if the location is not inside any objects     *
 *               boundary boxes                                              *
 ****************************************************************************/
-bool check_col(float locx, float locy, float locz, viewer &user, std::vector<instance> &instances)
+bool check_col(float locx, float locy, float locz, Viewer &user, std::vector<Instance> &instances)
 {
 	bool collide = false;
 

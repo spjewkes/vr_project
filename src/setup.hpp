@@ -1,6 +1,9 @@
 #ifndef __SETUP_HPP__
 #define __SETUP_HPP__
 
-void create_object_instance(master &mast, instance &inst);
+#include "instance.hpp"
+#include "master.hpp"
+
+void create_object_instance(Master &mast, Instance &inst);
 
 #endif // __SETUP_HPPx__
