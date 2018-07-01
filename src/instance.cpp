@@ -35,6 +35,11 @@ void Instance::setup_vertices()
 				  angle.x(),
 				  angle.y(),
 				  angle.z());
+		/* finally, translate the instance with the position */
+		do_translate(&xpnt, &ypnt, &zpnt,
+					 pos.x(),
+					 pos.y(),
+					 pos.z());
 		/* place the coordinate into the instance structure */
 		vert[loop].x(xpnt);
 		vert[loop].y(ypnt);

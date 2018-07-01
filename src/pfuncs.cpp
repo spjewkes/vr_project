@@ -70,25 +70,3 @@ void do_translate(float *pntx, float *pnty, float *pntz,
 	*pnty += trny;
 	*pntz += trnz;
 }
-
-/***************************************************************************
-* translation() - function to offset an entire instance by x, y and z      *
-*                 values (i.e. a tranlation of the object)                 *
-***************************************************************************/
-void do_translation(Instance &inst, float locx, float locy, float locz)
-{
-	float x, y, z;
-
-	/* loop to translate the whole of an instance object */
-	for (auto &vertex : inst.vert)
-	{
-		x = vertex.x();
-		y = vertex.y();
-		z = vertex.z();
-		do_translate(&x, &y, &z, locx, locy, locz);
-		vertex.x(x);
-		vertex.y(y);
-		vertex.z(z);
-	}
-}
-

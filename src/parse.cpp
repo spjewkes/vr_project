@@ -620,8 +620,6 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 
 				/* set up the instance of the master object */
 				world.instances()[instance_pos].setup_vertices();
-				/* translate the instance */
-				do_translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colors of the instances facets (polygons) */
 				world.instances()[instance_pos].setup_color();
 				/* finially we set up the collision box around the object */
@@ -637,8 +635,6 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			{
 				/* set up the instance of the master object */
 				world.instances()[instance_pos].setup_vertices();
-				/* translate the instance */
-				do_translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colors if the instances facets */
 				world.instances()[instance_pos].setup_color();
 				/* finially we set up the collision box around the object */
