@@ -25,7 +25,7 @@ private:
 	Status check_object_values(int object_no, int object_pos, int no_objects);
 	Status process_object_definition(int object_no);
 	Status process_object_instances(int no_instances, int no_objects);
-	Status check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances, int master_no);
+	Status check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances);
 
 	Status process_location(Vector3d &loc);
 	Status process_direction(Vector3d &ang);
@@ -52,7 +52,6 @@ private:
 	Status getstring(std::string &word);
 	Status get_point(float *pntx, float *pnty, float *pntz);
 
-	void set_color(Master &mast, Instance &inst, int color, float specularity);
 	void set_bound(Instance &inst);
 
 	// Variables for managing reading the file to parse

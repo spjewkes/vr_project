@@ -11,6 +11,7 @@ public:
 	~Instance() {}
 
 	void setup_vertices();
+	void setup_color();
 
 	Master *masterptr = { nullptr };
 
@@ -19,6 +20,9 @@ public:
 	Vector3d max = { 0.0f, 0.0f, 0.0f };
 	Vector3d angle = { 0.0f, 0.0f, 0.0f };
 	Vector3d scale = { 1.0f, 1.0f, 1.0f };
+
+	int color = { 0 };
+	float specularity = { 0.0f };
 
 	std::vector<Vector3d> vert;
 
