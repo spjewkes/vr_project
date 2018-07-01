@@ -89,9 +89,8 @@ Status screen_open(int mode)
 *                 rough graphical form just a brief check to see if the     *
 *                 values are being stored correctly                         *
 ****************************************************************************/
-void draw_image(std::vector<Master> &masters, std::vector<Instance> &instances, Viewer &user)
+void draw_image(std::vector<Instance> &instances, Viewer &user)
 {
-	int master_no;
 	int edge0, edge1;
 	float x, y, z;
 	float x1,y1,z1, x2,y2,z2, x3,y3,z3;
@@ -198,16 +197,16 @@ void draw_image(std::vector<Master> &masters, std::vector<Instance> &instances, 
 
 		/* get the master no of the of master that stores
 		   the instance's object */
-		master_no = instances[tmp].master_no;
+		Master *masterptr = instances[tmp].masterptr;
 
 		/* now we check whether to draw the image as a wireframe or solid */
 		if (instances[tmp].style == RenderStyle::WIREFRAME)
 		{
-			for (size_t i = 0; i < masters[master_no].edge0.size(); i++)
+			for (size_t i = 0; i < masterptr->edge0.size(); i++)
 			{
 				/* get the value of the start and ends of the edges */
-				edge0 = masters[master_no].edge0[i];
-				edge1 = masters[master_no].edge1[i];
+				edge0 = masterptr->edge0[i];
+				edge1 = masterptr->edge1[i];
 				/* get the first vertex of the edge */
 				x1 = store[edge0][X];
 				y1 = store[edge0][Y];
@@ -234,18 +233,18 @@ void draw_image(std::vector<Master> &masters, std::vector<Instance> &instances, 
 		else if (instances[tmp].style == RenderStyle::SOLID)
 		{
 			/* now let's examine the three edges */
-			for(size_t i = 0; i < masters[master_no].poly0.size(); i++)
+			for(size_t i = 0; i < masterptr->poly0.size(); i++)
 			{
 				/* get the three edges that build up the polygon */
-				poly_no[0] = masters[master_no].poly0[i];
-				poly_no[1] = masters[master_no].poly1[i];
-				poly_no[2] = masters[master_no].poly2[i];
+				poly_no[0] = masterptr->poly0[i];
+				poly_no[1] = masterptr->poly1[i];
+				poly_no[2] = masterptr->poly2[i];
 
 				/* before we go any further let's make
 				   sure the polygon is visible */
 				/* now let's deal with the first edge */
-				edge0 = masters[master_no].edge0[(poly_no[0])];
-				edge1 = masters[master_no].edge1[(poly_no[0])];
+				edge0 = masterptr->edge0[(poly_no[0])];
+				edge1 = masterptr->edge1[(poly_no[0])];
 				/* get the first vertex of that edge */
 				x1 = store[edge0][X];
 				y1 = store[edge0][Y];
@@ -256,7 +255,7 @@ void draw_image(std::vector<Master> &masters, std::vector<Instance> &instances, 
 				z2 = store[edge1][Z];
 				/* we need a third point to find the normal to the plane */
 				/* so we'll get the end point of the second edge */
-				edge1 = masters[master_no].edge1[(poly_no[1])];
+				edge1 = masterptr->edge1[(poly_no[1])];
 				x3 = store[edge1][X];
 				y3 = store[edge1][Y];
 				z3 = store[edge1][Z];
@@ -292,7 +291,7 @@ void draw_image(std::vector<Master> &masters, std::vector<Instance> &instances, 
 					pre_array[1][Y] = y2;
 					pre_array[1][Z] = z2;
 					/* now get the start point of the second edge */
-					edge0 = masters[master_no].edge0[(poly_no[1])];
+					edge0 = masterptr->edge0[(poly_no[1])];
 					pre_array[2][X] = store[edge0][X];
 					pre_array[2][Y] = store[edge0][Y];
 					pre_array[2][Z] = store[edge0][Z];
@@ -303,12 +302,12 @@ void draw_image(std::vector<Master> &masters, std::vector<Instance> &instances, 
 					pre_array[3][Z] = z3;
 					/* now move on to the third edge */
 					/* the start point */
-					edge0 = masters[master_no].edge0[(poly_no[2])];
+					edge0 = masterptr->edge0[(poly_no[2])];
 					pre_array[4][X] = store[edge0][X];
 					pre_array[4][Y] = store[edge0][Y];
 					pre_array[4][Z] = store[edge0][Z];
 					/* and now the end point */
-					edge1 = masters[master_no].edge1[(poly_no[2])];
+					edge1 = masterptr->edge1[(poly_no[2])];
 					pre_array[5][X] = store[edge1][X];
 					pre_array[5][Y] = store[edge1][Y];
 					pre_array[5][Z] = store[edge1][Z];

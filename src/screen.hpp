@@ -7,6 +7,6 @@
 #include "viewer.hpp"
 
 Status screen_open(int mode);
-void draw_image(std::vector<Master> &mptr, std::vector<Instance> &iptr, Viewer &user);
+void draw_image(std::vector<Instance> &iptr, Viewer &user);
 
 #endif // __SCREEN_HPP__

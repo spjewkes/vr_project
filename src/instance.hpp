@@ -2,6 +2,7 @@
 #define __INSTANCE_HPP__
 
 #include "defs.hpp"
+#include "master.hpp"
 
 class Instance
 {
@@ -9,7 +10,7 @@ public:
 	Instance() {}
 	~Instance() {}
 
-	int master_no = { 0 };
+	Master *masterptr = { nullptr };
 
 	Vector3d pos = { 0.0f, 0.0f, 0.0f };
 	Vector3d min = { 0.0f, 0.0f, 0.0f };

@@ -310,6 +310,9 @@ Status Parser::process_objects(int no_objects)
 		if ((master_no < 0) || (master_no > no_objects))
 			result = error("The-master no is incorrect", lincnt);
 
+		// Set its id
+		world.masters()[loop].id = master_no;
+
 		skip_garbage();
 
 		/* get the vertices, edges and polygons which define the object */
@@ -511,7 +514,7 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 
 		/* store the master no value in the instance */
 		/* take one away to-match internal format of master object references */
-		world.instances()[loop].master_no = master_no - 1;
+		world.instances()[loop].masterptr = &world.masters()[master_no - 1];
 
 		skip_garbage();
 

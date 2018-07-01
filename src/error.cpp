@@ -94,12 +94,10 @@ void check_master(std::vector<Master> &masters)
 	printf("\nThere are %lu master(s).\n", masters.size());
 	printf("\nThe Master structure contains The following data:\n");
 
-	int i = 0;
-
 	for (auto mast : masters)
 	{
 		/* print which object in the master array */
-		printf("\nMaster object:\t%d", i++);
+		printf("\nMaster object:\t%u", mast.id);
 		/* print the scale values */
 		printf("\nScale X:  %f,", mast.scale.x());
 		printf("\tScale Y:  %f,", mast.scale.y());
@@ -168,7 +166,7 @@ void check_instance(std::vector<Instance> &instances)
 		/* print which object in the instance array */
 		printf("\nInstance object:\t%d", i++);
 		/* print which master object it is cased on */
-		printf("\nMaster object number:\t%d", inst.master_no);
+		printf("\nMaster object number:\t%d", inst.masterptr->id);
 		/* print the iocational values */
 		printf("\nX location:  %f,", inst.pos.x());
 		printf("\tY location:  %f,", inst.pos.y());
