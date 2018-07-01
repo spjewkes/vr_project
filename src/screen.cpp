@@ -179,8 +179,8 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 			y = vertex.y();
 			z = vertex.z();
 			/* set coordinate so that viewer is at origin */
-			translate(&x, &y, &z, 0-user.loc.x(), 0-user.loc.y(), 0-user.loc.z());
-			rotate(&x, &y, &z, 0-user.ang.x(), 0-user.ang.y(), 0-user.ang.z());
+			do_translate(&x, &y, &z, 0-user.loc.x(), 0-user.loc.y(), 0-user.loc.z());
+			do_rotate(&x, &y, &z, 0-user.ang.x(), 0-user.ang.y(), 0-user.ang.z());
 			/* now normalise the points ready for the perspective
 			   projection */
 			x = x * ((2.0 * vrp) / (100.0 * (vrp+BACK)));

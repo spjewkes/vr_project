@@ -23,7 +23,6 @@
 #include "parse.hpp"
 #include "program.hpp"
 #include "screen.hpp"
-#include "setup.hpp"
 #include "sound.hpp"
 
 /************

@@ -77,9 +77,9 @@ int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &inst
 
 	/* now make the final Jump into making the mouse coordinates into real world coordinates */
 	/* now rotate the point around user */
-	rotate(&pntx, &pnty, &pntz, user.ang.x(), user.ang.y(), user.ang.z());
+	do_rotate(&pntx, &pnty, &pntz, user.ang.x(), user.ang.y(), user.ang.z());
 	/* and translate it */
-	translate(&pntx, &pnty, &pntz, user.loc.x(), user.loc.y(), user.loc.z());
+	do_translate(&pntx, &pnty, &pntz, user.loc.x(), user.loc.y(), user.loc.z());
 
 	/* now create the vector from the user to the mouse point */
 	dx = pntx - user.loc.x();

@@ -14,7 +14,6 @@
 #include "error.hpp"
 #include "parse.hpp"
 #include "pfuncs.hpp"
-#include "setup.hpp"
 #include "vector3d.hpp"
 
 /* Constructor */
@@ -616,10 +615,11 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			if ((instance_pos+1) < no_instances)
 			{
 				lineptr = 0;
+
 				/* set up the instance of the master object */
-				create_object_instance(world.masters()[master_no], world.instances()[instance_pos]);
+				world.instances()[instance_pos].setup_vertices();
 				/* translate the instance */
-				translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
+				do_translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colors of the instances facets (polygons) */
 				set_color(world.masters()[master_no], world.instances()[instance_pos], color, specularity);
 				/* finially we set up the collision box around the object */
@@ -634,9 +634,9 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			if ((instance_pos+1) == no_instances)
 			{
 				/* set up the instance of the master object */
-				create_object_instance(world.masters()[master_no], world.instances()[instance_pos]);
+				world.instances()[instance_pos].setup_vertices();
 				/* translate the instance */
-				translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
+				do_translation(world.instances()[instance_pos], loc.x(), loc.y(), loc.z());
 				/* set the colors if the instances facets */
 				set_color(world.masters()[master_no], world.instances()[instance_pos], color, specularity);
 				/* finially we set up the collision box around the object */

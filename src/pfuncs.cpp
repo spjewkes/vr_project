@@ -21,7 +21,7 @@
 * rotate() - function to rotate a single point described by an x, y and z  *
 *            value by three angles in the x,y and z planes                 *
 ***************************************************************************/
-void rotate(float *pntx, float *pnty, float *pntz,
+void do_rotate(float *pntx, float *pnty, float *pntz,
 			float angx, float angy, float angz)
 {
 	float cax, cay, caz, sax, say, saz;
@@ -50,7 +50,7 @@ void rotate(float *pntx, float *pnty, float *pntz,
 * scale() - function to scale a single point described by an x, y and z    *
 *           value by three scale values for the x,y and z planes           *
 ***************************************************************************/
-void scale(float *pntx, float *pnty, float *pntz,
+void do_scale(float *pntx, float *pnty, float *pntz,
 		   float sclx, float scly, float sclz)
 {
 	*pntx *= sclx;
@@ -63,7 +63,7 @@ void scale(float *pntx, float *pnty, float *pntz,
 *               and z value by three translation values for the x, y and   *
 *               z planes                                                   *
 ***************************************************************************/
-void translate(float *pntx, float *pnty, float *pntz,
+void do_translate(float *pntx, float *pnty, float *pntz,
 			   float trnx, float trny, float trnz)
 {
 	*pntx += trnx;
@@ -75,7 +75,7 @@ void translate(float *pntx, float *pnty, float *pntz,
 * translation() - function to offset an entire instance by x, y and z      *
 *                 values (i.e. a tranlation of the object)                 *
 ***************************************************************************/
-void translation(Instance &inst, float locx, float locy, float locz)
+void do_translation(Instance &inst, float locx, float locy, float locz)
 {
 	float x, y, z;
 
@@ -85,7 +85,7 @@ void translation(Instance &inst, float locx, float locy, float locz)
 		x = vertex.x();
 		y = vertex.y();
 		z = vertex.z();
-		translate(&x, &y, &z, locx, locy, locz);
+		do_translate(&x, &y, &z, locx, locy, locz);
 		vertex.x(x);
 		vertex.y(y);
 		vertex.z(z);

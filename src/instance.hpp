@@ -10,6 +10,8 @@ public:
 	Instance() {}
 	~Instance() {}
 
+	void setup_vertices();
+
 	Master *masterptr = { nullptr };
 
 	Vector3d pos = { 0.0f, 0.0f, 0.0f };
