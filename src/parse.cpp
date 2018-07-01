@@ -625,7 +625,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 				/* set the colors of the instances facets (polygons) */
 				world.instances()[instance_pos].setup_color();
 				/* finially we set up the collision box around the object */
-				set_bound(world.instances()[instance_pos]);
+				world.instances()[instance_pos].setup_bounds();
 				return Okay;
 			}
 			else
@@ -642,7 +642,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 				/* set the colors if the instances facets */
 				world.instances()[instance_pos].setup_color();
 				/* finially we set up the collision box around the object */
-				set_bound(world.instances()[instance_pos]);
+				world.instances()[instance_pos].setup_bounds();
 				return Okay;
 			}
 			else
@@ -1403,58 +1403,4 @@ Status Parser::get_point(float *pntx, float *pnty, float *pntz)
 		result = Error;
 
 	return result;
-}
-
-/****************************************************************************
-* set_bound() - function to set the minimum and maximum values of an object *
-*                  to allow collision detection                             *
-****************************************************************************/
-void Parser::set_bound(Instance &inst)
-{
-	/* set the x,y and z min/max values to the values of the first vertex
-	   as an initial value */
-
-	/* minimum value of collision box */
-	float xmin = inst.vert[0].x();
-	float ymin = inst.vert[0].y();
-	float zmin = inst.vert[0].z();
-
-	/* maximum value of collision box */
-	float xmax = inst.vert[0].x();
-	float ymax = inst.vert[0].y();
-	float zmax = inst.vert[0].z();
-
-	/* now look at other values in the instances vertex list and alter the
-	   minimum and maximum values accordingly */
-	for (auto vertex : inst.vert)
-	{
-		/* looking for the minimum x value */
-		xmin = std::fmin(xmin, vertex.x());
-
-		/* looking for the minimum y value */
-		ymin = std::fmin(ymin, vertex.y());
-
-		/* looking for the minimum z value */
-		zmin = std::fmin(zmin, vertex.z());
-
-		/* looking for the maximum x value */
-		xmax = std::fmax(xmax, vertex.x());
-
-		/* looking for the maximum y value */
-		ymax = std::fmax(ymax, vertex.y());
-
-		/* looking for the maximum z value */
-		zmax = std::fmax(zmax, vertex.z());
-	}
-
-	/* now set the instance values with the minimum x,y and z and the
-	   maximum x,y and z */
-	/* the minimum values */
-	inst.min.x(xmin);
-	inst.min.y(ymin);
-	inst.min.z(zmin);
-	/* the maximum values */
-	inst.max.x(xmax);
-	inst.max.y(ymax);
-	inst.max.z(zmax);
 }

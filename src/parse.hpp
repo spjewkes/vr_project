@@ -52,8 +52,6 @@ private:
 	Status getstring(std::string &word);
 	Status get_point(float *pntx, float *pnty, float *pntz);
 
-	void set_bound(Instance &inst);
-
 	// Variables for managing reading the file to parse
 	std::ifstream file;
 	std::string line;

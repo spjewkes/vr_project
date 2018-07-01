@@ -191,3 +191,43 @@ void Instance::setup_color()
 		}
 	}
 }
+
+void Instance::setup_bounds()
+{
+	/* set the x,y and z min/max values to the values of the first vertex
+	   as an initial value */
+
+	/* minimum value of collision box */
+	float xmin = vert[0].x();
+	float ymin = vert[0].y();
+	float zmin = vert[0].z();
+
+	/* maximum value of collision box */
+	float xmax = vert[0].x();
+	float ymax = vert[0].y();
+	float zmax = vert[0].z();
+
+	/* now look at other values in the instances vertex list and alter the
+	   minimum and maximum values accordingly */
+	for (auto vertex : vert)
+	{
+		xmin = std::fmin(xmin, vertex.x());
+		ymin = std::fmin(ymin, vertex.y());
+		zmin = std::fmin(zmin, vertex.z());
+
+		xmax = std::fmax(xmax, vertex.x());
+		ymax = std::fmax(ymax, vertex.y());
+		zmax = std::fmax(zmax, vertex.z());
+	}
+
+	/* now set the instance values with the minimum x,y and z and the
+	   maximum x,y and z */
+	/* the minimum values */
+	min.x(xmin);
+	min.y(ymin);
+	min.z(zmin);
+	/* the maximum values */
+	max.x(xmax);
+	max.y(ymax);
+	max.z(zmax);
+}

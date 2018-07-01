@@ -12,6 +12,7 @@ public:
 
 	void setup_vertices();
 	void setup_color();
+	void setup_bounds();
 
 	Master *masterptr = { nullptr };
 
