@@ -2,6 +2,7 @@
 #define __VECTOR3D_HPP__
 
 #include <cmath>
+#include "defs.hpp"
 
 /**
  * Class defining a 3d vector type.
@@ -46,16 +47,9 @@ public:
 		return Vector3d(m_x * scale, m_y * scale, m_z * scale);
 	}
 
-	inline Vector3d operator/(const float scale) const
+	inline Vector3d operator*(const Vector3d &scale) const
 	{
-		if (scale == 0.0f)
-		{
-			return Vector3d(0.0f, 0.0f, 0.0f);
-		}
-		else
-		{
-			return Vector3d(m_x / scale, m_y / scale, m_z / scale);
-		}
+		return Vector3d(m_x * scale.x(), m_y * scale.y(), m_z * scale.z());
 	}
 
 	inline Vector3d& operator+=(const Vector3d& rhs)
@@ -82,21 +76,11 @@ public:
 		return *this;
 	}
 
-	inline Vector3d& operator/=(const float scale)
+	inline Vector3d& operator*=(const Vector3d &scale)
 	{
-		if (scale == 0.0f)
-		{
-			m_x = 0.0f;
-			m_y = 0.0f;
-			m_z = 0.0f;
-		}
-		else
-		{
-			m_x /= scale;
-			m_y /= scale;
-			m_z /= scale;
-		}
-	
+		m_x *= scale.x();
+		m_y *= scale.y();
+		m_z *= scale.z();
 		return *this;
 	}
 
@@ -120,6 +104,28 @@ public:
 	void y(const float y) { m_y = y; }
 	void z(const float z) { m_z = z; }
 	
+	/// Rotate point about 0,0,0 axis by Vector3d angle.
+	inline void rotate(const Vector3d& angle)
+	{
+		// Convert x, y and z coords from degrees to radians
+		// and apply them to both the cosine and the sine functions
+		float cax = cos(angle.x() / 57.295779513082321f);
+		float sax = sin(angle.x() / 57.295779513082321f);
+		float cay = cos(angle.y() / 57.295779513082321f);
+		float say = sin(angle.y() / 57.295779513082321f);
+		float caz = cos(angle.z() / 57.295779513082321f);
+		float saz = sin(angle.z() / 57.295779513082321f);
+
+		// perform the rotation
+		float A = m_x;
+		float B = (m_y * cax) + (m_z * sax);
+		float C = (m_z * cax) - (m_y * sax);
+		float D = (cay * A) - (say * C);
+		m_z = (say * A) + (cay * C);
+		m_y = (B * caz) - (D * saz);
+		m_x = (D * caz) + (B * saz);
+	}
+
 	/// Get length of vector.
 	float length() const;
 	
