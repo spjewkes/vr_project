@@ -11,39 +11,13 @@ void Instance::setup_vertices()
 
 	for (int loop = 0; loop < no_verts; loop++)
 	{
-		/* the x, y, z coord from the master */
-		float xpnt = masterptr->vert[loop].x();
-		float ypnt = masterptr->vert[loop].y();
-		float zpnt = masterptr->vert[loop].z();
-		/* scale by the master values */
-		do_scale(&xpnt, &ypnt, &zpnt,
-				 masterptr->scale.x(),
-				 masterptr->scale.y(),
-				 masterptr->scale.z());
-		/* now scale the instance with the instance values */
-		do_scale(&xpnt, &ypnt, &zpnt,
-				 scale.x(),
-				 scale.y(),
-				 scale.z());
-		/* rotate by the master values */
-		do_rotate(&xpnt, &ypnt, &zpnt,
-				  masterptr->angle.x(),
-				  masterptr->angle.y(),
-				  masterptr->angle.z());
-		/* now rotate the instance with the instance values */
-		do_rotate(&xpnt, &ypnt, &zpnt,
-				  angle.x(),
-				  angle.y(),
-				  angle.z());
-		/* finally, translate the instance with the position */
-		do_translate(&xpnt, &ypnt, &zpnt,
-					 pos.x(),
-					 pos.y(),
-					 pos.z());
-		/* place the coordinate into the instance structure */
-		vert[loop].x(xpnt);
-		vert[loop].y(ypnt);
-		vert[loop].z(zpnt);
+		vert[loop] = masterptr->vert[loop];
+
+		vert[loop] *= masterptr->scale;
+		vert[loop] *= scale;
+		vert[loop].rotate(masterptr->angle);
+		vert[loop].rotate(angle);
+		vert[loop] += pos;
 	}
 }
 
