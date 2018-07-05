@@ -55,9 +55,8 @@ int collision(float pntx, float pnty, float pntz, std::vector<Instance> &instanc
 *****************************************************************************/
 int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &instances)
 {
-	float pntx, pnty, pntz, mouse_z;
+	float mouse_z;
 	float midx , midy;
-	float dx, dy, dz;
 	float t;
 	float vrp = -50.0;
 	int which_instance;
@@ -70,33 +69,29 @@ int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &inst
 	midy = (float) (getmaxy()/2);
 
 	/* now normalize the x and y coordinates */
-	pntx = ((float)mpos_x - midx) * (mouse_z / (-midx));
 	/* reserve the polarity of y to make up when y is +re and down when y is -ve */
-	pnty = ((float)mpos_y - midy) * (mouse_z / (midy));
-	pntz = vrp;
+	Vector3d mousepnt((static_cast<float>(mpos_x) - midx) * (mouse_z / -midx),
+					  (static_cast<float>(mpos_y) - midy) * (mouse_z / midy),
+					  vrp);
 
 	/* now make the final Jump into making the mouse coordinates into real world coordinates */
 	/* now rotate the point around user */
-	do_rotate(&pntx, &pnty, &pntz, user.ang.x(), user.ang.y(), user.ang.z());
+	mousepnt.rotate(user.ang);
 	/* and translate it */
-	do_translate(&pntx, &pnty, &pntz, user.loc.x(), user.loc.y(), user.loc.z());
+	mousepnt += user.loc;
 
 	/* now create the vector from the user to the mouse point */
-	dx = pntx - user.loc.x();
-	dy = pnty - user.loc.y();
-	dz = pntz - user.loc.z();
+	Vector3d d(mousepnt - user.loc);
 
 	/* now we have the vector start to examine the points on the line checking whether any of
 	   them collide with an object start at t = 0.0 and continue past t = 1.0 */
 	for (t = 0.0; t < 150.0; t += 0.01)
 	{
 		/* calculate a point along the line */
-		pntx = user.loc.x() + (t * dx);
-		pnty = user.loc.y() + (t * dy);
-		pntz = user.loc.z() + (t * dz);
+		mousepnt = user.loc + (d * t);
 
 		/* now see if any instance has collided with the point */
-		which_instance = collision(pntx, pnty, pntz, instances);
+		which_instance = collision(mousepnt.x(), mousepnt.y(), mousepnt.z(), instances);
 
 		if (which_instance != -1)
 		{
