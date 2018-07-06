@@ -126,6 +126,13 @@ public:
 		m_x = (D * caz) + (B * saz);
 	}
 
+	inline void scale(float x, float y, float z)
+	{
+		m_x *= x;
+		m_y *= y;
+		m_z *= z;
+	}
+
 	/// Get length of vector.
 	float length() const;
 	

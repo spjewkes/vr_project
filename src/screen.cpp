@@ -114,7 +114,7 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 	static long depth_array[256][2];
 	static float pre_array[8][3];
 	static float post_array[8][3];
-	static float store[256][3];
+	static Vector3d store[256];
 
 	/* first depth sort all the objects */
 	/* do we want to remove those objects which are behind us? */
@@ -174,25 +174,18 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 		   it's relative to the viewer */
 		for (auto vertex : instances[tmp].vert)
 		{
-			/* get the vertex point */
-			x = vertex.x();
-			y = vertex.y();
-			z = vertex.z();
 			/* set coordinate so that viewer is at origin */
-			do_translate(&x, &y, &z, 0-user.loc.x(), 0-user.loc.y(), 0-user.loc.z());
-			do_rotate(&x, &y, &z, 0-user.ang.x(), 0-user.ang.y(), 0-user.ang.z());
+			vertex -= user.loc;
+			vertex.rotate(-user.ang);
 			/* now normalise the points ready for the perspective
 			   projection */
-			x = x * ((2.0 * vrp) / (100.0 * (vrp+BACK)));
 			/* minus 2.0 here to make the y value correct
 			   i.e. -y - down and +y - up */
-			y = y * ((-2.0 * vrp) / (75.0 * (vrp+BACK)));
-			z = z * (-1.0 / (vrp+BACK));
+			vertex.scale((2.0 * vrp) / (100.0 * (vrp+BACK)),
+						 (-2.0 * vrp) / (75.0 * (vrp+BACK)),
+						 -1.0 / (vrp+BACK));
 			/* now store them in temporary instance space */
-			store[idx][X] = x;
-			store[idx][Y] = y;
-			store[idx][Z] = z;
-			idx++;
+			store[idx++] = vertex;
 		}
 
 		/* get the master no of the of master that stores
@@ -208,13 +201,13 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 				edge0 = masterptr->edge0[i];
 				edge1 = masterptr->edge1[i];
 				/* get the first vertex of the edge */
-				x1 = store[edge0][X];
-				y1 = store[edge0][Y];
-				z1 = store[edge0][Z];
+				x1 = store[edge0].x();
+				y1 = store[edge0].y();
+				z1 = store[edge0].z();
 				/* get the second vertex of the edge */
-				x2 = store[edge1][X];
-				y2 = store[edge1][Y];
-				z2 = store[edge1][Z];
+				x2 = store[edge1].x();
+				y2 = store[edge1].y();
+				z2 = store[edge1].z();
 				/* set up the values ready for clipping */
 				if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin))
 				{
@@ -246,19 +239,19 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 				edge0 = masterptr->edge0[(poly_no[0])];
 				edge1 = masterptr->edge1[(poly_no[0])];
 				/* get the first vertex of that edge */
-				x1 = store[edge0][X];
-				y1 = store[edge0][Y];
-				z1 = store[edge0][Z];
+				x1 = store[edge0].x();
+				y1 = store[edge0].y();
+				z1 = store[edge0].z();
 				/* now get the second vertex of that edge */
-				x2 = store[edge1][X];
-				y2 = store[edge1][Y];
-				z2 = store[edge1][Z];
+				x2 = store[edge1].x();
+				y2 = store[edge1].y();
+				z2 = store[edge1].z();
 				/* we need a third point to find the normal to the plane */
 				/* so we'll get the end point of the second edge */
 				edge1 = masterptr->edge1[(poly_no[1])];
-				x3 = store[edge1][X];
-				y3 = store[edge1][Y];
-				z3 = store[edge1][Z];
+				x3 = store[edge1].x();
+				y3 = store[edge1].y();
+				z3 = store[edge1].z();
 				/* now we calculate the changes between the first and */
 				/* second vertex */
 				dx1 = x2 - x1;
@@ -292,9 +285,9 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 					pre_array[1][Z] = z2;
 					/* now get the start point of the second edge */
 					edge0 = masterptr->edge0[(poly_no[1])];
-					pre_array[2][X] = store[edge0][X];
-					pre_array[2][Y] = store[edge0][Y];
-					pre_array[2][Z] = store[edge0][Z];
+					pre_array[2][X] = store[edge0].x();
+					pre_array[2][Y] = store[edge0].y();
+					pre_array[2][Z] = store[edge0].z();
 					/* we've already got the end point of the second edge so
 					   we store that also */
 					pre_array[3][X] = x3;
@@ -303,20 +296,20 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 					/* now move on to the third edge */
 					/* the start point */
 					edge0 = masterptr->edge0[(poly_no[2])];
-					pre_array[4][X] = store[edge0][X];
-					pre_array[4][Y] = store[edge0][Y];
-					pre_array[4][Z] = store[edge0][Z];
+					pre_array[4][X] = store[edge0].x();
+					pre_array[4][Y] = store[edge0].y();
+					pre_array[4][Z] = store[edge0].z();
 					/* and now the end point */
 					edge1 = masterptr->edge1[(poly_no[2])];
-					pre_array[5][X] = store[edge1][X];
-					pre_array[5][Y] = store[edge1][Y];
-					pre_array[5][Z] = store[edge1][Z];
+					pre_array[5][X] = store[edge1].x();
+					pre_array[5][Y] = store[edge1].y();
+					pre_array[5][Z] = store[edge1].z();
 					/* finally fill in the last edge made from the start
 					   of the first edge and the end of the last edge */
 					/* the start point */
-					pre_array[6][X] = pre_array[5][0];
-					pre_array[6][Y] = pre_array[5][1];
-					pre_array[6][Z] = pre_array[5][2];
+					pre_array[6][X] = pre_array[5][X];
+					pre_array[6][Y] = pre_array[5][Y];
+					pre_array[6][Z] = pre_array[5][Z];
 					/* the end point */
 					pre_array[7][X] = x1;
 					pre_array[7][Y] = y1;
