@@ -90,7 +90,6 @@ Status screen_open(int mode)
 ****************************************************************************/
 void draw_image(std::vector<Instance> &instances, Viewer &user)
 {
-	int edge0, edge1;
 	float x, y, z;
 	float x1,y1,z1, x2,y2,z2, x3,y3,z3;
 	float dx1, dy1, dz1, dx2, dy2, dz2;
@@ -194,31 +193,35 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 		/* now we check whether to draw the image as a wireframe or solid */
 		if (instances[tmp].style == RenderStyle::WIREFRAME)
 		{
-			for (size_t i = 0; i < masterptr->edge0.size(); i++)
+			for (size_t i=0; i<masterptr->poly0.size(); i++)
 			{
-				/* get the value of the start and ends of the edges */
-				edge0 = masterptr->edge0[i];
-				edge1 = masterptr->edge1[i];
-				/* get the first vertex of the edge */
-				x1 = store[edge0].x();
-				y1 = store[edge0].y();
-				z1 = store[edge0].z();
-				/* get the second vertex of the edge */
-				x2 = store[edge1].x();
-				y2 = store[edge1].y();
-				z2 = store[edge1].z();
-				/* set up the values ready for clipping */
-				if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin))
+				unsigned int edge0[3] = { masterptr->poly0[i], masterptr->poly1[i], masterptr->poly2[i] };
+				unsigned int edge1[3] = { masterptr->poly1[i], masterptr->poly2[i], masterptr->poly0[i] };
+
+				for (size_t e=0; e<3; e++)
 				{
-					/* project onto a 2D monitor */
-					x1 = (((x1*-1.0)/z1) * midx) + midx;
-					y1 = (((y1*-1.0)/z1) * midy) + midy;
-					x2 = (((x2*-1.0)/z2) * midx) + midx;
-					y2 = (((y2*-1.0)/z2) * midy) + midy;
-					/* set its color */
-					setcolor(instances[tmp].edge_color[i]);
-					/* draw line if it's in the viewing volume */
-					line(x1, y1, x2, y2);
+					/* get the first vertex */
+					x1 = store[edge0[e]].x();
+					y1 = store[edge0[e]].y();
+					z1 = store[edge0[e]].z();
+					/* get the second vertex */
+					x2 = store[edge1[e]].x();
+					y2 = store[edge1[e]].y();
+					z2 = store[edge1[e]].z();
+					/* get the third vertex */
+					/* set up the values ready for clipping */
+					if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin))
+					{
+						/* project onto a 2D monitor */
+						x1 = (((x1*-1.0)/z1) * midx) + midx;
+						y1 = (((y1*-1.0)/z1) * midy) + midy;
+						x2 = (((x2*-1.0)/z2) * midx) + midx;
+						y2 = (((y2*-1.0)/z2) * midy) + midy;
+						/* set its color */
+						setcolor(instances[tmp].poly_color[i]);
+						/* draw line if it's in then viewing volume */
+						line(x1, y1, x2, y2);
+					}
 				}
 			}
 		}
@@ -234,23 +237,19 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 
 				/* before we go any further let's make
 				   sure the polygon is visible */
-				/* now let's deal with the first edge */
-				edge0 = masterptr->edge0[(poly_no[0])];
-				edge1 = masterptr->edge1[(poly_no[0])];
 				/* get the first vertex of that edge */
-				x1 = store[edge0].x();
-				y1 = store[edge0].y();
-				z1 = store[edge0].z();
+				x1 = store[poly_no[0]].x();
+				y1 = store[poly_no[0]].y();
+				z1 = store[poly_no[0]].z();
 				/* now get the second vertex of that edge */
-				x2 = store[edge1].x();
-				y2 = store[edge1].y();
-				z2 = store[edge1].z();
+				x2 = store[poly_no[1]].x();
+				y2 = store[poly_no[1]].y();
+				z2 = store[poly_no[1]].z();
 				/* we need a third point to find the normal to the plane */
 				/* so we'll get the end point of the second edge */
-				edge1 = masterptr->edge1[(poly_no[1])];
-				x3 = store[edge1].x();
-				y3 = store[edge1].y();
-				z3 = store[edge1].z();
+				x3 = store[poly_no[2]].x();
+				y3 = store[poly_no[2]].y();
+				z3 = store[poly_no[2]].z();
 				/* now we calculate the changes between the first and */
 				/* second vertex */
 				dx1 = x2 - x1;
@@ -283,10 +282,9 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 					pre_array[1][Y] = y2;
 					pre_array[1][Z] = z2;
 					/* now get the start point of the second edge */
-					edge0 = masterptr->edge0[(poly_no[1])];
-					pre_array[2][X] = store[edge0].x();
-					pre_array[2][Y] = store[edge0].y();
-					pre_array[2][Z] = store[edge0].z();
+					pre_array[2][X] = x2;
+					pre_array[2][Y] = y2;
+					pre_array[2][Z] = z2;
 					/* we've already got the end point of the second edge so
 					   we store that also */
 					pre_array[3][X] = x3;
@@ -294,25 +292,13 @@ void draw_image(std::vector<Instance> &instances, Viewer &user)
 					pre_array[3][Z] = z3;
 					/* now move on to the third edge */
 					/* the start point */
-					edge0 = masterptr->edge0[(poly_no[2])];
-					pre_array[4][X] = store[edge0].x();
-					pre_array[4][Y] = store[edge0].y();
-					pre_array[4][Z] = store[edge0].z();
+					pre_array[4][X] = x3;
+					pre_array[4][Y] = y3;
+					pre_array[4][Z] = z3;
 					/* and now the end point */
-					edge1 = masterptr->edge1[(poly_no[2])];
-					pre_array[5][X] = store[edge1].x();
-					pre_array[5][Y] = store[edge1].y();
-					pre_array[5][Z] = store[edge1].z();
-					/* finally fill in the last edge made from the start
-					   of the first edge and the end of the last edge */
-					/* the start point */
-					pre_array[6][X] = pre_array[5][X];
-					pre_array[6][Y] = pre_array[5][Y];
-					pre_array[6][Z] = pre_array[5][Z];
-					/* the end point */
-					pre_array[7][X] = x1;
-					pre_array[7][Y] = y1;
-					pre_array[7][Z] = z1;
+					pre_array[5][X] = x1;
+					pre_array[5][Y] = y1;
+					pre_array[5][Z] = z1;
 					/* call the polygon clipping routine */
 					no_points = clip3dpara(pre_array, post_array, zmin);
 					/* now it's been clipped let's check whether we've
@@ -422,7 +408,7 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
 	no_pnts = 0;
 
 	/* for every edge in the array */
-	for (loop = 0; loop < 7; loop += 2)
+	for (loop = 0; loop < 5; loop += 2)
 	{
 		/* first we set the values for dx, dy and dz */
 		dx = pre_array[loop+1][X] - pre_array[loop][0];

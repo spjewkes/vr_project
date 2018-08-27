@@ -16,9 +16,6 @@ public:
 
 	std::vector<Vector3d> vert;
 
-	std::vector<unsigned int> edge0;
-	std::vector<unsigned int> edge1;
-
 	std::vector<unsigned int> poly0;
 	std::vector<unsigned int> poly1;
 	std::vector<unsigned int> poly2;

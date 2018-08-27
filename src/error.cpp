@@ -120,17 +120,6 @@ void check_master(std::vector<Master> &masters)
 			printf(" %f,", vertex.y());
 			printf(" %f", vertex.z());
 		}
-		/* print the number of edges that build up the object */
-		printf("\nNumber of edges:\t%lu", mast.edge0.size());
-		/* now list the vertices that make up the edges */
-		for (size_t i = 0; i < mast.edge0.size(); i++)
-		{
-			/* print the edge number */
-			printf("\nEdge number: \t%zu", i);
-			/* list the vertices that make up the edge */
-			printf("\nVertex one: %d", mast.edge0[i]);
-			printf("\nVertex two: %d", mast.edge1[i]);
-		}
 		/* print the number of polygons that build up the object */
 		printf ("\nNumber of polygons: \t%lu", mast.poly0.size());
 		/* now list the edges that make up the polygon */

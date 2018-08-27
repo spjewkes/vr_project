@@ -394,7 +394,7 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 Status Parser::process_object_definition(int object_no)
 {
 	Status result = Okay;
-	int no_vert, no_edge, no_poly;
+	int no_vert, no_poly;
 
 	debug("process_polygons()", 1);
 
@@ -423,29 +423,6 @@ Status Parser::process_object_definition(int object_no)
 	{
 		/* generate an error if the no_vertices value is illegal */
 		result = error("Error with the no vertices command", lincnt);
-	}
-
-	skip_garbage();
-
-	/* now retrieve the number of edges that make up the object */
-	if (check("no_edges") != Match)
-		result = error("Error with no_edges command", lincnt);
-
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
-
-	if ((no_edge = getnum() ) == Error)
-		result = error("Cannot parse number", lincnt);
-
-	if (no_edge > 0)
-	{
-		/* get the values of the edges */
-		result = process_edges(world.masters()[object_no], no_edge);
-	}
-	else if (no_edge < 0)
-	{
-		/* generate an error if the no_edges value is illegal */
-		result = error("Error with the no_edges command", lincnt);
 	}
 
 	skip_garbage();
@@ -1033,63 +1010,6 @@ Status Parser::process_verts(Master &mast, int no_vertices)
 }
 
 /****************************************************************************
-* process_edges() - process the object's edges                              *
-****************************************************************************/
-Status Parser::process_edges(Master &mast, int no_edges)
-{
-	Status result = Okay;
-	int loop, edge_no;
-
-	/* first we create the edge data structures */
-	mast.edge0.resize(no_edges);
-	mast.edge1.resize(no_edges);
-
-	for (loop = 0; loop < no_edges; loop++)
-	{
-		/* first skip past any garbage! */
-		skip_garbage();
-
-		/* get the number of the vertex to set */
-		if ((edge_no = getnum()) == Error)
-			result = error("Syntax error with edge command", lincnt);
-
-		if ((edge_no < 1) || (edge_no > no_edges))
-			result = error("Syntax error with edge command", lincnt);
-
-		if (check("=") != Match)
-			result = error("Missing assignment symbol", lincnt);
-
-		/* now we get the start and end vertices of the edge */
-		size_t edge_val = getnum();
-
-		/* now make sure that it is a valid vertex reference */
-		if ((edge_val < 1) || (edge_val > mast.vert.size()))
-			result = error("Illegal edge value", lincnt);
-
-		/* remember to take one from values to match array structure */
-		mast.edge0[edge_no-1] = edge_val - 1;
-
-		if (check(",") != Match)
-			result = error("Syntax error with edge command", lincnt);
-
-		edge_val = getnum();
-
-		/* now make sure that it is a valid vertex reference */
-		if ((edge_val < 1) || (edge_val > mast.vert.size()))
-			result = error("Illegal edge value", lincnt);
-
-		/* remember to take one from values to match array structure */
-		mast.edge1[edge_no-1] = edge_val - 1;
-
-		/* make sure there is no more text on the end of the line */
-		if (check("") != Blank)
-			result = error("Syntax error with edge command", lincnt);
-	}
-
-	return result;
-}
-
-/****************************************************************************
 * process_polygons() - process the object's polygons                        *
 ****************************************************************************/
 Status Parser::process_polys(Master &mast, int no_polygons)
@@ -1121,8 +1041,8 @@ Status Parser::process_polys(Master &mast, int no_polygons)
 		/* now we get the three edges that make up the polygon */
 		tmp = getnum();
 
-		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > mast.edge0.size()))
+		/* now make sure that it is a valid vertex reference */
+		if ((tmp < 1) || (tmp > mast.vert.size()))
 			result = error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
@@ -1135,7 +1055,7 @@ Status Parser::process_polys(Master &mast, int no_polygons)
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > mast.edge0.size()))
+		if ((tmp < 1) || (tmp > mast.vert.size()))
 			result = error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
@@ -1148,7 +1068,7 @@ Status Parser::process_polys(Master &mast, int no_polygons)
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > mast.edge0.size()))
+		if ((tmp < 1) || (tmp > mast.vert.size()))
 			result = error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
