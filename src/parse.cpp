@@ -13,7 +13,6 @@
 #include "defs.hpp"
 #include "error.hpp"
 #include "parse.hpp"
-#include "pfuncs.hpp"
 #include "vector3d.hpp"
 
 /* Constructor */

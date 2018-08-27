@@ -15,7 +15,6 @@
 #include <math.h>
 #include "error.hpp"
 #include "graphics.hpp"
-#include "pfuncs.hpp"
 #include "screen.hpp"
 
 #define X  0

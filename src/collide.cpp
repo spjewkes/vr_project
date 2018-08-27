@@ -13,7 +13,6 @@
 #include "defs.hpp"
 #include "graphics.hpp"
 #include "instance.hpp"
-#include "pfuncs.hpp"
 #include "sound.hpp"
 #include "viewer.hpp"
 

@@ -1,5 +1,4 @@
 #include "instance.hpp"
-#include "pfuncs.hpp"
 
 void Instance::setup_vertices()
 {
