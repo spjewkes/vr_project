@@ -180,7 +180,6 @@ void Instance::prerender(Viewer &user)
 	float BACK = -75.0;
 
 	user_vert.clear();
-	order = 0.0f;
 
 	for (auto vertex : vert)
 	{
@@ -194,11 +193,24 @@ void Instance::prerender(Viewer &user)
 					 -1.0 / (vrp+BACK));
 
 		user_vert.push_back(vertex);
-		if (vertex.length2() > order)
-		{
-			order = vertex.length2();
-		}
 	}
+
+	// Calculate length of centre of object relative to viewer
+	Vector3d v[2] = { min, max };
+	for (auto &vertex : v)
+	{
+		vertex -= user.loc;
+		vertex.rotate(-user.ang);
+
+		// Normalize the points
+		vertex.scale((2.0 * vrp) / (100.0 * (vrp+BACK)),
+					 (-2.0 * vrp) / (75.0 * (vrp+BACK)),
+					 -1.0 / (vrp+BACK));
+	}
+
+	// Use a midpoint which will order all objects
+	Vector3d res = (v[0] + v[1]) * 0.5f;
+	order = res.length2();
 
 	assert(vert.size() == user_vert.size());
 }
