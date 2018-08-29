@@ -10,6 +10,8 @@
 /****************
 * include files *
 ****************/
+#include <vector>
+#include <forward_list>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -83,257 +85,199 @@ Status screen_open(int mode)
 	return Okay;
 }
 
-/****************************************************************************
-* check_image() - a quick debugging tool to display the instance values in  *
-*                 rough graphical form just a brief check to see if the     *
-*                 values are being stored correctly                         *
-****************************************************************************/
-void draw_image(std::vector<Instance> &instances, Viewer &user)
+// Structure used to list triangles for rendering
+struct triangle
 {
-	float x, y, z;
-	float x1,y1,z1, x2,y2,z2, x3,y3,z3;
-	float dx1, dy1, dz1, dx2, dy2, dz2;
-	float A, B, C, D;
-	float zmin;
-	int midx, midy;
-	int polyarray[18];
-	int poly_no[3];
-	int polyptr, no_points;
-	int tmp;
-	/* the viewing plance position */
+	int x0, y0;
+	int x1, y1;
+	int x2, y2;
+	unsigned int color;
+	float z;
+};
+
+// Compare function for sorting triangles
+static bool compare_tri(const triangle &t1, const triangle &t2)
+{
+	return t1.z < t2.z;
+}
+
+// Render triangles to the screen, sorted in depth order
+void render(std::vector<Instance> &instances, Viewer &user)
+{
+	std::forward_list<triangle> tri_list;
+
+	// Calculate middle of screen
+	int midx = getmaxx() / 2;
+	int midy = getmaxy() / 2;
+
+	// The viewing plance position
 	float vrp = -50.0;
-	/* the back plane position */
+	// The back plane position
 	float BACK = -75.0;
 
-	/* make the arrays static - this seems to stop them conflicting with
-	   the dynamically allocated arrays */
-	/* try removing static on the depth array and watch the machine
-	   crash during the build up of your complex models :-) */
-	static long depth_array[256][2];
-	static float pre_array[8][3];
-	static float post_array[8][3];
-	static Vector3d store[256];
+	// The front plane of the view screen - must be less than zero
+	// float zmin = -1.0 * (vrp-1.0) / (vrp+BACK);
+	float zmin = -0.1;
 
-	/* first depth sort all the objects */
-	/* do we want to remove those objects which are behind us? */
-	for (size_t loop1 = 0; loop1 < instances.size(); loop1++)
-	{
-		/* reference to which instance */
-		depth_array[loop1][0] = loop1;
-		/* the distance away from the viewer we use pythagoras */
-		/* here we dont't need to find the square root as all distances */
-		/* are still going to be relative */
-		Vector3d hyp1 = instances[loop1].min - user.loc;
-		Vector3d hyp2 = instances[loop1].max - user.loc;
-		depth_array[loop1][1] = static_cast<long>(std::fmax(hyp1.length2(), hyp2.length2()));
-	}
-
-	/* smallest values come first */
-	for (size_t loop1 = 0; loop1 < instances.size(); loop1++)
-		for (size_t loop2 = 0; loop2 < instances.size()-1; loop2++)
-		{
-			if (depth_array[loop2][1] < depth_array[loop2+1][1])
-			{
-				/* swap the array values over */
-				tmp = depth_array[loop2][0];
-				depth_array[loop2][0] = depth_array[loop2+1][0];
-				depth_array[loop2+1][0] = tmp;
-				tmp = depth_array[loop2][1];
-				depth_array[loop2][1] = depth_array[loop2+1][1];
-				depth_array[loop2+1][1] = tmp;
-			}
-		}
-
-	/* set up the values for the middle of the screen */
-	midx = getmaxx() / 2;
-	midy = getmaxy() / 2;
-	/* the front plane of the view screen - must be less than zero */
-	/* zmin = -1.0 * (vrp-1.0) / (vrp+BACK); */
-	/* set zmin making sure that it's negative */
-	zmin = -0.1;
-
-	/* before we draw the scene we want to draw the sky and the ground */
-	/* the sky */
+	// Clear screen with sky and ground
 	setcolor(user.sky);
 	bar(0, 0, getmaxx(), midy);
-	/* the ground */
 	setcolor(user.ground);
 	bar(0, midy, getmaxx(), getmaxy());
 
-	for (size_t loop1 = 0; loop1 < instances.size(); loop1++)
+	// Now loop through all instances and collect triangles to render
+	for (size_t i=0; i<instances.size(); i++)
 	{
-		/* make tmp hold the value of the current instance */
-		tmp = depth_array[loop1][0];
+		std::vector<Vector3d> store;
 
-		int idx = 0;
-
-		/* for every instance */
-		/* rotate and translate all of the vertices so
-		   it's relative to the viewer */
-		for (auto vertex : instances[tmp].vert)
+		// For every instance: translate and rotate its points
+		// so that they are relative to the viewer
+		for (auto vertex : instances[i].vert)
 		{
-			/* set coordinate so that viewer is at origin */
 			vertex -= user.loc;
 			vertex.rotate(-user.ang);
-			/* now normalise the points ready for the perspective
-			   projection */
-			/* minus 2.0 here to make the y value correct
-			   i.e. -y - down and +y - up */
+
+			// normalize the points ready for perspective projection
+			// (-2.0 here to make the y value correct - i.e. -y down and +y up)
 			vertex.scale((2.0 * vrp) / (100.0 * (vrp+BACK)),
 						 (-2.0 * vrp) / (75.0 * (vrp+BACK)),
 						 -1.0 / (vrp+BACK));
-			/* now store them in temporary instance space */
-			store[idx++] = vertex;
+
+			store.push_back(vertex);
 		}
 
-		/* get the master no of the of master that stores
-		   the instance's object */
-		Master *masterptr = instances[tmp].masterptr;
+		Master *masterptr = instances[i].masterptr;
 
-		/* now we check whether to draw the image as a wireframe or solid */
-		if (instances[tmp].style == RenderStyle::WIREFRAME)
+		// Depending on the style, clip and project slightly differently
+		if (instances[i].style == RenderStyle::WIREFRAME)
 		{
-			for (size_t i=0; i<masterptr->poly0.size(); i++)
+			for (size_t j=0; j<masterptr->poly0.size(); j++)
 			{
-				unsigned int edge0[3] = { masterptr->poly0[i], masterptr->poly1[i], masterptr->poly2[i] };
-				unsigned int edge1[3] = { masterptr->poly1[i], masterptr->poly2[i], masterptr->poly0[i] };
+				unsigned int edge0[3] = { masterptr->poly0[j], masterptr->poly1[j], masterptr->poly2[j] };
+				unsigned int edge1[3] = { masterptr->poly1[j], masterptr->poly2[j], masterptr->poly0[j] };
 
 				for (size_t e=0; e<3; e++)
 				{
-					/* get the first vertex */
-					x1 = store[edge0[e]].x();
-					y1 = store[edge0[e]].y();
-					z1 = store[edge0[e]].z();
-					/* get the second vertex */
-					x2 = store[edge1[e]].x();
-					y2 = store[edge1[e]].y();
-					z2 = store[edge1[e]].z();
-					/* get the third vertex */
-					/* set up the values ready for clipping */
+					// Get the first vertex
+					float x1 = store[edge0[e]].x();
+					float y1 = store[edge0[e]].y();
+					float z1 = store[edge0[e]].z();
+
+					// Get the second vertex
+					float x2 = store[edge1[e]].x();
+					float y2 = store[edge1[e]].y();
+					float z2 = store[edge1[e]].z();
+
+					// Clip the line
 					if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin))
 					{
-						/* project onto a 2D monitor */
-						x1 = (((x1*-1.0)/z1) * midx) + midx;
-						y1 = (((y1*-1.0)/z1) * midy) + midy;
-						x2 = (((x2*-1.0)/z2) * midx) + midx;
-						y2 = (((y2*-1.0)/z2) * midy) + midy;
-						/* set its color */
-						setcolor(instances[tmp].poly_color[i]);
-						/* draw line if it's in then viewing volume */
-						line(x1, y1, x2, y2);
+						// Project line
+						int ix1 = static_cast<int>((((x1*-1.0)/z1) * midx) + midx);
+						int iy1 = static_cast<int>((((y1*-1.0)/z1) * midy) + midy);
+						int ix2 = static_cast<int>((((x2*-1.0)/z2) * midx) + midx);
+						int iy2 = static_cast<int>((((y2*-1.0)/z2) * midy) + midy);
+					
+						// Store triangle for later
+						tri_list.push_front({ix1,iy1, ix2,iy2, ix2,iy2, instances[i].poly_color[j], (z1+z2)/2.0f});
 					}
 				}
 			}
 		}
-		else if (instances[tmp].style == RenderStyle::SOLID)
+		else if (instances[i].style == RenderStyle::SOLID)
 		{
-			/* now let's examine the three edges */
-			for(size_t i = 0; i < masterptr->poly0.size(); i++)
+			for (size_t j=0; j<masterptr->poly0.size(); j++)
 			{
-				/* get the three edges that build up the polygon */
-				poly_no[0] = masterptr->poly0[i];
-				poly_no[1] = masterptr->poly1[i];
-				poly_no[2] = masterptr->poly2[i];
+				// Get first vertex
+				float x1 = store[masterptr->poly0[j]].x();
+				float y1 = store[masterptr->poly0[j]].y();
+				float z1 = store[masterptr->poly0[j]].z();
+				
+				// Get first vertex
+				float x2 = store[masterptr->poly1[j]].x();
+				float y2 = store[masterptr->poly1[j]].y();
+				float z2 = store[masterptr->poly1[j]].z();
+				
+				// Get first vertex
+				float x3 = store[masterptr->poly2[j]].x();
+				float y3 = store[masterptr->poly2[j]].y();
+				float z3 = store[masterptr->poly2[j]].z();
 
-				/* before we go any further let's make
-				   sure the polygon is visible */
-				/* get the first vertex of that edge */
-				x1 = store[poly_no[0]].x();
-				y1 = store[poly_no[0]].y();
-				z1 = store[poly_no[0]].z();
-				/* now get the second vertex of that edge */
-				x2 = store[poly_no[1]].x();
-				y2 = store[poly_no[1]].y();
-				z2 = store[poly_no[1]].z();
-				/* we need a third point to find the normal to the plane */
-				/* so we'll get the end point of the second edge */
-				x3 = store[poly_no[2]].x();
-				y3 = store[poly_no[2]].y();
-				z3 = store[poly_no[2]].z();
-				/* now we calculate the changes between the first and */
-				/* second vertex */
-				dx1 = x2 - x1;
-				dy1 = y2 - y1;
-				dz1 = z2 - z1;
-				/* now changes between third and second vertex */
-				dx2 = x3 - x2;
-				dy2 = y3 - y2;
-				dz2 = z3 - z2;
-				/* at last let's calculate the normal */
-				A = (dy1 * dz2) - (dy2 * dz1);
-				B = (dz1 * dx2) - (dz2 * dx1);
-				C = (dx1 * dy2) - (dx2 * dy1);
-				/* now calculate D using a point that is known to be */
-				/* on the plane */
-				D = (A * x1) + (B * y1) + (C * z1);
+				// Do back-face culling
+				Vector3d v1(x2-x1, y2-y1, z2-z1);
+				Vector3d v2(x3-x2, y3-y2, z3-z2);
+				v1.cross(v2);
 
-				/* so let's check if the surface is visble */
-				if (D < 0)
+				Vector3d viewer(x1,y1,z1);
+				if (v1.cross(v2).dot(viewer) < 0.0f)
 				{
-					/* now we know that part of the surface is facing us
-					   we must now clip it */
-					/* we already have the first edge so let's store it */
-					/* start point */
+					// Now we know that the surface is facing the viewer, so clip it
+					float pre_array[8][3];
+					float post_array[8][3];
+
 					pre_array[0][X] = x1;
 					pre_array[0][Y] = y1;
 					pre_array[0][Z] = z1;
-					/* end point */
+
 					pre_array[1][X] = x2;
 					pre_array[1][Y] = y2;
 					pre_array[1][Z] = z2;
-					/* now get the start point of the second edge */
+
 					pre_array[2][X] = x2;
 					pre_array[2][Y] = y2;
 					pre_array[2][Z] = z2;
-					/* we've already got the end point of the second edge so
-					   we store that also */
+
 					pre_array[3][X] = x3;
 					pre_array[3][Y] = y3;
 					pre_array[3][Z] = z3;
-					/* now move on to the third edge */
-					/* the start point */
+
 					pre_array[4][X] = x3;
 					pre_array[4][Y] = y3;
 					pre_array[4][Z] = z3;
-					/* and now the end point */
+
 					pre_array[5][X] = x1;
 					pre_array[5][Y] = y1;
 					pre_array[5][Z] = z1;
-					/* call the polygon clipping routine */
-					no_points = clip3dpara(pre_array, post_array, zmin);
-					/* now it's been clipped let's check whether we've
-					   got anything left to draw on the screen */
+
+					int no_points = clip3dpara(pre_array, post_array, zmin);
 					if (no_points > 0)
 					{
-						/* set the polysize value to 0 */
-						polyptr = 0;
-						/* fill the polyarray with values in post_array */
-						for (auto loop2 = 0; loop2 < no_points; loop2++)
+						// Project points
+						for (auto k=0; k<no_points; k++)
 						{
-							x = post_array[loop2][X];
-							y = post_array[loop2][Y];
-							z = post_array[loop2][Z];
-							/* project onto a 2D monitor */
-							x = (((x*-1.0)/z) * midx) + midx;
-							y = (((y*-1.0)/z) * midy) + midy;
-							polyarray[polyptr++] = (int)(x);
-							polyarray[polyptr++] = (int)(y);
-						}
-						/* now make the last two points of the polygon */
-						/* equal to the fist two pointm */
-						polyarray[polyptr++] = polyarray[X];
-						polyarray[polyptr++] = polyarray[Y];
+							float x = post_array[k][X];
+							float y = post_array[k][Y];
+							float z = post_array[k][Z];
 
-						no_points++;
-						
-						/* firstly set the color */
-						setcolor(instances[tmp].poly_color[i]);
-						/* now draw the polygon */
-						fillpoly(no_points, polyarray);
+							post_array[k][X] = (((x*-1.0)/z) * midx) + midx;
+							post_array[k][Y] = (((y*-1.0)/z) * midy) + midy;
+						}
+
+						// Now create list of triangles
+						for (auto k=2; k<no_points; k++)
+						{
+							tri_list.push_front(
+								{
+									static_cast<int>(post_array[0][X]), static_cast<int>(post_array[0][Y]),
+									static_cast<int>(post_array[k-1][X]), static_cast<int>(post_array[k-1][Y]),
+									static_cast<int>(post_array[k][X]), static_cast<int>(post_array[k][Y]),
+									instances[i].poly_color[j],
+									(post_array[0][Z] + post_array[k-1][Z] + post_array[k][Z]) / 3.0f
+								}
+								);
+						}
 					}
 				}
 			}
 		}
+	}
+
+	// Sort triangles according to their z-value and then render
+	tri_list.sort(compare_tri);
+
+	for (auto tri : tri_list)
+	{
+		setcolor(tri.color);
+		drawtri(tri.x0, tri.y0, tri.x1, tri.y1, tri.x2, tri.y2);
 	}
 }
 

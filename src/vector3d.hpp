@@ -164,15 +164,15 @@ public:
 	/// Cross product of vectors.
 	inline Vector3d cross(const Vector3d& rhs) const
 	{
-		return Vector3d(m_y * rhs.m_z - m_z * rhs.m_y,
-						m_z * rhs.m_x - m_x * rhs.m_z,
-						m_x * rhs.m_y - m_y * rhs.m_x);
+		return Vector3d((m_y * rhs.m_z) - (m_z * rhs.m_y),
+						(m_z * rhs.m_x) - (m_x * rhs.m_z),
+						(m_x * rhs.m_y) - (m_y * rhs.m_x));
 	}
 
 	/// Dot product of vectors.
 	inline float dot(const Vector3d& rhs) const
 	{
-		return m_x * rhs.m_x + m_y * rhs.m_y + m_z * rhs.m_z;
+		return (m_x * rhs.m_x) + (m_y * rhs.m_y) + (m_z * rhs.m_z);
 	}
 
 	/// Reflect vector to normal.
