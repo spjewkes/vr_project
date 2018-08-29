@@ -1,4 +1,7 @@
+#include <iostream>
+#include <cassert>
 #include "instance.hpp"
+#include "graphics.hpp"
 
 void Instance::setup_vertices()
 {
@@ -7,6 +10,7 @@ void Instance::setup_vertices()
 
 	/* create array for instance polygons */
 	vert.resize(no_verts);
+	user_vert.resize(no_verts);
 
 	for (int loop = 0; loop < no_verts; loop++)
 	{
@@ -165,4 +169,36 @@ void Instance::setup_bounds()
 	max.x(xmax);
 	max.y(ymax);
 	max.z(zmax);
+}
+
+void Instance::prerender(Viewer &user)
+{
+	// The viewing plance position
+	float vrp = -50.0;
+
+	// The back plane position
+	float BACK = -75.0;
+
+	user_vert.clear();
+	order = 0.0f;
+
+	for (auto vertex : vert)
+	{
+		vertex -= user.loc;
+		vertex.rotate(-user.ang);
+
+		// normalize the points ready for perspective projection
+		// (-2.0 here to make the y value correct - i.e. -y down and +y up)
+		vertex.scale((2.0 * vrp) / (100.0 * (vrp+BACK)),
+					 (-2.0 * vrp) / (75.0 * (vrp+BACK)),
+					 -1.0 / (vrp+BACK));
+
+		user_vert.push_back(vertex);
+		if (vertex.length2() > order)
+		{
+			order = vertex.length2();
+		}
+	}
+
+	assert(vert.size() == user_vert.size());
 }

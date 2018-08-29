@@ -1,8 +1,12 @@
 #ifndef __INSTANCE_HPP__
 #define __INSTANCE_HPP__
 
+#include <string>
+#include <vector>
 #include "defs.hpp"
 #include "master.hpp"
+#include "vector3d.hpp"
+#include "viewer.hpp"
 
 class Instance
 {
@@ -33,6 +37,10 @@ public:
 	bool is_solid = { false };
 
 	std::string outcome = { "" };
+
+	void prerender(Viewer &user);
+	std::vector<Vector3d> user_vert;
+	float order;
 };
 
 #endif // __INSTANCE_HPP__

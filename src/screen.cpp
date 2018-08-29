@@ -10,6 +10,7 @@
 /****************
 * include files *
 ****************/
+#include <iostream>
 #include <vector>
 #include <forward_list>
 #include <stdio.h>
@@ -85,6 +86,12 @@ Status screen_open(int mode)
 	return Okay;
 }
 
+// Compare function for sorting instance
+static bool compare_inst(const Instance *i1, const Instance *i2)
+{
+	return i1->order > i2->order;
+}
+
 // Structure used to list triangles for rendering
 struct triangle
 {
@@ -104,16 +111,11 @@ static bool compare_tri(const triangle &t1, const triangle &t2)
 // Render triangles to the screen, sorted in depth order
 void render(std::vector<Instance> &instances, Viewer &user)
 {
-	std::forward_list<triangle> tri_list;
+	std::forward_list<Instance*> inst_list;
 
 	// Calculate middle of screen
 	int midx = getmaxx() / 2;
 	int midy = getmaxy() / 2;
-
-	// The viewing plance position
-	float vrp = -50.0;
-	// The back plane position
-	float BACK = -75.0;
 
 	// The front plane of the view screen - must be less than zero
 	// float zmin = -1.0 * (vrp-1.0) / (vrp+BACK);
@@ -125,31 +127,24 @@ void render(std::vector<Instance> &instances, Viewer &user)
 	setcolor(user.ground);
 	bar(0, midy, getmaxx(), getmaxy());
 
-	// Now loop through all instances and collect triangles to render
-	for (size_t i=0; i<instances.size(); i++)
+	// Prepare objects in the scene so they are relative to user
+	for (auto &inst : instances)
 	{
-		std::vector<Vector3d> store;
+		inst.prerender(user);
+		inst_list.push_front(&inst);
+	}
 
-		// For every instance: translate and rotate its points
-		// so that they are relative to the viewer
-		for (auto vertex : instances[i].vert)
-		{
-			vertex -= user.loc;
-			vertex.rotate(-user.ang);
+	// Sort instances
+	inst_list.sort(compare_inst);
 
-			// normalize the points ready for perspective projection
-			// (-2.0 here to make the y value correct - i.e. -y down and +y up)
-			vertex.scale((2.0 * vrp) / (100.0 * (vrp+BACK)),
-						 (-2.0 * vrp) / (75.0 * (vrp+BACK)),
-						 -1.0 / (vrp+BACK));
-
-			store.push_back(vertex);
-		}
-
-		Master *masterptr = instances[i].masterptr;
+	// Now loop through all instances and collect triangles to render
+	for (auto inst : inst_list)
+	{
+		std::forward_list<triangle> tri_list;
+		Master *masterptr = inst->masterptr;
 
 		// Depending on the style, clip and project slightly differently
-		if (instances[i].style == RenderStyle::WIREFRAME)
+		if (inst->style == RenderStyle::WIREFRAME)
 		{
 			for (size_t j=0; j<masterptr->poly0.size(); j++)
 			{
@@ -159,14 +154,14 @@ void render(std::vector<Instance> &instances, Viewer &user)
 				for (size_t e=0; e<3; e++)
 				{
 					// Get the first vertex
-					float x1 = store[edge0[e]].x();
-					float y1 = store[edge0[e]].y();
-					float z1 = store[edge0[e]].z();
+					float x1 = inst->user_vert[edge0[e]].x();
+					float y1 = inst->user_vert[edge0[e]].y();
+					float z1 = inst->user_vert[edge0[e]].z();
 
 					// Get the second vertex
-					float x2 = store[edge1[e]].x();
-					float y2 = store[edge1[e]].y();
-					float z2 = store[edge1[e]].z();
+					float x2 = inst->user_vert[edge1[e]].x();
+					float y2 = inst->user_vert[edge1[e]].y();
+					float z2 = inst->user_vert[edge1[e]].z();
 
 					// Clip the line
 					if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin))
@@ -178,29 +173,29 @@ void render(std::vector<Instance> &instances, Viewer &user)
 						int iy2 = static_cast<int>((((y2*-1.0)/z2) * midy) + midy);
 					
 						// Store triangle for later
-						tri_list.push_front({ix1,iy1, ix2,iy2, ix2,iy2, instances[i].poly_color[j], (z1+z2)/2.0f});
+						tri_list.push_front({ix1,iy1, ix2,iy2, ix2,iy2, inst->poly_color[j], (z1+z2)/2.0f});
 					}
 				}
 			}
 		}
-		else if (instances[i].style == RenderStyle::SOLID)
+		else if (inst->style == RenderStyle::SOLID)
 		{
 			for (size_t j=0; j<masterptr->poly0.size(); j++)
 			{
 				// Get first vertex
-				float x1 = store[masterptr->poly0[j]].x();
-				float y1 = store[masterptr->poly0[j]].y();
-				float z1 = store[masterptr->poly0[j]].z();
+				float x1 = inst->user_vert[masterptr->poly0[j]].x();
+				float y1 = inst->user_vert[masterptr->poly0[j]].y();
+				float z1 = inst->user_vert[masterptr->poly0[j]].z();
 				
 				// Get first vertex
-				float x2 = store[masterptr->poly1[j]].x();
-				float y2 = store[masterptr->poly1[j]].y();
-				float z2 = store[masterptr->poly1[j]].z();
+				float x2 = inst->user_vert[masterptr->poly1[j]].x();
+				float y2 = inst->user_vert[masterptr->poly1[j]].y();
+				float z2 = inst->user_vert[masterptr->poly1[j]].z();
 				
 				// Get first vertex
-				float x3 = store[masterptr->poly2[j]].x();
-				float y3 = store[masterptr->poly2[j]].y();
-				float z3 = store[masterptr->poly2[j]].z();
+				float x3 = inst->user_vert[masterptr->poly2[j]].x();
+				float y3 = inst->user_vert[masterptr->poly2[j]].y();
+				float z3 = inst->user_vert[masterptr->poly2[j]].z();
 
 				// Do back-face culling
 				Vector3d v1(x2-x1, y2-y1, z2-z1);
@@ -260,7 +255,7 @@ void render(std::vector<Instance> &instances, Viewer &user)
 									static_cast<int>(post_array[0][X]), static_cast<int>(post_array[0][Y]),
 									static_cast<int>(post_array[k-1][X]), static_cast<int>(post_array[k-1][Y]),
 									static_cast<int>(post_array[k][X]), static_cast<int>(post_array[k][Y]),
-									instances[i].poly_color[j],
+									inst->poly_color[j],
 									(post_array[0][Z] + post_array[k-1][Z] + post_array[k][Z]) / 3.0f
 								}
 								);
@@ -269,15 +264,15 @@ void render(std::vector<Instance> &instances, Viewer &user)
 				}
 			}
 		}
-	}
 
-	// Sort triangles according to their z-value and then render
-	tri_list.sort(compare_tri);
+		// Sort triangles according to their z-value and then render
+		tri_list.sort(compare_tri);
 
-	for (auto tri : tri_list)
-	{
-		setcolor(tri.color);
-		drawtri(tri.x0, tri.y0, tri.x1, tri.y1, tri.x2, tri.y2);
+		for (auto tri : tri_list)
+		{
+			setcolor(tri.color);
+			drawtri(tri.x0, tri.y0, tri.x1, tri.y1, tri.x2, tri.y2);
+		}
 	}
 }
 

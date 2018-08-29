@@ -127,3 +127,7 @@ float Vector3d::length2() const
 	return m_x * m_x + m_y * m_y + m_z * m_z;
 }
 
+std::ostream &operator<<(std::ostream &os, Vector3d const &v)
+{ 
+    return os << "[" << v.x() << ", " << v.y() << ", " << v.z() << "]";
+}

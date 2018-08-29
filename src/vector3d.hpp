@@ -1,6 +1,7 @@
 #ifndef __VECTOR3D_HPP__
 #define __VECTOR3D_HPP__
 
+#include <iostream>
 #include <cmath>
 #include "defs.hpp"
 
@@ -81,6 +82,15 @@ public:
 		m_x *= scale.x();
 		m_y *= scale.y();
 		m_z *= scale.z();
+		return *this;
+	}
+
+	inline Vector3d& operator/=(const float scale)
+	{
+		assert(scale != 0.0f);
+		m_x /= scale;
+		m_y /= scale;
+		m_z /= scale;
 		return *this;
 	}
 
@@ -191,4 +201,7 @@ private:
 	float m_z;
 };
 
+std::ostream &operator<<(std::ostream &os, Vector3d const &v);
+
 #endif // __VECTOR3D_HPP__
+
