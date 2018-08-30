@@ -2,24 +2,11 @@
 
 # Virtual Reality Project
 
-A simple Virtual Reality project starting from an old DOS project I wrote
+A simple Virtual Reality project starting from an old DOS project I wrote around 1993-94. It was written with a copy of Turbo C++ (possibly version 3.0). Although it was written in C rather than any early version of C++ that was available at the time. The style of the code at that stage was a little rough around the edges as I'd only started learning C around a year earlier. One thing that I was pleased about was that I had at least tried to group the functions into files depending on what they were doing. There's also a fair amount of documentation. In some cases this was a little over-the-top but it has helped in my understanding of what I was trying to do when looking at it 25 years later.
 
-# Planned development
+This code was originally retrieve via a paper-based copy that I had. This required some cleaning up and even then there was a missing header file (defs.h) that needed some recreation. The original code in this state I have kept in a completely separate repository (see https://github.com/spjewkes/old_vr_project). Although going back to the first revision of this git repo will be effectively the same I quite liked the idea of having it on show as a separate repo.
 
-The order of plan for updating this will be:
-* Get it running by replacing the old DOS and BGI library calls. SDL2 will be the main replacement.
-* Tidy up formatting and create proper header files for each file
-* Start looking at moving code to a more object-oriented design
-* Improve renderer:
-  * Get rid of 256 color limit
-  * Improve shading of polygons
-  * Add Z-buffering
-* Improve collision detection
-* Get rid of spawning a process for interactions (this will probably limit the scope of what can be done but I think it will be for the better)
-* Replace config file with something more standard
-* Improve model descriptions. Looking through the world description I have remaining it looks like you could define 4-sided shapes with 3 edges. Which is not good and is confusing too. This is something that should be fixed too.
-
-For now I'd prefer to stick with a software-based renderer although at some point it would be nice to explore switching to a proper hardware accelerated solution. This is quite low in my priorities for the time being.
+The new code has been refactored to make use of SDL as its graphics base. I've stripped out the ability to link programs to objects. This used to run a DOS specific system call to spawn a separate program. Whilst this could be re-written I not entirely sure how useful this feature is so I have left it unimplemented for the time being.
 
 # Using program
 
@@ -44,3 +31,21 @@ Keys:
 An example image of the world is as follows:
 
 ![alt text](https://github.com/spjewkes/vr_project/blob/master/res/hires_test_world.png)
+
+# Planned development
+
+The order of plan for updating this will be:
+* Get it running by replacing the old DOS and BGI library calls. SDL2 will be the main replacement.
+* Tidy up formatting and create proper header files for each file
+* Start looking at moving code to a more object-oriented design
+* Improve renderer:
+  * Get rid of 256 color limit
+  * Improve shading of polygons
+  * Add Z-buffering
+* Improve collision detection
+* Get rid of spawning a process for interactions (this will probably limit the scope of what can be done but I think it will be for the better)
+* Replace config file with something more standard
+* Improve model descriptions. Looking through the world description I have remaining it looks like you could define 4-sided shapes with 3 edges. Which is not good and is confusing too. This is something that should be fixed too.
+
+For now I'd prefer to stick with a software-based renderer although at some point it would be nice to explore switching to a proper hardware accelerated solution. This is quite low in my priorities for the time being.
+
