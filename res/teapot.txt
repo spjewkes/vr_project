@@ -1579,14 +1579,14 @@ no_polygons = 1024
 .instancedefs
 no_instances = 2
 
-########
-# Cube #
-########
+###########
+# Teapots #
+###########
 master_no = 1
 	location = -100.0 , 20.0 , 0.0
 	scale = 1.0 , 1.0 , 1.0
 	angle = -45.0 , 0.0 , 0.0
-	color = WHITE
+	color = RED
 	specularity = 100.0 %
 	style = SOLID
 	outcome = "solid"
@@ -1595,7 +1595,7 @@ master_no = 1
 	location = 100.0 , 20.0 , 0.0
 	scale = 1.0 , 1.0 , 1.0
 	angle = -45.0 , 180.0 , 0.0
-	color = WHITE
+	color = BLUE
 	specularity = 100.0 %
 	style = SOLID
 	outcome = "solid"
