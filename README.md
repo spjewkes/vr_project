@@ -32,9 +32,10 @@ An example image of the world is as follows:
 
 ![alt text](https://github.com/spjewkes/vr_project/blob/master/res/hires_test_world.png)
 
-# Planned development
+# Initial planned development
 
-The order of plan for updating this will be:
+The initial planned development listed the following changes:
+
 * Get it running by replacing the old DOS and BGI library calls. SDL2 will be the main replacement.
 * Tidy up formatting and create proper header files for each file
 * Start looking at moving code to a more object-oriented design
@@ -49,3 +50,14 @@ The order of plan for updating this will be:
 
 For now I'd prefer to stick with a software-based renderer although at some point it would be nice to explore switching to a proper hardware accelerated solution. This is quite low in my priorities for the time being.
 
+# Major changes
+
+This section will list the big changes that have been made since the project was imported as an old DOS-based project. These are roughly chronological in order and some earlier changes made be superceded by items further down the list.
+
+* Replaced old BGI graphics code with SDL (including writing some code to generate solid-shaded triangles)
+* Modified all C source files into C++ equivalents
+* Combined all the parsing files into one single file
+* Started applying a vector3d class where appropriate (e.g. some 3d maths calculations)
+* Removed edge list from file description and made polygons purely triangles
+* Tried to improve sorting of objects to use C++ standard library. We now sort objects based on a midpoint from the minimum and maxiumum vertices describing the object.
+* As each object is drawn, its triangles are sorted by a midpoint value per triangle. This is to try and help with situation where back-face culling is not enough.
