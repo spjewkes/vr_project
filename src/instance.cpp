@@ -103,7 +103,7 @@ void Instance::setup_color()
 			if (offset > 15) offset = 15;
 			else if (offset < 0) offset = 0;
 			/* this surface is facing downwards */
-			poly_color[loop] = color*16+(offset*0.25);
+			poly_color[loop] = color*16+(offset*0.1);
 		}
 		else if (normal >= 0.0)
 		{
@@ -208,9 +208,11 @@ void Instance::prerender(Viewer &user)
 					 -1.0 / (vrp+BACK));
 	}
 
-	// Use a midpoint which will order all objects
-	Vector3d res = (v[0] + v[1]) * 0.5f;
-	order = res.length2();
+	// Use the furthest point of the object
+	float l1 = v[0].length2();
+	float l2 = v[1].length2();
+
+	order = (l1 > l2 ? l1 : l2);
 
 	assert(vert.size() == user_vert.size());
 }

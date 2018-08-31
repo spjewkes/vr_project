@@ -59,5 +59,5 @@ This section will list the big changes that have been made since the project was
 * Combined all the parsing files into one single file
 * Started applying a vector3d class where appropriate (e.g. some 3d maths calculations)
 * Removed edge list from file description and made polygons purely triangles
-* Tried to improve sorting of objects to use C++ standard library. We now sort objects based on a midpoint from the minimum and maxiumum vertices describing the object.
+* Tried to improve sorting of objects to use C++ standard library. We now sort objects based on the furthest corner of the shape
 * As each object is drawn, its triangles are sorted by a midpoint value per triangle. This is to try and help with situation where back-face culling is not enough.
