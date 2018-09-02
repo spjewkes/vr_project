@@ -1,4 +1,5 @@
 #include <forward_list>
+#include <iostream>
 #include "graphics.hpp"
 #include "parse.hpp"
 #include "world.hpp"
@@ -412,103 +413,63 @@ void World::render()
 
 void World::dump_masters()
 {
-	printf("\nThere are %lu master(s).\n", m_masters.size());
-	printf("\nThe Master structure contains The following data:\n");
+	std::cout << "There are " << m_masters.size() << " masters\n";
+	std::cout << "The master structure contains the following data\n";
 
 	for (auto mast : m_masters)
 	{
-		/* print which object in the master array */
-		printf("\nMaster object:\t%u", mast.id);
-		/* print the scale values */
-		printf("\nScale X:  %f,", mast.scale.x());
-		printf("\tScale Y:  %f,", mast.scale.y());
-		printf("\tScale Z:  %f", mast.scale.z());
-		/* print the angle values */
-		printf("\nAngle X:  %f,", mast.angle.x());
-		printf("\tAngle Y:  %f,", mast.angle.y());
-		printf("\tAngle Z:  %f", mast.angle.z());
-		/* print the number of vertices that build up the object */
-		printf("\nNumber of vertices:\t%lu", mast.vert.size());
+		std::cout << "Master object: " << mast.id << std::endl;
 
+		std::cout << "Scale: " << mast.scale << std::endl;
+		std::cout << "Angle: " << mast.angle << std::endl;
+
+		std::cout << "Number of vertices: " << mast.vert.size() << std::endl;
 		int i = 0;
-		/* now list the coordinate values that built up the object */
 		for (auto vertex : mast.vert)
 		{
-			/* print the vertex number */
-			printf("\nVertex number:\t%d", i++);
-			/* list the vertex values */
-			printf("\n%f, ", vertex.x());
-			printf(" %f,", vertex.y());
-			printf(" %f", vertex.z());
+			std::cout << "Vertex: " << i++ << ": " << vertex << std::endl;
 		}
-		/* print the number of polygons that build up the object */
-		printf ("\nNumber of polygons: \t%lu", mast.poly0.size());
-		/* now list the edges that make up the polygon */
+
+
+		std::cout << "Number of triangles: " << mast.poly0.size() << std::endl;
 		for (size_t i = 0; i < mast.poly0.size(); i++)
 		{
-			/* print the polygon number */
-			printf("\nPolygon number: \t%zu", i);
-			/* list the edges that make up the polygon */
-			printf("\nEdge one: %d", mast.poly0[i]);
-			printf("\nEdge two: %d", mast.poly1[i]);
-			printf("\nEdge three: %d", mast.poly2[i]);
+			std::cout << "Triangle: " << i << ": " << mast.poly0[i] << ", " << mast.poly1[i] << ", " << mast.poly2[i] << std::endl;
 		}
-		printf("\n---------------------\n");
+		
+		std::cout << "\n---------------------\n";
 	}
 }
 
 void World::dump_instances()
 {
-	printf("\nThere are %lu instance(s).\n", m_instances.size());
-	printf("\nThe Instance structure contains the following data:\n");
+	std::cout << "There are " << m_instances.size() << " instances\n";
+	std::cout << "The instance structure contains the following data:\n";
 
 	int i = 0;
 
 	for (auto inst : m_instances)
 	{
-		/* print which object in the instance array */
-		printf("\nInstance object:\t%d", i++);
-		/* print which master object it is cased on */
-		printf("\nMaster object number:\t%d", inst.masterptr->id);
-		/* print the iocational values */
-		printf("\nX location:  %f,", inst.pos.x());
-		printf("\tY location:  %f,", inst.pos.y());
-		printf("\tZ location:  %f", inst.pos.z());
-		/* print the minimum values */
-		printf("\nMinimum X:  %f,", inst.min.x());
-		printf("\tMinimum Y:  %f,", inst.min.y());
-		printf("\tMinimum Z:  %f", inst.min.z());
-		/* print the maximum values */
-		printf("\nMaximum X:  %f,", inst.max.x());
-		printf("\tMaximum Y:  %f,", inst.max.y());
-		printf("\tMaximum Z:  %f", inst.max.z());
-		/* print the angle values */
-		printf("\nAngle X:  %f,", inst.angle.x());
-		printf("\tAngle Y:  %f,", inst.angle.y());
-		printf("\tAngle Z:  %f", inst.angle.z());
-		/* print the scale values */
-		printf("\nScale X:  %f,", inst.scale.x());
-		printf("\tScale Y:  %f,", inst.scale.y());
-		printf("\tScale Z:  %f", inst.scale.z());
-		/* print the number of vertices that build up the object */
-		printf("\nNumber of vertices:\t%lu", inst.vert.size());
-		/* now list the coordinate values that built up the object */
-		int i = 0;
+		std::cout << "Instance object: " << i++ << std::endl;
+		std::cout << "Master object number: " << inst.masterptr->id << std::endl;
+
+		std::cout << "Location: " << inst.pos << std::endl;
+		std::cout << "Minimum corner: " << inst.min << std::endl;
+		std::cout << "Maximum corner: " << inst.max << std::endl;
+		std::cout << "Angle: " << inst.angle << std::endl;
+		std::cout << "Scale: " << inst.scale << std::endl;
+
+		std::cout << "Number of vertices: " << inst.vert.size() << std::endl;
+		int j = 0;
 		for (auto vertex : inst.vert)
 		{
-			/* print the vertex number */
-			printf("\nVertex number: \t%d", i++);
-			/* list the vertex values */
-			printf("\n%f,", vertex.x());
-			printf("  %f,", vertex.y());
-			printf("  %f", vertex.z());
+			std::cout << "Vertex number: " << j++ << ": " << vertex << std::endl;
 		}
-		/* print the style number */
-		printf("\nStyle number:\t%d", inst.style);
-		/* print whether the object is to be solid or not */
-		printf("\nSolid?:\t%d", inst.is_solid);
-		/* print the outcome string */
-		printf("\nOutcome string:\t>>%s<<", inst.outcome.c_str());
-		printf("\n----------------\n");
+		
+		std::cout << "Style number: " << inst.style << std::endl;
+		std::cout << "Solid?: " << inst.is_solid << std::endl;
+		std::cout << "Outcome string: " << inst.outcome.c_str() << std::endl;
+
+		std::cout << "\n---------------------\n";
 	}
 }
