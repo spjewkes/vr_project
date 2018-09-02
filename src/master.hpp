@@ -1,7 +1,9 @@
 #ifndef __MASTER_HPP__
 #define __MASTER_HPP__
 
+#include <vector>
 #include "defs.hpp"
+#include "vector3d.hpp"
 
 class Master
 {
