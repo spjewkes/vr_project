@@ -47,6 +47,11 @@ public:
 			return Color(m_r * scale, m_g * scale, m_b * scale);
 		}
 	
+	inline Color operator*(const Color& rhs) const
+		{
+			return Color(m_r * rhs.m_r, m_g * rhs.m_g, m_b * rhs.m_b);
+		}
+	
 	Color& operator+=(const Color& rhs)
 		{
 			m_r += rhs.m_r;
@@ -68,6 +73,14 @@ public:
 			m_r *= scale;
 			m_g *= scale;
 			m_b *= scale;
+			return *this;
+		}
+
+	Color& operator*=(const Color& rhs)
+		{
+			m_r *= rhs.m_r;
+			m_g *= rhs.m_g;
+			m_b *= rhs.m_b;
 			return *this;
 		}
 
