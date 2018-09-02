@@ -20,10 +20,10 @@
 #include "graphics.hpp"
 #include "mouse.hpp"
 #include "options.hpp"
-#include "parse.hpp"
 #include "program.hpp"
 #include "screen.hpp"
 #include "sound.hpp"
+#include "world.hpp"
 
 /************
 * functions *
@@ -55,21 +55,16 @@ int main(int argc, char *argv[])
 		exit(-1);
 	}
 
-	World world;
-	Parser script(options.get_file(), world);;
-
-	/* if parsing script results in an error then leave program */
-	if (script.parse() == Error)
+	World world(options.get_file());
+	if (!world.is_ready())
 	{
 		exit(-1);
 	}
 
 	if (options.get_dump_mode())
 	{
-		/* display the contents of the master structure */
-		check_master(world.masters()); 
-		/* display the contents of the instance structure */
-		check_instance(world.instances());
+		world.dump_masters();
+		world.dump_instances();
 	}
 	
 	/* now let's start the really interesting bit */
