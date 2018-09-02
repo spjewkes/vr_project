@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	if ((init_audio() == Okay) && (screen_open(mode) == Okay))
 	{
 		/* draw the initial position of all the objects */
-		render(world.instances(), world.user());
+		world.render();
 		/* set the value of c to a null value to begin with */
 		auto tp1 = std::chrono::system_clock::now();
 		auto tp2 = std::chrono::system_clock::now();
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 								program(world.instances()[instance]);
 							}
 							/* draw the new image */
-							render(world.instances(), world.user());
+							world.render();
 							/* finally redraw the pointer */
 							draw_pointer(mpos_x, mpos_y);
 							/* so that another double click is needed */
@@ -340,7 +340,7 @@ int main(int argc, char *argv[])
 			}
 			
 			/* draw the new image */
-			render(world.instances(), world.user());
+			world.render();
 
 			/* now draw the pointer */
 			draw_pointer(mpos_x, mpos_y);

@@ -9,7 +9,7 @@ SRC_DIR=src
 _DEPS=collide.hpp defs.hpp error.hpp graphics.hpp instance.hpp master.hpp mouse.hpp options.hpp palette.hpp parse.hpp program.hpp screen.hpp sound.hpp vector3d.hpp viewer.hpp world.hpp
 DEPS=$(patsubst %,$(SRC_DIR)/%,$(_DEPS))
 
-_OBJ=collide.o error.o graphics.o instance.o main.o mouse.o options.o palette.o parse.o program.o screen.o sound.o vector3d.o
+_OBJ=collide.o error.o graphics.o instance.o main.o mouse.o options.o palette.o parse.o program.o screen.o sound.o vector3d.o world.o
 OBJ=$(patsubst %,$(OBJ_DIR)/%,$(_OBJ))
 
 OS := $(shell uname)

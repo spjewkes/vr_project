@@ -16,6 +16,8 @@ public:
 	std::vector<Instance> &instances() { return m_instances; }
 	Viewer& user() { return m_user; }
 
+	void render();
+
 private:
 	std::vector<Master> m_masters;
 	std::vector<Instance> m_instances;
