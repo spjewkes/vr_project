@@ -12,28 +12,10 @@ Color::Color(const Color& rhs)
 	m_b = rhs.m_b;
 }
 
-/**
- * Operators.
- */
-Color Color::operator*(const float scale) const
+uint8_t Color::clamp(float val) const
 {
-	return Color(clamp(static_cast<int>(m_r) * scale),
-				 clamp(static_cast<int>(m_g) * scale),
-				 clamp(static_cast<int>(m_b) * scale));
-}
-
-Color& Color::operator*=(const float scale)
-{
-	m_r = clamp(static_cast<int>(m_r) * scale);
-	m_g = clamp(static_cast<int>(m_g) * scale);
-	m_b = clamp(static_cast<int>(m_b) * scale);
-
-	return *this;
-}
-
-uint8_t Color::clamp(int val) const
-{
-	return val < 0 ? 0 : val > UINT8_MAX ? UINT8_MAX : val;
+	int ival = static_cast<int>(val * UINT8_MAX);
+	return val < 0 ? 0 : ival > UINT8_MAX ? UINT8_MAX : ival;
 }
 
 std::ostream &operator<<(std::ostream &os, Color const &c)

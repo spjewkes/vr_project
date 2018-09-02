@@ -11,9 +11,8 @@ class Color
 {
 public:
 	/// Constructors
-	Color() : m_r(0), m_g(0), m_b(0) {}
-	Color(int r, int g, int b) : m_r(r), m_g(g), m_b(b) {}
-	Color(float r, float g, float b) : m_r(r * 255), m_g(g * 255), m_b(b * 255) {}
+	Color() : m_r(0.0f), m_g(0.0f), m_b(0.0f) {}
+	Color(float r, float g, float b) : m_r(r), m_g(g), m_b(b) {}
 
 	/// Destructors
 	~Color() {}
@@ -33,24 +32,57 @@ public:
 			return *this;
 		}
 
-	Color operator*(const float scale) const;
-	Color& operator*=(const float scale);
+	inline Color operator+(const Color& rhs) const
+	{
+		return Color(m_r + rhs.m_r, m_g + rhs.m_g, m_b + rhs.m_b);
+	}
+
+	inline Color operator-(const Color& rhs) const
+	{
+		return Color(m_r - rhs.m_r, m_g - rhs.m_g, m_b - rhs.m_b);
+	}
+
+	inline Color operator*(const float scale) const
+		{
+			return Color(m_r * scale, m_g * scale, m_b * scale);
+		}
+	
+	Color& operator+=(const Color& rhs)
+		{
+			m_r += rhs.m_r;
+			m_g += rhs.m_g;
+			m_b += rhs.m_b;
+			return *this;
+		}
+
+	Color& operator-=(const Color& rhs)
+		{
+			m_r -= rhs.m_r;
+			m_g -= rhs.m_g;
+			m_b -= rhs.m_b;
+			return *this;
+		}
+
+	Color& operator*=(const float scale)
+		{
+			m_r *= scale;
+			m_g *= scale;
+			m_b *= scale;
+			return *this;
+		}
 
 	/// Set and get operators.
-	uint8_t r() const { return m_r; }
-	uint8_t g() const { return m_g; }
-	uint8_t b() const { return m_b; }
-	void r(const uint8_t _r) { m_r = _r; }
-	void g(const uint8_t _g) { m_g = _g; }
-	void b(const uint8_t _b) { m_b = _b; }
+	uint8_t r() const { return clamp(m_r * UINT8_MAX); }
+	uint8_t g() const { return clamp(m_g * UINT8_MAX); }
+	uint8_t b() const { return clamp(m_b * UINT8_MAX); }
 	
 private:
-	uint8_t clamp(int val) const;
+	uint8_t clamp(float val) const;
 
 	/// Properties of the color
-	uint8_t m_r;
-	uint8_t m_g;
-	uint8_t m_b;
+	float m_r;
+	float m_g;
+	float m_b;
 };
 
 std::ostream &operator<<(std::ostream &os, Color const &c);
