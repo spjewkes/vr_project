@@ -2,11 +2,13 @@
 
 # Virtual Reality Project
 
-A simple Virtual Reality project starting from an old DOS project I wrote around 1993-94. It was written with a copy of Turbo C++ (possibly version 3.0). Although it was written in C rather than any early version of C++ that was available at the time. The style of the code at that stage was a little rough around the edges as I'd only started learning C around a year earlier. One thing that I was pleased about was that I had at least tried to group the functions into files depending on what they were doing. There's also a fair amount of documentation. In some cases this was a little over-the-top but it has helped in my understanding of what I was trying to do when looking at it 25 years later.
+This is a simple Virtual Reality project starting from an old DOS project I wrote around 1993-94. It was written with a copy of Turbo C++ (possibly version 3.0). Although it was written in C rather than any early version of C++ that was available at the time. The style of the code at this stage was a little rough around the edges as I'd only bagan learning C around a year earlier. On revisiting the code, one thing that I was pleased about was that I had at least tried to put the code into modules and documented the code (excessively in some places).
 
-This code was originally retrieve via a paper-based copy that I had. This required some cleaning up and even then there was a missing header file (defs.h) that needed some recreation. The original code in this state I have kept in a completely separate repository (see https://github.com/spjewkes/old_vr_project). Although going back to the first revision of this git repo will be effectively the same I quite liked the idea of having it on show as a separate repo.
+This code was revived via a paper-based copy that I had. This was converted back to files using an OCR program called Prizmo. This was not perfect but I think the problems in the main were to do with the fact that is was code so the formatting was generally lost and numerics sometimes got confused with alphabetic characters. Most of these issues were easily resolved during the early stages of trying to compile the code. In one case, I lacked the original file entirely and had to recreate it. This was only the file containing definitions (defs.h) and it was relatively trivial to recreate this.
 
-The new code has been refactored to make use of SDL as its graphics base. I've stripped out the ability to link programs to objects. This used to run a DOS specific system call to spawn a separate program. Whilst this could be re-written I not entirely sure how useful this feature is so I have left it unimplemented for the time being.
+The original code prior to compiling is kept in a completely separate repository (see https://github.com/spjewkes/old_vr_project). Although going back to the first revision of this git repo will be effectively the same I quite liked the idea of having it on show as a separate repo. It lacks some of the later fixes although I intend to tidy it up a bit when I get the time.
+
+The new code has been refactored to make use of SDL as its graphics base. I have stripped out the ability to link program execution to objects. This used to run a DOS specific system call to spawn a separate program. Whilst this could be re-written I not entirely sure how useful this feature is so I have left it unimplemented for the time being. I would like to revisit how to make the environment interactive at some later stage.
 
 # Using program
 
@@ -48,7 +50,7 @@ The initial planned development listed the following changes:
 * Replace config file with something more standard
 * Improve model descriptions. Looking through the world description I have remaining it looks like you could define 4-sided shapes with 3 edges. Which is not good and is confusing too. This is something that should be fixed too.
 
-For now I'd prefer to stick with a software-based renderer although at some point it would be nice to explore switching to a proper hardware accelerated solution. This is quite low in my priorities for the time being.
+For now I would prefer to stick with a software-based renderer although at some point it would be nice to explore switching to a proper hardware accelerated solution. This is quite low in my priorities for the time being.
 
 # Major changes
 
