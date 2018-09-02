@@ -14,11 +14,11 @@ Color::Color(const Color& rhs)
 
 uint8_t Color::clamp(float val) const
 {
-	int ival = static_cast<int>(val * UINT8_MAX);
+	int ival = static_cast<int>(val);
 	return val < 0 ? 0 : ival > UINT8_MAX ? UINT8_MAX : ival;
 }
 
 std::ostream &operator<<(std::ostream &os, Color const &c)
 { 
-    return os << "[" << c.r() << ", " << c.g() << ", " << c.b() << "]";
+    return os << "[" << static_cast<int>(c.r()) << ", " << static_cast<int>(c.g()) << ", " << static_cast<int>(c.b()) << "]";
 }

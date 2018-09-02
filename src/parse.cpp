@@ -516,7 +516,7 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances)
 {
 	float specularity;
-	int color;
+	Color color;
 
 	/* set the angles, scales and locations defaults */
 	Vector3d loc;
@@ -775,7 +775,7 @@ Status Parser::process_scale(Vector3d &scl)
 /****************************************************************************
 * process sky - process the command which defines the color of the sky      *
 ****************************************************************************/
-Status Parser::process_sky(int *color)
+Status Parser::process_sky(Color *color)
 {
 	Status result = Okay;
 
@@ -784,8 +784,17 @@ Status Parser::process_sky(int *color)
 	if (check("=") != Match)
 		result = error("Missing assignment symbol", lincnt);
 
-	if ((*color = getnum()) == Error)
+	color->r(fgetnum());
+
+	if (check(",") != Match)
 		result = error("Syntax error with sky color definition", lincnt);
+
+	color->g(fgetnum());
+
+	if (check(",") != Match)
+		result = error("Syntax error with sky color definition", lincnt);
+
+	color->b(fgetnum());
 
 	if (check("") != Blank)
 		result = error("Syntax error with sky color definition", lincnt);
@@ -797,7 +806,7 @@ Status Parser::process_sky(int *color)
 * process_ground - process the command which defines the color of the       *
 *                  ground                                                   *
 ****************************************************************************/
-Status Parser::process_ground(int *color)
+Status Parser::process_ground(Color *color)
 {
 	Status result = Okay;
 
@@ -806,8 +815,17 @@ Status Parser::process_ground(int *color)
 	if (check("=") != Match)
 		result = error("Missing assignment symbol", lincnt);
 
-	if ((*color = getnum()) == Error)
+	color->r(fgetnum());
+
+	if (check(",") != Match)
 		result = error("Syntax error with ground color definition", lincnt);
+
+	color->g(fgetnum());
+
+	if (check(",") != Match)
+		result = error("Syntax error with ground color definition", lincnt);
+
+	color->b(fgetnum());
 
 	if (check("") != Blank)
 		result = error("Syntax error with ground color definition", lincnt);
@@ -819,7 +837,7 @@ Status Parser::process_ground(int *color)
 * process_color() - process the command which defines the instance          *
 *                    object' s color                                        *
 ****************************************************************************/
-Status Parser::process_color(int *color)
+Status Parser::process_color(Color *color)
 {
 	Status result = Okay;
 	std::string word;
@@ -833,45 +851,42 @@ Status Parser::process_color(int *color)
 
 	/* get the color value from the color command */
 	if ((word == "BLACK") || (word == "0"))
-		*color = 0;
+		*color = Color(0.0f, 0.0f, 0.0f);
 	else if ((word == "BLUE") || (word == "1"))
-		*color = 1;
+		*color = Color(0.5f, 0.5f, 1.0f);
 	else if ((word == "GREEN") || (word == "2"))
-		*color = 2;
+		*color = Color(0.5f, 1.0f, 0.5f);
 	else if ((word == "CYAN") || (word == "3"))
-		*color = 3;
+		*color = Color(0.5f, 1.0f, 1.0f);
 	else if ((word == "RED") || (word == "4"))
-		*color = 4;
+		*color = Color(1.0f, 0.5f, 0.5f);
 	else if ((word == "MAGENTA") || (word == "5"))
-		*color = 5;
+		*color = Color(1.0f, 1.0f, 0.5f);
 	else if ((word == "BROWN") || (word == "6"))
-		*color = 6;
+		*color = Color(1.0f, 0.5f, 0.3f);
 	else if ((word == "LIGHTGREY") || (word == "7"))
-		*color = 7;
+		*color = Color(0.7f, 0.7f, 0.7f);
 	else if ((word == "DARKGREY") || (word == "8"))
-		*color = 8;
+		*color = Color(0.3f, 0.3f, 0.3f);
 	else if ((word == "LIGHTBLUE") || (word == "9"))
-		*color = 9;
+		*color = Color(0.7f, 0.7f, 1.0f);
 	else if ((word == "LIGHTGREEN") || (word == "10"))
-		*color = 10;
+		*color = Color(0.7f, 1.0f, 0.7f);
 	else if ((word == "LIGHTCYAN") || (word == "11"))
-		*color = 11;
+		*color = Color(0.7f, 1.0f, 1.0f);
 	else if ((word == "LIGHTRED") || (word == "12"))
-		*color = 12;
+		*color = Color(1.0f, 0.7f, 0.7f);
 	else if ((word == "LIGHTMAGENTA") || (word == "13"))
-		*color = 13;
+		*color = Color(1.0f, 0.7f, 1.0f);
 	else if ((word == "YELLOW") || (word == "14"))
-		*color = 14;
+		*color = Color(1.0f, 1.0f, 0.5f);
 	else if ((word == "WHITE") || (word == "15"))
-		*color = 15;
+		*color = Color(1.0f, 1.0f, 1.0f);
 	else
 		result = error("Invalid color value", lincnt);
 
 	if (check("") != Blank)
 		result = error("Syntax error with color command", lincnt);
-
-	if ((*color < 0) || (*color > 15))
-		result = error("Invalid color value", lincnt);
 
 	return result;
 }

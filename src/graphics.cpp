@@ -40,32 +40,6 @@ void close_graphics()
     SDL_Quit();
 }
 
-/****************************************************************************
-* function that simply displays the contents of the color look up table on  *
-* a graphics display capable of showing all 256 colors (use something like  *
-* a vesa bgi driver or other svga type)                                     *
-****************************************************************************/
-void check_palette(void)
-{
-	int loop1, loop2;
-	int dx, dy, color;
-
-	/* set the rate of change horizontally
-	   and vertically acrOsS the screen */
-	dx = getmaxx() / 16;
-	dy = getmaxy() / 16;
-
-	/* set initial color to zero */
-	color = 0;
-	for (loop1 = 0; loop1 < 16; loop1++)
-		for (loop2 = 0; loop2 < 16; loop2++)
-		{
-			/* draw a colored box */
-			setcolor(color++);
-			bar(loop2*dx, loop1*dy, loop2*dx+dx, loop1*dy+dy);
-		}
-}
-
 void update_title(float fps)
 {
 	char title[256];
@@ -75,8 +49,6 @@ void update_title(float fps)
 
 void update_graphics()
 {
-	/* check the contents of the palette */
-	// check_palette();
 	SDL_RenderPresent(g_renderer);
 }
 
@@ -90,10 +62,9 @@ int getmaxy()
 	return g_height;
 }
 
-void setcolor(int index)
+void setcolor(Color &col)
 {
-	int retcode = SDL_SetRenderDrawColor(g_renderer, g_palette.red(index), g_palette.green(index), g_palette.blue(index),
-										 SDL_ALPHA_OPAQUE);
+	int retcode = SDL_SetRenderDrawColor(g_renderer, col.r(), col.g(), col.b(), SDL_ALPHA_OPAQUE);
 	assert(retcode == 0);
 }
 

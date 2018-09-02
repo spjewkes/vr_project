@@ -2,6 +2,7 @@
 #define __VIEWER_HPP__
 
 #include "defs.hpp"
+#include "color.hpp"
 
 class Viewer
 {
@@ -14,8 +15,8 @@ public:
 
 	float radius = { 1.0f };
 
-	int sky = { 0 };
-	int ground = { 0 };
+	Color sky;
+	Color ground;
 };
 
 #endif // __VIEWER_HPP__

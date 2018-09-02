@@ -5,8 +5,8 @@
 location = 0.0 , 0.0 , 40.0
 direction = 0.0 , 0.0 , 0.0
 radius = 2.5
-sky = 150
-ground = 100
+sky = 0.8 , 0.8 , 1.0
+ground = 1.0 , 0.8 , 0.6
 .end_userdefs
 
 .masterdefs

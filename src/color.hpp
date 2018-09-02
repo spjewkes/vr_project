@@ -88,7 +88,10 @@ public:
 	uint8_t r() const { return clamp(m_r * UINT8_MAX); }
 	uint8_t g() const { return clamp(m_g * UINT8_MAX); }
 	uint8_t b() const { return clamp(m_b * UINT8_MAX); }
-	
+	void r(float v) { m_r = v; }
+	void g(float v) { m_g = v; }
+	void b(float v) { m_b = v; }
+
 private:
 	uint8_t clamp(float val) const;
 

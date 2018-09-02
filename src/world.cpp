@@ -3,6 +3,7 @@
 #include "graphics.hpp"
 #include "parse.hpp"
 #include "world.hpp"
+#include "color.hpp"
 
 #define X  0
 #define Y  1
@@ -234,7 +235,7 @@ struct triangle
 	int x0, y0;
 	int x1, y1;
 	int x2, y2;
-	unsigned int color;
+	Color color;
 	float z;
 };
 

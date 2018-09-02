@@ -2,8 +2,7 @@
 #define __GRAPHICS_HPP__
 
 #include <SDL2/SDL.h>
-
-#define WHITE (255)
+#include "color.hpp"
 
 int create_graphics(int width, int height);
 void close_graphics();
@@ -15,7 +14,7 @@ void update_graphics();
 int getmaxx();
 int getmaxy();
 
-void setcolor(int index);
+void setcolor(Color &col);
 void line(int x0, int y0, int x1, int y1);
 void setrgbpalette(int index, int r, int g, int b);
 void bar(int x0, int y0, int x1, int y1);

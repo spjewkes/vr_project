@@ -26,11 +26,11 @@ void Instance::setup_vertices()
 
 void Instance::setup_color()
 {
-	int no_polygons, loop, offset;
+	int no_polygons, loop;
 	int poly_no[3];
 	float x1,y1,z1, x2,y2,z2, x3,y3,z3;
 	float dx1,dy1,dz1, dx2,dy2,dz2;
-	float A,B,C,D, normal, hyp, cos_theta, kd;
+	float A,B,C,D, normal, hyp, cos_theta, ka, kd;
 
 	no_polygons = masterptr->poly0.size();
 
@@ -96,14 +96,10 @@ void Instance::setup_color()
 				cos_theta = abs(B) / hyp;
 			/* abs() is used in case the Y(B) value of the normal is negative */
 			/* calculate the diffuse-reflection coeffiecient */
-			kd = specularity / 100.0;
-			/* now calculate the color offset from the base value */
-			offset = 15*kd*cos_theta;
-			/* make sure the offset is within the 15 color values */
-			if (offset > 15) offset = 15;
-			else if (offset < 0) offset = 0;
-			/* this surface is facing downwards */
-			poly_color[loop] = color*16+(offset*0.1);
+			ka = (specularity / 100.0) * 0.25f;
+			kd = (specularity / 100.0) * cos_theta;
+			/* now calculate the color intensity - this is facing away from the light source */
+			poly_color[loop] = (color * kd * 0.1f) + Color(ka, ka, ka);
 		}
 		else if (normal >= 0.0)
 		{
@@ -118,15 +114,10 @@ void Instance::setup_color()
 			/* abs() is used in case the Y(B) value of the normal is negative */
 
 			/* calculate the diffuse-reflection coeffiecient */
-			kd = specularity / 100.0;
-			/* now calculate the color offset from the base value */
-			offset = 15*kd*cos_theta;
-			/* make sure the offset is within the 15 color values */
-			if (offset > 15) offset = 15;
-			else if (offset < 0) offset = 0;
-			/* this surface is facing upwards */
-			/* the light intensity is half */
-			poly_color[loop] = color*16+(offset*1.0);
+			ka = (specularity / 100.0) * 0.25f;
+			kd = (specularity / 100.0) * cos_theta;
+			/* now calculate the color intensity */
+			poly_color[loop] = (color * kd * 1.0f) + Color(ka, ka, ka);
 		}
 	}
 }

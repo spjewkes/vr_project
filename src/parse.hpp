@@ -7,6 +7,7 @@
 #include "instance.hpp"
 #include "master.hpp"
 #include "world.hpp"
+#include "color.hpp"
 
 class Parser
 {
@@ -32,15 +33,15 @@ private:
 	Status process_radius(float *radius);
 	Status process_angle(Vector3d &ang);
 	Status process_scale(Vector3d &scl);
-	Status process_color(int *color);
+	Status process_color(Color *color);
 	Status process_specularity(float *specularity);
 	bool process_outcome(std::string &outcome);
 	Status process_style(RenderStyle &style);
 	Status process_verts(Master &mast, int no_vertices);
 	Status process_edges(Master &mast, int no_edges);
 	Status process_polys(Master &mast, int no_polygons);
-	Status process_sky(int *color);
-	Status process_ground(int *color);
+	Status process_sky(Color *color);
+	Status process_ground(Color *color);
 
 	MatchResult getline(void);
 	void skip_garbage(void);

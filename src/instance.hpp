@@ -7,6 +7,7 @@
 #include "master.hpp"
 #include "vector3d.hpp"
 #include "viewer.hpp"
+#include "color.hpp"
 
 class Instance
 {
@@ -26,12 +27,13 @@ public:
 	Vector3d angle = { 0.0f, 0.0f, 0.0f };
 	Vector3d scale = { 1.0f, 1.0f, 1.0f };
 
-	int color = { 0 };
+	Color color;
+	
 	float specularity = { 0.0f };
 
 	std::vector<Vector3d> vert;
 
-	std::vector<unsigned int> poly_color;
+	std::vector<Color> poly_color;
 
 	RenderStyle style = { RenderStyle::WIREFRAME };
 	bool is_solid = { false };
@@ -42,5 +44,4 @@ public:
 	std::vector<Vector3d> user_vert;
 	float order;
 };
-
 #endif // __INSTANCE_HPP__
