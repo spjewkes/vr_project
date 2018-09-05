@@ -28,7 +28,6 @@ void Instance::setup_color()
 {
 	int no_polygons, loop;
 	int poly_no[3];
-	float ka, kd;
 
 	no_polygons = masterptr->poly0.size();
 
@@ -52,7 +51,7 @@ void Instance::setup_color()
 		normal.normalize();
 
 		// Calculate a light coming in at an angle for now
-		Vector3d light(0.0f, -5.0f, -1.0f);
+		Vector3d light(-1.0f, -5.0f, -1.0f);
 		light.normalize();
 
 		float cos_theta = normal.dot(light);
@@ -60,15 +59,15 @@ void Instance::setup_color()
 		if (cos_theta < 0.0)
 		{
 			// Apply just ambient light to surfaces facing away
-			poly_color[loop] = Color(ka, ka, ka);
+			poly_color[loop] = Color(0.1f, 0.1f, 0.1f);
 		}
 		else
 		{
-			/* calculate the diffuse-reflection coeffiecient + ambient */
-			ka = (specularity / 100.0) * 0.25f;
-			kd = (specularity / 100.0) * cos_theta;
-			/* now calculate the color intensity */
-			poly_color[loop] = (color * kd * 1.0f) + Color(ka, ka, ka);
+			Color ambient = Color(1.0f, 1.0f, 1.0f) * 0.1f;
+			Color diffuse = color * 1.0f * cos_theta;
+			Color specular = Color(1.0f, 1.0f, 1.0f) * cos_theta * cos_theta * (specularity / 100.0f);
+
+			poly_color[loop] = ambient + diffuse + specular;
 		}
 	}
 }

@@ -55,7 +55,7 @@ master_no = 1
 	scale = 20.0 , 20.0 , 20.0
 	angle = 10.0 , 20.0 , 30.0
 	color = WHITE
-	specularity = 100.0 %
+	specularity = 50.0 %
 	style = SOLID
 	outcome = "solid"
 
@@ -64,7 +64,7 @@ master_no = 1
 	scale = 20.0 , 20.0 , 20.0
 	angle = 10.0 , 20.0 , 30.0
 	color = WHITE
-	specularity = 100.0 %
+	specularity = 50.0 %
 	style = WIREFRAME
 	outcome = "solid"
 
