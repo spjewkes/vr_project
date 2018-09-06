@@ -155,5 +155,8 @@ void Instance::prerender(Viewer &user)
 
 	order = (l1 > l2 ? l1 : l2);
 
+	// Finally sort out color calculations
+	setup_color();
+
 	assert(vert.size() == user_vert.size());
 }
