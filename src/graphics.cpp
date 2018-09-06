@@ -1,9 +1,6 @@
 #include <cassert>
 #include <algorithm>
 #include "graphics.hpp"
-#include "palette.hpp"
-
-static Palette g_palette;
 
 static int g_width = 0;
 static int g_height = 0;
