@@ -24,54 +24,6 @@ void Instance::setup_vertices()
 	}
 }
 
-void Instance::setup_color()
-{
-	int no_polygons, loop;
-	int poly_no[3];
-
-	no_polygons = masterptr->poly0.size();
-
-	/* create the arrays that will hold the color values */
-	poly_color.resize(no_polygons);
-
-	/* Fill the polygon array with color values */
-	for (loop = 0; loop < no_polygons; loop++)
-	{
-		/* we want to find the direction of the normal first */
-		/* so we know which light intensity to apply to the polygon */
-		/* get the two of the edges that build up the polygon */
-		poly_no[0] = masterptr->poly0[loop];
-		poly_no[1] = masterptr->poly1[loop];
-		poly_no[2] = masterptr->poly2[loop];
-
-		Vector3d v1 = vert[poly_no[1]] - vert[poly_no[0]];
-		Vector3d v2 = vert[poly_no[2]] - vert[poly_no[1]];
-
-		Vector3d normal = v1.cross(v2);
-		normal.normalize();
-
-		// Calculate a light coming in at an angle for now
-		Vector3d light(-1.0f, -5.0f, -1.0f);
-		light.normalize();
-
-		float cos_theta = normal.dot(light);
-
-		if (cos_theta < 0.0)
-		{
-			// Apply just ambient light to surfaces facing away
-			poly_color[loop] = Color(0.1f, 0.1f, 0.1f);
-		}
-		else
-		{
-			Color ambient = Color(1.0f, 1.0f, 1.0f) * 0.1f;
-			Color diffuse = color * 1.0f * cos_theta;
-			Color specular = Color(1.0f, 1.0f, 1.0f) * cos_theta * cos_theta * (specularity / 100.0f);
-
-			poly_color[loop] = ambient + diffuse + specular;
-		}
-	}
-}
-
 void Instance::setup_bounds()
 {
 	/* set the x,y and z min/max values to the values of the first vertex
@@ -156,7 +108,57 @@ void Instance::prerender(Viewer &user)
 	order = (l1 > l2 ? l1 : l2);
 
 	// Finally sort out color calculations
-	setup_color();
+	setup_color(user);
 
 	assert(vert.size() == user_vert.size());
 }
+
+void Instance::setup_color(Viewer &user)
+{
+	int no_polygons, loop;
+	int poly_no[3];
+
+	no_polygons = masterptr->poly0.size();
+
+	/* create the arrays that will hold the color values */
+	poly_color.resize(no_polygons);
+
+	/* Fill the polygon array with color values */
+	for (loop = 0; loop < no_polygons; loop++)
+	{
+		/* we want to find the direction of the normal first */
+		/* so we know which light intensity to apply to the polygon */
+		/* get the two of the edges that build up the polygon */
+		poly_no[0] = masterptr->poly0[loop];
+		poly_no[1] = masterptr->poly1[loop];
+		poly_no[2] = masterptr->poly2[loop];
+
+		Vector3d v1 = vert[poly_no[2]] - vert[poly_no[1]];
+		Vector3d v2 = vert[poly_no[1]] - vert[poly_no[0]];
+
+		Vector3d normal = v1.cross(v2);
+		normal.normalize();
+
+		float cos_theta = normal.dot(user.g_light_dir);
+
+		if (cos_theta > 0.0)
+		{
+			Vector3d view = vert[poly_no[0]] - user.loc;
+			view.normalize();
+
+			Vector3d ref = user.g_light_dir;
+			ref.reflect(normal);
+
+			Color diffuse = color * user.g_light * cos_theta;
+			float specular = (specularity / 100.0f) * view.dot(ref);
+
+			poly_color[loop] = (user.ambient * user.ambient_intensity) + diffuse + Color(specular, specular, specular);
+		}
+		else
+		{
+			// Apply just ambient light to surfaces facing away
+			poly_color[loop] = user.ambient * user.ambient_intensity;
+		}
+	}
+}
+

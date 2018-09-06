@@ -16,7 +16,6 @@ public:
 	~Instance() {}
 
 	void setup_vertices();
-	void setup_color();
 	void setup_bounds();
 
 	Master *masterptr = { nullptr };
@@ -43,5 +42,8 @@ public:
 	void prerender(Viewer &user);
 	std::vector<Vector3d> user_vert;
 	float order;
+
+private:
+	void setup_color(Viewer &user);
 };
 #endif // __INSTANCE_HPP__
