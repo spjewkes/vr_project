@@ -593,10 +593,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 			if ((instance_pos+1) < no_instances)
 			{
 				lineptr = 0;
-
-				/* set up the instance of the master object */
-				world.instances()[instance_pos].setup_vertices();
-				/* finially we set up the collision box around the object */
+				world.instances()[instance_pos].local_to_world();
 				world.instances()[instance_pos].setup_bounds();
 				return Okay;
 			}
@@ -607,9 +604,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 		{
 			if ((instance_pos+1) == no_instances)
 			{
-				/* set up the instance of the master object */
-				world.instances()[instance_pos].setup_vertices();
-				/* finially we set up the collision box around the object */
+				world.instances()[instance_pos].local_to_world();
 				world.instances()[instance_pos].setup_bounds();
 				return Okay;
 			}

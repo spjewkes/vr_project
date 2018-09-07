@@ -3,45 +3,24 @@
 #include "instance.hpp"
 #include "graphics.hpp"
 
-void Instance::setup_vertices()
-{
-	/* pass the no_polygons value into the instance */
-	int no_verts = masterptr->vert.size();
-
-	/* create array for instance polygons */
-	vert.resize(no_verts);
-	user_vert.resize(no_verts);
-
-	for (int loop = 0; loop < no_verts; loop++)
-	{
-		vert[loop] = masterptr->vert[loop];
-
-		vert[loop] *= masterptr->scale;
-		vert[loop] *= scale;
-		vert[loop].rotate(masterptr->angle);
-		vert[loop].rotate(angle);
-		vert[loop] += pos;
-	}
-}
-
 void Instance::setup_bounds()
 {
 	/* set the x,y and z min/max values to the values of the first vertex
 	   as an initial value */
 
 	/* minimum value of collision box */
-	float xmin = vert[0].x();
-	float ymin = vert[0].y();
-	float zmin = vert[0].z();
+	float xmin = world_vert[0].x();
+	float ymin = world_vert[0].y();
+	float zmin = world_vert[0].z();
 
 	/* maximum value of collision box */
-	float xmax = vert[0].x();
-	float ymax = vert[0].y();
-	float zmax = vert[0].z();
+	float xmax = world_vert[0].x();
+	float ymax = world_vert[0].y();
+	float zmax = world_vert[0].z();
 
 	/* now look at other values in the instances vertex list and alter the
 	   minimum and maximum values accordingly */
-	for (auto vertex : vert)
+	for (auto vertex : world_vert)
 	{
 		xmin = std::fmin(xmin, vertex.x());
 		ymin = std::fmin(ymin, vertex.y());
@@ -64,7 +43,27 @@ void Instance::setup_bounds()
 	max.z(zmax);
 }
 
-void Instance::prerender(Viewer &user)
+void Instance::local_to_world()
+{
+	int no_verts = masterptr->vert.size();
+
+	// Local coordinates are held by the master, convert and store the world
+	// coordinates in this instance
+	world_vert.resize(no_verts);
+
+	for (int loop = 0; loop < no_verts; loop++)
+	{
+		world_vert[loop] = masterptr->vert[loop];
+
+		world_vert[loop] *= masterptr->scale;
+		world_vert[loop] *= scale;
+		world_vert[loop].rotate(masterptr->angle);
+		world_vert[loop].rotate(angle);
+		world_vert[loop] += pos;
+	}
+}
+
+void Instance::world_to_viewer(Viewer &user)
 {
 	// The viewing plance position
 	float vrp = -50.0;
@@ -72,9 +71,9 @@ void Instance::prerender(Viewer &user)
 	// The back plane position
 	float BACK = -75.0;
 
-	user_vert.clear();
+	view_vert.clear();
 
-	for (auto vertex : vert)
+	for (auto vertex : world_vert)
 	{
 		vertex -= user.loc;
 		vertex.rotate(-user.ang);
@@ -85,7 +84,7 @@ void Instance::prerender(Viewer &user)
 					 (-2.0 * vrp) / (75.0 * (vrp+BACK)),
 					 -1.0 / (vrp+BACK));
 
-		user_vert.push_back(vertex);
+		view_vert.push_back(vertex);
 	}
 
 	// Calculate length of centre of object relative to viewer
@@ -107,7 +106,7 @@ void Instance::prerender(Viewer &user)
 
 	order = (l1 > l2 ? l1 : l2);
 
-	assert(vert.size() == user_vert.size());
+	assert(world_vert.size() == view_vert.size());
 }
 
 void Instance::setup_color(Viewer &user, Light &light)
@@ -130,8 +129,8 @@ void Instance::setup_color(Viewer &user, Light &light)
 		poly_no[1] = masterptr->poly1[loop];
 		poly_no[2] = masterptr->poly2[loop];
 
-		Vector3d v1 = vert[poly_no[2]] - vert[poly_no[1]];
-		Vector3d v2 = vert[poly_no[1]] - vert[poly_no[0]];
+		Vector3d v1 = world_vert[poly_no[2]] - world_vert[poly_no[1]];
+		Vector3d v2 = world_vert[poly_no[1]] - world_vert[poly_no[0]];
 
 		Vector3d normal = v1.cross(v2);
 		normal.normalize();
@@ -140,7 +139,7 @@ void Instance::setup_color(Viewer &user, Light &light)
 		poly_color[loop] = user.ambient * user.ambient_intensity * color;
 		
 		// Calulate specular highlight
-		Vector3d view = vert[poly_no[0]] - user.loc;
+		Vector3d view = world_vert[poly_no[0]] - user.loc;
 		view.normalize();
 
 		Vector3d ref = user.g_light_dir;
@@ -158,7 +157,7 @@ void Instance::setup_color(Viewer &user, Light &light)
 		}
 
 		// Now do light
-		Vector3d light_dir = light.pos - vert[poly_no[0]];
+		Vector3d light_dir = light.pos - world_vert[poly_no[0]];
 		light_dir.normalize();
 
 		if (light_dir.dot(normal) > 0.0)
@@ -166,7 +165,6 @@ void Instance::setup_color(Viewer &user, Light &light)
 			Color diffuse = color * light.col * light_dir.dot(normal);
 			poly_color[loop] += diffuse + Color(specular, specular, specular);
 		}
-		
 	}
 }
 

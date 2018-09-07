@@ -265,12 +265,10 @@ void World::render()
 	setcolor(m_user.ground);
 	bar(0, midy, getmaxx(), getmaxy());
 
-	m_light.prerender(m_user);
-
 	// Prepare objects in the scene so they are relative to user
 	for (auto &inst : m_instances)
 	{
-		inst.prerender(m_user);
+		inst.world_to_viewer(m_user);
 		inst_list.push_front(&inst);
 		inst.setup_color(m_user, m_light);
 	}
@@ -295,14 +293,14 @@ void World::render()
 				for (size_t e=0; e<3; e++)
 				{
 					// Get the first vertex
-					float x1 = inst->user_vert[edge0[e]].x();
-					float y1 = inst->user_vert[edge0[e]].y();
-					float z1 = inst->user_vert[edge0[e]].z();
+					float x1 = inst->view_vert[edge0[e]].x();
+					float y1 = inst->view_vert[edge0[e]].y();
+					float z1 = inst->view_vert[edge0[e]].z();
 
 					// Get the second vertex
-					float x2 = inst->user_vert[edge1[e]].x();
-					float y2 = inst->user_vert[edge1[e]].y();
-					float z2 = inst->user_vert[edge1[e]].z();
+					float x2 = inst->view_vert[edge1[e]].x();
+					float y2 = inst->view_vert[edge1[e]].y();
+					float z2 = inst->view_vert[edge1[e]].z();
 
 					// Clip the line
 					if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin))
@@ -324,19 +322,19 @@ void World::render()
 			for (size_t j=0; j<masterptr->poly0.size(); j++)
 			{
 				// Get first vertex
-				float x1 = inst->user_vert[masterptr->poly0[j]].x();
-				float y1 = inst->user_vert[masterptr->poly0[j]].y();
-				float z1 = inst->user_vert[masterptr->poly0[j]].z();
+				float x1 = inst->view_vert[masterptr->poly0[j]].x();
+				float y1 = inst->view_vert[masterptr->poly0[j]].y();
+				float z1 = inst->view_vert[masterptr->poly0[j]].z();
 				
 				// Get first vertex
-				float x2 = inst->user_vert[masterptr->poly1[j]].x();
-				float y2 = inst->user_vert[masterptr->poly1[j]].y();
-				float z2 = inst->user_vert[masterptr->poly1[j]].z();
+				float x2 = inst->view_vert[masterptr->poly1[j]].x();
+				float y2 = inst->view_vert[masterptr->poly1[j]].y();
+				float z2 = inst->view_vert[masterptr->poly1[j]].z();
 				
 				// Get first vertex
-				float x3 = inst->user_vert[masterptr->poly2[j]].x();
-				float y3 = inst->user_vert[masterptr->poly2[j]].y();
-				float z3 = inst->user_vert[masterptr->poly2[j]].z();
+				float x3 = inst->view_vert[masterptr->poly2[j]].x();
+				float y3 = inst->view_vert[masterptr->poly2[j]].y();
+				float z3 = inst->view_vert[masterptr->poly2[j]].z();
 
 				// Do back-face culling
 				Vector3d v1(x2-x1, y2-y1, z2-z1);
@@ -465,9 +463,9 @@ void World::dump_instances()
 		std::cout << "Angle: " << inst.angle << std::endl;
 		std::cout << "Scale: " << inst.scale << std::endl;
 
-		std::cout << "Number of vertices: " << inst.vert.size() << std::endl;
+		std::cout << "Number of vertices: " << inst.world_vert.size() << std::endl;
 		int j = 0;
-		for (auto vertex : inst.vert)
+		for (auto vertex : inst.world_vert)
 		{
 			std::cout << "Vertex number: " << j++ << ": " << vertex << std::endl;
 		}

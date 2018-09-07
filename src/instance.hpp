@@ -16,7 +16,6 @@ public:
 	Instance() {}
 	~Instance() {}
 
-	void setup_vertices();
 	void setup_bounds();
 
 	Master *masterptr = { nullptr };
@@ -31,8 +30,6 @@ public:
 	
 	float specularity = { 0.0f };
 
-	std::vector<Vector3d> vert;
-
 	std::vector<Color> poly_color;
 
 	RenderStyle style = { RenderStyle::WIREFRAME };
@@ -40,10 +37,12 @@ public:
 
 	std::string outcome = { "" };
 
-	void prerender(Viewer &user);
+	void local_to_world();
+	void world_to_viewer(Viewer &user);
 	void setup_color(Viewer &user, Light &light);
 
-	std::vector<Vector3d> user_vert;
+	std::vector<Vector3d> world_vert;
+	std::vector<Vector3d> view_vert;
 	float order;
 };
 
