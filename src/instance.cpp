@@ -107,13 +107,10 @@ void Instance::prerender(Viewer &user)
 
 	order = (l1 > l2 ? l1 : l2);
 
-	// Finally sort out color calculations
-	setup_color(user);
-
 	assert(vert.size() == user_vert.size());
 }
 
-void Instance::setup_color(Viewer &user)
+void Instance::setup_color(Viewer &user, Light &light)
 {
 	int no_polygons, loop;
 	int poly_no[3];
@@ -139,26 +136,37 @@ void Instance::setup_color(Viewer &user)
 		Vector3d normal = v1.cross(v2);
 		normal.normalize();
 
-		float cos_theta = normal.dot(user.g_light_dir);
+		// Apply just ambient light to start with
+		poly_color[loop] = user.ambient * user.ambient_intensity * color;
+		
+		// Calulate specular highlight
+		Vector3d view = vert[poly_no[0]] - user.loc;
+		view.normalize();
 
+		Vector3d ref = user.g_light_dir;
+		ref.reflect(normal);
+
+		float specular = (specularity / 100.0f) * view.dot(ref);
+		
+		// Now do global 'sun' light
+		float cos_theta = normal.dot(user.g_light_dir);
 		if (cos_theta > 0.0)
 		{
-			Vector3d view = vert[poly_no[0]] - user.loc;
-			view.normalize();
 
-			Vector3d ref = user.g_light_dir;
-			ref.reflect(normal);
-
-			Color diffuse = color * user.g_light * cos_theta;
-			float specular = (specularity / 100.0f) * view.dot(ref);
-
-			poly_color[loop] = (user.ambient * user.ambient_intensity) + diffuse + Color(specular, specular, specular);
+			Color global = color * user.g_light * cos_theta;
+			poly_color[loop] += global + Color(specular, specular, specular);
 		}
-		else
+
+		// Now do light
+		Vector3d light_dir = light.pos - vert[poly_no[0]];
+		light_dir.normalize();
+
+		if (light_dir.dot(normal) > 0.0)
 		{
-			// Apply just ambient light to surfaces facing away
-			poly_color[loop] = user.ambient * user.ambient_intensity;
+			Color diffuse = color * light.col * light_dir.dot(normal);
+			poly_color[loop] += diffuse + Color(specular, specular, specular);
 		}
+		
 	}
 }
 

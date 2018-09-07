@@ -17,8 +17,10 @@ World::World(std::string _filename)
 	{
 		is_parsed = true;
 	}
-}
 
+	m_light.pos = Vector3d(0.0f, 50.0f, 0.0f);
+	m_light.col = Color(0.5f, 0.5f, 0.5f);
+}
 World::~World()
 {
 }
@@ -263,11 +265,14 @@ void World::render()
 	setcolor(m_user.ground);
 	bar(0, midy, getmaxx(), getmaxy());
 
+	m_light.prerender(m_user);
+
 	// Prepare objects in the scene so they are relative to user
 	for (auto &inst : m_instances)
 	{
 		inst.prerender(m_user);
 		inst_list.push_front(&inst);
+		inst.setup_color(m_user, m_light);
 	}
 
 	// Sort instances

@@ -8,6 +8,7 @@
 #include "vector3d.hpp"
 #include "viewer.hpp"
 #include "color.hpp"
+#include "light.hpp"
 
 class Instance
 {
@@ -40,10 +41,11 @@ public:
 	std::string outcome = { "" };
 
 	void prerender(Viewer &user);
+	void setup_color(Viewer &user, Light &light);
+
 	std::vector<Vector3d> user_vert;
 	float order;
-
-private:
-	void setup_color(Viewer &user);
 };
+
 #endif // __INSTANCE_HPP__
+

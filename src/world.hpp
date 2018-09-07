@@ -6,6 +6,7 @@
 #include "instance.hpp"
 #include "master.hpp"
 #include "viewer.hpp"
+#include "light.hpp"
 
 class World
 {
@@ -33,6 +34,8 @@ private:
 	std::vector<Master> m_masters;
 	std::vector<Instance> m_instances;
 	Viewer m_user;
+
+	Light m_light;
 
 	bool is_parsed = false;
 };
