@@ -99,7 +99,7 @@ void filltrapezoid(int y_top, int y_bottom, int x0_top, int x1_top, int x0_botto
 
 	for (int y=y_top; y<=y_bottom; y++)
 	{
-		line(static_cast<int>(x0), y, static_cast<int>(x1), y);
+		SDL_RenderDrawLine(g_renderer, x0, y, x1, y);
 		x0 += dx0;
 		x1 += dx1;
 	}
@@ -168,6 +168,5 @@ void drawtri(int x0, int y0, int x1, int y1, int x2, int y2)
 
 		filltrapezoid(y[0], y[1], x[0], x[0], new_x, x[1]);
 		filltrapezoid(y[1], y[2], new_x, x[1], x[2], x[2]);
-
 	}
 }
