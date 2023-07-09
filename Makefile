@@ -16,7 +16,10 @@ OS := $(shell uname)
 
 ifeq ($(OS),Darwin)
 # Mac OS
-	LIBS+=-framework SDL2
+	# LIBS+=-framework SDL2
+	# CPPFLAGS += -I./$(SRC_DIR)
+	CPPFLAGS += `pkg-config --cflags sdl2`
+	LIBS += `pkg-config --libs sdl2`
 else
 # Assume Linux for now
 	LIBS+=-lSDL2
@@ -33,7 +36,7 @@ release: build
 build: setup_build $(EXE)
 	@echo "Build finished"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(DEPS)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CPP) $(CPPFLAGS) -c -o $@ $<
 
 $(EXE): $(OBJ)
