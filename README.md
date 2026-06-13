@@ -25,6 +25,20 @@ The Makefile is kept as a small wrapper around CMake, so this also works:
 make
 ```
 
+# Development hooks
+
+Install the pre-commit hooks before making changes:
+
+```
+pre-commit install
+```
+
+The hooks format changed C++ and CMake files, trim trailing whitespace, ensure final newlines, check shell script syntax, and catch unresolved merge conflict markers. To run them manually:
+
+```
+pre-commit run --all-files
+```
+
 There is an example test script to try out. Run the program as follows:
 
 ```

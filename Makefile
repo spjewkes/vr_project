@@ -1,7 +1,7 @@
 BUILD_DIR ?= build
 BUILD_TYPE ?= Debug
 
-.PHONY: default configure debug release build clean
+.PHONY: default configure debug release build clean hooks
 
 default: debug
 
@@ -21,3 +21,6 @@ build:
 
 clean:
 	cmake --build $(BUILD_DIR) --target clean
+
+hooks:
+	pre-commit install
