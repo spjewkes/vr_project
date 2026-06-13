@@ -38,7 +38,6 @@ private:
 	bool process_outcome(std::string &outcome);
 	Status process_style(RenderStyle &style);
 	Status process_verts(Master &mast, int no_vertices);
-	Status process_edges(Master &mast, int no_edges);
 	Status process_polys(Master &mast, int no_polygons);
 	Status process_sky(Color *color);
 	Status process_ground(Color *color);

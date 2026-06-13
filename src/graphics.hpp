@@ -16,7 +16,6 @@ int getmaxy();
 
 void setcolor(Color &col);
 void line(int x0, int y0, int x1, int y1);
-void setrgbpalette(int index, int r, int g, int b);
 void bar(int x0, int y0, int x1, int y1);
 void fillpoly(int num_points, int *points);
 void drawtri(int x0, int y0, int x1, int y1, int x2, int y2);

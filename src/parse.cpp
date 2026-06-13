@@ -10,10 +10,17 @@
 /****************
 * include files *
 ****************/
+#include <cstdlib>
+#include <limits>
 #include "defs.hpp"
 #include "error.hpp"
 #include "parse.hpp"
 #include "vector3d.hpp"
+
+namespace
+{
+	const int InvalidNumber = std::numeric_limits<int>::min();
+}
 
 /* Constructor */
 Parser::Parser(const std::string &_filename, World &_world) : filename(_filename), world(_world)
@@ -120,16 +127,16 @@ Status Parser::process_master()
 	skip_garbage();
 
 	if (check("no_objects") != Match)
-		result = error("The no_objects definition is missing", lincnt);
+		return error("The no_objects definition is missing", lincnt);
 
 	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+		return error("Missing assignment symbol", lincnt);
 
-	if ((no_masters = getnum()) == Error)
-		result = error("Cannot parse number", lincnt);
+	if ((no_masters = getnum()) == InvalidNumber)
+		return error("Cannot parse number", lincnt);
 
 	if (check("") != Blank)
-		result = error("Syntax error with no_objects command", lincnt);
+		return error("Syntax error with no_objects command", lincnt);
 
 	if (no_masters > 0)
 	{
@@ -181,16 +188,16 @@ Status Parser::process_instance(void)
 	skip_garbage();
 
 	if (check("no_instances") != Match)
-		result = error("The no_instances definition is missing", lincnt);
+		return error("The no_instances definition is missing", lincnt);
 
 	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+		return error("Missing assignment symbol", lincnt);
 
-	if ((no_instances = getnum()) == Error)
-		result = error("Cannot parse number", lincnt);
+	if ((no_instances = getnum()) == InvalidNumber)
+		return error("Cannot parse number", lincnt);
 
 	if (check("") != Blank)
-		result = error("Syntax error with no_instances command", lincnt);
+		return error("Syntax error with no_instances command", lincnt);
 
 	if (no_instances > 0)
 	{
@@ -297,16 +304,16 @@ Status Parser::process_objects(int no_objects)
 	for (loop = 0; loop < no_objects; loop++)
 	{
 		if (check("master_no") != Match)
-			result = error("Error with master no command", lincnt);
+			return error("Error with master no command", lincnt);
 
 		if (check("=") != Match)
-			result = error("Missing assignment symbol", lincnt);
+			return error("Missing assignment symbol", lincnt);
 
-		if ((master_no = getnum()) == Error)
-			result = error("Cannot parse number", lincnt);
+		if ((master_no = getnum()) == InvalidNumber)
+			return error("Cannot parse number", lincnt);
 
-		if ((master_no < 0) || (master_no > no_objects))
-			result = error("The-master no is incorrect", lincnt);
+		if ((master_no < 1) || (master_no > no_objects))
+			return error("The-master no is incorrect", lincnt);
 
 		// Set its id
 		world.masters()[loop].id = master_no;
@@ -400,19 +407,19 @@ Status Parser::process_object_definition(int object_no)
 
 	/* make sure that object block starts correctly */
 	if (check(".objectdef") != Match)
-		result = error("Error with block .objectdef", lincnt);
+		return error("Error with block .objectdef", lincnt);
 
 	skip_garbage () ;
 
 	/* now retrieve the number of vertices that make up the object */
 	if (check("no_vertices") != Match)
-		result = error("Error with no_vertices command", lincnt);
+		return error("Error with no_vertices command", lincnt);
 
 	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+		return error("Missing assignment symbol", lincnt);
 
-	if ((no_vert = getnum()) == Error)
-		result = error("Cannot parse number", lincnt);
+	if ((no_vert = getnum()) == InvalidNumber)
+		return error("Cannot parse number", lincnt);
 
 	if (no_vert > 0)
 	{
@@ -429,13 +436,13 @@ Status Parser::process_object_definition(int object_no)
 
 	/* now retrieve the number of polygons that make up the object */
 	if (check("no_polygons") != Match)
-		result = error("Error with the no_polygons command", lincnt);
+		return error("Error with the no_polygons command", lincnt);
 
 	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+		return error("Missing assignment symbol", lincnt);
 
-	if ((no_poly = getnum() ) == Error)
-		result = error("Cannot parse number", lincnt);
+	if ((no_poly = getnum() ) == InvalidNumber)
+		return error("Cannot parse number", lincnt);
 
 	if (no_poly > 0)
 	{
@@ -452,7 +459,7 @@ Status Parser::process_object_definition(int object_no)
 
 	/* check that the object definition block is properly terminated */
 	if (check(".objectend") != Match)
-		result = error("Error terminating object definition", lincnt);
+		return error("Error terminating object definition", lincnt);
 
 	return result;
 }
@@ -476,16 +483,16 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 
 		/* check for the master no command */
 		if (check("master_no") != Match)
-			result = error("The master no is incorrect", lincnt);
+			return error("The master no is incorrect", lincnt);
 
 		if (check("=") != Match)
-			result = error("Missing assignment symbol", lincnt);
+			return error("Missing assignment symbol", lincnt);
 
-		if ((master_no = getnum()) == Error)
-			result = error("Cannot parse number", lincnt);
+		if ((master_no = getnum()) == InvalidNumber)
+			return error("Cannot parse number", lincnt);
 
-		if ((master_no < 0) || (master_no > no_objects))
-			result = error("The master_no is incorrect", lincnt);
+		if ((master_no < 1) || (master_no > no_objects))
+			return error("The master_no is incorrect", lincnt);
 
 		/* store the master no value in the instance */
 		/* take one away to-match internal format of master object references */
@@ -721,7 +728,7 @@ Status Parser::process_angle(Vector3d &ang)
 
 	ang.y(fgetnum());
 
-	if (check(", ") != Match)
+	if (check(",") != Match)
 		result = error("Syntax error with angle command", lincnt);
 
 	ang.z(fgetnum());
@@ -852,7 +859,7 @@ Status Parser::process_color(Color *color)
 	else if ((word == "RED") || (word == "4"))
 		*color = Color(1.0f, 0.5f, 0.5f);
 	else if ((word == "MAGENTA") || (word == "5"))
-		*color = Color(1.0f, 1.0f, 0.5f);
+		*color = Color(1.0f, 0.5f, 1.0f);
 	else if ((word == "BROWN") || (word == "6"))
 		*color = Color(1.0f, 0.5f, 0.3f);
 	else if ((word == "LIGHTGREY") || (word == "7"))
@@ -939,6 +946,12 @@ bool Parser::process_outcome(std::string &outcome)
 		return false;
 	}
 
+	if (check("") != Blank)
+	{
+		error("Syntax error with outcome string", lincnt);
+		return false;
+	}
+
 	return true;
 }
 
@@ -965,6 +978,9 @@ Status Parser::process_style(RenderStyle &style)
 	else
 		result = error("Unknown style type", lincnt);
 
+	if (check("") != Blank)
+		result = error("Syntax error with style command", lincnt);
+
 	return result;
 }
 
@@ -985,31 +1001,31 @@ Status Parser::process_verts(Master &mast, int no_vertices)
 		skip_garbage();
 
 		/* get the number of the vertex to set */
-		if ((vert_no = getnum()) == Error)
-			result = error("Syntax error with vertex command", lincnt);
+		if ((vert_no = getnum()) == InvalidNumber)
+			return error("Syntax error with vertex command", lincnt);
 
 		if ((vert_no < 1) || (vert_no > no_vertices))
-			result = error("Syntax error with vertex command", lincnt);
+			return error("Syntax error with vertex command", lincnt);
 
 		if (check("=") != Match)
-			result = error("Missing assignment symbol", lincnt);
+			return error("Missing assignment symbol", lincnt);
 
 		/* now we get the x, y and z values of the vertex */
 		mast.vert[vert_no-1].x(fgetnum());
 
 		if (check(",") != Match)
-			result = error("Syntax error with vertex command", lincnt);
+			return error("Syntax error with vertex command", lincnt);
 
 		mast.vert[vert_no-1].y(fgetnum());
 
 		if (check(",") != Match)
-			result = error("Syntax error with vertex command", lincnt);
+			return error("Syntax error with vertex command", lincnt);
 
 		mast.vert[vert_no-1].z(fgetnum());
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != Blank)
-			result = error("Syntax error with vertex command", lincnt);
+			return error("Syntax error with vertex command", lincnt);
 	}
 
 	return result;
@@ -1022,7 +1038,7 @@ Status Parser::process_polys(Master &mast, int no_polygons)
 {
 	Status result = Okay;
 	int loop, poly_no;
-	unsigned int tmp;
+	int tmp;
 
 	/* first we create the polygon data structures */
 	mast.poly0.resize(no_polygons);
@@ -1035,54 +1051,54 @@ Status Parser::process_polys(Master &mast, int no_polygons)
 		skip_garbage();
 
 		/* get the number of the polygon to set */
-		if ((poly_no = getnum()) == Error)
-			result = error("Syntax error with polygon command", lincnt);
+		if ((poly_no = getnum()) == InvalidNumber)
+			return error("Syntax error with polygon command", lincnt);
 
 		if ((poly_no < 1) || (poly_no > no_polygons))
-			result = error("Syntax error with polygon command", lincnt);
+			return error("Syntax error with polygon command", lincnt);
 
 		if (check("=") != Match)
-			result = error("MAssing assignment symbol", lincnt);
+			return error("Missing assignment symbol", lincnt);
 
 		/* now we get the three edges that make up the polygon */
 		tmp = getnum();
 
 		/* now make sure that it is a valid vertex reference */
-		if ((tmp < 1) || (tmp > mast.vert.size()))
-			result = error("Illegal polygon value", lincnt);
+		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size()))
+			return error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
 		mast.poly0[poly_no-1] = tmp - 1;
 
 		if (check(",") != Match)
-			result = error("Syntax error with edge command", lincnt);
+			return error("Syntax error with edge command", lincnt);
 
 		/* next edge reference */
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > mast.vert.size()))
-			result = error("Illegal polygon value", lincnt);
+		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size()))
+			return error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
 		mast.poly1[poly_no-1] = tmp - 1;
 		
 		if (check(",") != Match)
-			result = error("Syntax error with edge command", lincnt);
+			return error("Syntax error with edge command", lincnt);
 
 		/* final edge reference */
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (tmp > mast.vert.size()))
-			result = error("Illegal polygon value", lincnt);
+		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size()))
+			return error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
 		mast.poly2[poly_no-1] = tmp - 1;
 
 		/* make sure there is no more text on the end of the line */
 		if (check("") != Blank)
-			result = error("Syntax error with edge command", lincnt);
+			return error("Syntax error with edge command", lincnt);
 	}
 
 	return result;
@@ -1103,9 +1119,7 @@ MatchResult Parser::getline(void)
 {
 	debug("getline()", 1);
 
-	std::getline(file, line);
-
-	if (file.eof())
+	if (!std::getline(file, line))
 	{
 		return EoF;
 	}
@@ -1115,13 +1129,14 @@ MatchResult Parser::getline(void)
 
 	debug(line.c_str(), 2);
 
-	if (line.find_first_of("#") == 0)
-	{
-		return Comment;
-	}
-	else if (line.find_first_not_of("\t\n ") == std::string::npos)
+	std::string::size_type first = line.find_first_not_of("\t\n ");
+	if (first == std::string::npos)
 	{
 		return Blank;
+	}
+	else if (line[first] == '#')
+	{
+		return Comment;
 	}
 
 	return Other;
@@ -1161,13 +1176,17 @@ MatchResult Parser::check(const std::string &string)
 {
 	debug("check()", 1);
 
-	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
+	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
+		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
-	if (static_cast<unsigned int>(lineptr) == line.size())
+	if (static_cast<std::string::size_type>(lineptr) >= line.size())
 		return Blank;
 
-	if (line.find_first_of(string, lineptr) == static_cast<unsigned int>(lineptr))
+	if (string.empty())
+		return NoMatch;
+
+	if (line.compare(static_cast<std::string::size_type>(lineptr), string.size(), string) == 0)
 	{
 		lineptr += string.size();
 		return Match;
@@ -1187,10 +1206,13 @@ void Parser::getword(std::string &word)
 {
 	debug("getword()", 1);
 
-	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
+	word.clear();
+
+	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
+		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
-	while (line[lineptr] != '\0')
+	while (static_cast<std::string::size_type>(lineptr) < line.size())
 	{
 		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t'))
 			break;
@@ -1210,28 +1232,33 @@ Status Parser::getstring(std::string &word)
 	debug("before while loop", 2);
 
 	/* skip any spaces or tabs before the string starts */
-	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
+	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
+		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
 	debug("now check for double quote mark", 2);
 
 	/* check that there's a double quote character there */
+	if (static_cast<std::string::size_type>(lineptr) >= line.size())
+		return result;
+
 	if (line[lineptr++] != '\"')
 		return result;
 
 	debug("now get the string", 2);
 
 	/* now put the rest of the line into char array pointed to by tptr */
-	while (line[lineptr] != '\"')
+	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
+		   (line[lineptr] != '\"'))
 	{
-		/* check to make sure that we haven't reached the end of the
-		   line retrieved from the file */
-		if (line[lineptr] == '\0')
-			return result;
-
 		/* otherwise we put the value into the char array pointed to by tptr */
 		word.push_back(line[lineptr++]);
 	}
+
+	if (static_cast<std::string::size_type>(lineptr) >= line.size())
+		return result;
+
+	lineptr++;
 
 	debug("string has been fetched", 2);
 
@@ -1245,29 +1272,27 @@ Status Parser::getstring(std::string &word)
 ****************************************************************************/
 int Parser::getnum(void)
 {
-	char numline[MAXLINE];
-	int tptr = 0;
-
 	debug("getnum()", 1);
 
-	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
+	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
+		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
-	if (line[lineptr] == '\n')
-		return -1;
+	if (static_cast<std::string::size_type>(lineptr) >= line.size())
+		return InvalidNumber;
 
-	numline[tptr++] = line[lineptr++];
+	char *endptr = nullptr;
+	const char *start = line.c_str() + lineptr;
+	long value = std::strtol(start, &endptr, 10);
 
-	while (line[lineptr] != '\0')
-	{
-		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t'))
-			break;
-		numline[tptr++] = line[lineptr++];
-	}
+	if (endptr == start)
+		return InvalidNumber;
 
-	numline[tptr] = '\0';
+	if ((value < std::numeric_limits<int>::min()) || (value > std::numeric_limits<int>::max()))
+		return InvalidNumber;
 
-	return (atoi(numline));
+	lineptr += static_cast<int>(endptr - start);
+	return static_cast<int>(value);
 }
 
 /****************************************************************************
@@ -1276,26 +1301,24 @@ int Parser::getnum(void)
 ****************************************************************************/
 float Parser::fgetnum(void)
 {
-	char fnumline[MAXLINE];
-	int tptr = 0;
-
 	debug("fgetnum()", 1);
 
-	while ((line[lineptr] == ' ') || (line[lineptr] == '\t'))
+	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
+		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
-	fnumline[tptr++] = line[lineptr++];
+	if (static_cast<std::string::size_type>(lineptr) >= line.size())
+		return 0.0f;
 
-	while (line[lineptr] != '\0')
-	{
-		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t'))
-			break;
-		fnumline[tptr++] = line[lineptr++];
-	}
+	char *endptr = nullptr;
+	const char *start = line.c_str() + lineptr;
+	float value = std::strtof(start, &endptr);
 
-	fnumline[tptr] = '\0';
+	if (endptr == start)
+		return 0.0f;
 
-	return ((float)atof(fnumline));
+	lineptr += static_cast<int>(endptr - start);
+	return value;
 }
 
 /****************************************************************************

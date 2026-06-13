@@ -28,7 +28,7 @@
 Status screen_open(int mode)
 {
 	/* make sure that mode is of a legal value between 0 and 4 */
-	if ((mode < 0) && (mode > 4))
+	if ((mode < 0) || (mode > 4))
 	{
 		printf("Try values:\n");
 		printf("\t0 -  320x200\n");
@@ -74,4 +74,3 @@ Status screen_open(int mode)
 
 	return Okay;
 }
-

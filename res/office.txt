@@ -298,7 +298,7 @@ master_no = 1
 master_no = 1
         location = 66.0 , 50.0 , -116.0
         scale = 8.5 , 8.0 , 1.0
-        angle = 0.0 , 0.0 , 0,O
+        angle = 0.0 , 0.0 , 0.0
         color = LIGHTGREY
         specularity = 20.0 %
         style = SOLID
@@ -307,7 +307,7 @@ master_no = 1
 # the keyboard
 master_no = 3
         location = 66.0 , 25.0 , -104.0
-        scale = 4,0 , 1,0 , 10.0
+        scale = 4.0 , 1.0 , 10.0
         angle = 0.0 , 90.0 , 0.0
         color = WHITE
         specularity = 45.0 %
@@ -321,7 +321,7 @@ master_no = 3
 # the seat
 master_no = 1
         location = 90.0 , 14.0 , -81.0
-        scale = 10.0 , 1,0 , 10.0
+        scale = 10.0 , 1.0 , 10.0
         angle = 0.0 , 0.0 , 0.0
         color = BLUE
         specularity = 25.0 %
@@ -331,17 +331,17 @@ master_no = 1
 # back of the chair (part 1)
 master_no = 1
         location = 98.0 , 30.0 , -81.0
-        scale = 1.0 , 5,0 , 10.0
-        angle = 0.0 , 0.0 , 0,O
+        scale = 1.0 , 5.0 , 10.0
+        angle = 0.0 , 0.0 , 0.0
         color = BLUE
         specularity = 25.0 %
         style = SOLID
-        outcome = "play.oom bayoop.voc"
+        outcome = "play.com bayoop.voc"
 
 # back of the chair (part 2)
 master_no = 1
         location = 98.0 , 20.0 , -81.0
-        scale = 1.0 , 5.0 , 1,0
+        scale = 1.0 , 5.0 , 1.0
         angle = 0.0 , 0.0 , 0.0
         color = DARKGREY
         specularity = 85.0 %
@@ -360,7 +360,7 @@ master_no = 3
 
 # chair base (part 2)
 master_no = 3
-        location = 90.0 , 6.O , -81.0
+        location = 90.0 , 6.0 , -81.0
         scale = 10.0 , 6.5 , 10.0
         angle = 0.0 , 180.0 , 0.0
         color = DARKGREY

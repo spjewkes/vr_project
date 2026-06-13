@@ -326,12 +326,12 @@ void World::render()
 				float y1 = inst->view_vert[masterptr->poly0[j]].y();
 				float z1 = inst->view_vert[masterptr->poly0[j]].z();
 				
-				// Get first vertex
+				// Get second vertex
 				float x2 = inst->view_vert[masterptr->poly1[j]].x();
 				float y2 = inst->view_vert[masterptr->poly1[j]].y();
 				float z2 = inst->view_vert[masterptr->poly1[j]].z();
 				
-				// Get first vertex
+				// Get third vertex
 				float x3 = inst->view_vert[masterptr->poly2[j]].x();
 				float y3 = inst->view_vert[masterptr->poly2[j]].y();
 				float z3 = inst->view_vert[masterptr->poly2[j]].z();
@@ -339,10 +339,10 @@ void World::render()
 				// Do back-face culling
 				Vector3d v1(x2-x1, y2-y1, z2-z1);
 				Vector3d v2(x3-x2, y3-y2, z3-z2);
-				v1.cross(v2);
+				Vector3d normal = v1.cross(v2);
 
 				Vector3d viewer(x1,y1,z1);
-				if (v1.cross(v2).dot(viewer) < 0.0f)
+				if (normal.dot(viewer) < 0.0f)
 				{
 					// Now we know that the surface is facing the viewer, so clip it
 					float pre_array[8][3];

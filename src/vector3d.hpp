@@ -1,6 +1,7 @@
 #ifndef __VECTOR3D_HPP__
 #define __VECTOR3D_HPP__
 
+#include <cassert>
 #include <iostream>
 #include <cmath>
 #include "defs.hpp"
@@ -204,4 +205,3 @@ private:
 std::ostream &operator<<(std::ostream &os, Vector3d const &v);
 
 #endif // __VECTOR3D_HPP__
-

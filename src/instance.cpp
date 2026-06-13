@@ -142,8 +142,7 @@ void Instance::setup_color(Viewer &user, Light &light)
 		Vector3d view = world_vert[poly_no[0]] - user.loc;
 		view.normalize();
 
-		Vector3d ref = user.g_light_dir;
-		ref.reflect(normal);
+		Vector3d ref = user.g_light_dir.reflect(normal);
 
 		float specular = (specularity / 100.0f) * view.dot(ref);
 		
@@ -167,4 +166,3 @@ void Instance::setup_color(Viewer &user, Light &light)
 		}
 	}
 }
-

@@ -1,5 +1,6 @@
 #include <cassert>
 #include <algorithm>
+#include <cstdio>
 #include "graphics.hpp"
 
 static int g_width = 0;
@@ -40,7 +41,7 @@ void close_graphics()
 void update_title(float fps)
 {
 	char title[256];
-	sprintf(title, "FPS: %4.2f", fps);
+	std::snprintf(title, sizeof(title), "FPS: %4.2f", fps);
 	SDL_SetWindowTitle(g_window, title);
 }
 
@@ -82,7 +83,7 @@ void fillpoly(int num_points, int *points)
 {
 	assert(num_points > 2);
 	int length = num_points * 2;
-	for (int i = 2; i < length; i += 2)
+	for (int i = 4; i < length; i += 2)
 	{
 		drawtri(points[0], points[1],
 				points[i-2], points[i-1],
@@ -92,6 +93,14 @@ void fillpoly(int num_points, int *points)
 
 void filltrapezoid(int y_top, int y_bottom, int x0_top, int x1_top, int x0_bottom, int x1_bottom)
 {
+	if (y_top == y_bottom)
+	{
+		int min_x = std::min(std::min(x0_top, x1_top), std::min(x0_bottom, x1_bottom));
+		int max_x = std::max(std::max(x0_top, x1_top), std::max(x0_bottom, x1_bottom));
+		SDL_RenderDrawLine(g_renderer, min_x, y_top, max_x, y_top);
+		return;
+	}
+
 	float x0 = static_cast<float>(x0_top);
 	float dx0 = static_cast<float>(x0_bottom-x0_top)/static_cast<float>(y_bottom-y_top);
 	float x1 = static_cast<float>(x1_top);
