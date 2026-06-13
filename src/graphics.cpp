@@ -64,12 +64,14 @@ void setcolor(Color &col)
 {
 	int retcode = SDL_SetRenderDrawColor(g_renderer, col.r(), col.g(), col.b(), SDL_ALPHA_OPAQUE);
 	assert(retcode == 0);
+	(void)retcode;
 }
 
 void line(int x0, int y0, int x1, int y1)
 {
 	int retcode = SDL_RenderDrawLine(g_renderer, x0, y0, x1, y1);
 	assert(retcode == 0);
+	(void)retcode;
 }
 
 void bar(int x0, int y0, int x1, int y1)
@@ -77,6 +79,7 @@ void bar(int x0, int y0, int x1, int y1)
 	SDL_Rect rect = { std::min(x0, x1), std::min(y0, y1), abs(x0 - x1), abs(y0 - y1) };
 	int retcode = SDL_RenderFillRect(g_renderer, &rect);
 	assert(retcode == 0);
+	(void)retcode;
 }
 
 void fillpoly(int num_points, int *points)
