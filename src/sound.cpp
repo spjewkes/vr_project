@@ -12,14 +12,13 @@ static Uint8 *data_pos;
 
 void audio_callback(void *, Uint8 *stream, int _len)
 {
-	if (play_pos == 0)
-		return;
+	if (play_pos == 0) return;
 
 	Uint32 len = static_cast<Uint32>(_len);
-	
-	len = ( len > play_pos ? play_pos : len );
-	SDL_MixAudio(stream, data_pos, len, SDL_MIX_MAXVOLUME);// mix from one buffer into another
-	
+
+	len = (len > play_pos ? play_pos : len);
+	SDL_MixAudio(stream, data_pos, len, SDL_MIX_MAXVOLUME); // mix from one buffer into another
+
 	data_pos += len;
 	play_pos -= len;
 }
@@ -45,7 +44,7 @@ Status init_audio()
 		wav_spec.callback = audio_callback;
 		wav_spec.userdata = NULL;
 	}
-		
+
 	return success;
 }
 
@@ -59,8 +58,8 @@ void start_blip()
 	// set our global static variables
 	data_pos = wav_data;
 	play_pos = wav_len;
-	
-	if ( SDL_OpenAudio(&wav_spec, NULL) < 0 )
+
+	if (SDL_OpenAudio(&wav_spec, NULL) < 0)
 	{
 		std::cerr << "Failed to open audio " << SDL_GetError() << std::endl;
 	}
@@ -82,4 +81,3 @@ void stop_blip()
 {
 	SDL_CloseAudio();
 }
-

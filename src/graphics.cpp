@@ -33,9 +33,9 @@ int create_graphics(int width, int height)
 void close_graphics()
 {
 	SDL_DestroyRenderer(g_renderer);
-    SDL_DestroyWindow(g_window);
+	SDL_DestroyWindow(g_window);
 
-    SDL_Quit();
+	SDL_Quit();
 }
 
 void update_title(float fps)
@@ -76,7 +76,7 @@ void line(int x0, int y0, int x1, int y1)
 
 void bar(int x0, int y0, int x1, int y1)
 {
-	SDL_Rect rect = { std::min(x0, x1), std::min(y0, y1), abs(x0 - x1), abs(y0 - y1) };
+	SDL_Rect rect = {std::min(x0, x1), std::min(y0, y1), abs(x0 - x1), abs(y0 - y1)};
 	int retcode = SDL_RenderFillRect(g_renderer, &rect);
 	assert(retcode == 0);
 	(void)retcode;
@@ -88,9 +88,7 @@ void fillpoly(int num_points, int *points)
 	int length = num_points * 2;
 	for (int i = 4; i < length; i += 2)
 	{
-		drawtri(points[0], points[1],
-				points[i-2], points[i-1],
-				points[i], points[i+1]);
+		drawtri(points[0], points[1], points[i - 2], points[i - 1], points[i], points[i + 1]);
 	}
 }
 
@@ -105,11 +103,11 @@ void filltrapezoid(int y_top, int y_bottom, int x0_top, int x1_top, int x0_botto
 	}
 
 	float x0 = static_cast<float>(x0_top);
-	float dx0 = static_cast<float>(x0_bottom-x0_top)/static_cast<float>(y_bottom-y_top);
+	float dx0 = static_cast<float>(x0_bottom - x0_top) / static_cast<float>(y_bottom - y_top);
 	float x1 = static_cast<float>(x1_top);
-	float dx1 = static_cast<float>(x1_bottom-x1_top)/static_cast<float>(y_bottom-y_top);
+	float dx1 = static_cast<float>(x1_bottom - x1_top) / static_cast<float>(y_bottom - y_top);
 
-	for (int y=y_top; y<=y_bottom; y++)
+	for (int y = y_top; y <= y_bottom; y++)
 	{
 		SDL_RenderDrawLine(g_renderer, x0, y, x1, y);
 		x0 += dx0;
@@ -126,42 +124,60 @@ void drawtri(int x0, int y0, int x1, int y1, int x2, int y2)
 	{
 		x[0] = x0;
 		y[0] = y0;
-		
+
 		if (y1 <= y2)
 		{
-			x[1] = x1; y[1] = y1; x[2] = x2; y[2] = y2;
+			x[1] = x1;
+			y[1] = y1;
+			x[2] = x2;
+			y[2] = y2;
 		}
 		else
 		{
-			x[1] = x2; y[1] = y2; x[2] = x1; y[2] = y1;
+			x[1] = x2;
+			y[1] = y2;
+			x[2] = x1;
+			y[2] = y1;
 		}
 	}
 	else if (y1 <= y0 && y1 <= y2)
 	{
 		x[0] = x1;
 		y[0] = y1;
-		
+
 		if (y0 <= y2)
 		{
-			x[1] = x0; y[1] = y0; x[2] = x2; y[2] = y2;
+			x[1] = x0;
+			y[1] = y0;
+			x[2] = x2;
+			y[2] = y2;
 		}
 		else
 		{
-			x[1] = x2; y[1] = y2; x[2] = x0; y[2] = y0;
+			x[1] = x2;
+			y[1] = y2;
+			x[2] = x0;
+			y[2] = y0;
 		}
 	}
 	else
 	{
 		x[0] = x2;
 		y[0] = y2;
-		
+
 		if (y0 <= y1)
 		{
-			x[1] = x0; y[1] = y0; x[2] = x1; y[2] = y1;
+			x[1] = x0;
+			y[1] = y0;
+			x[2] = x1;
+			y[2] = y1;
 		}
 		else
 		{
-			x[1] = x1; y[1] = y1; x[2] = x0; y[2] = y0;
+			x[1] = x1;
+			y[1] = y1;
+			x[2] = x0;
+			y[2] = y0;
 		}
 	}
 

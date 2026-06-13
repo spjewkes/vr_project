@@ -1,15 +1,15 @@
 /**************************************
-*                                     *
-* ##   ##  ###  #### ##   ##     #### *
-* ### ### ## ##  ##  ###  ##    ##    *
-* ####### #####  ##  #######    ##    *
-* ## # ## ## ##  ##  ##  ###    ##    *
-* ##   ## ## ## #### ##   ## ##  #### *
-*                                     *
-**************************************/
+ *                                     *
+ * ##   ##  ###  #### ##   ##     #### *
+ * ### ### ## ##  ##  ###  ##    ##    *
+ * ####### #####  ##  #######    ##    *
+ * ## # ## ## ##  ##  ##  ###    ##    *
+ * ##   ## ## ## #### ##   ## ##  #### *
+ *                                     *
+ **************************************/
 /****************
-* include files *
-****************/
+ * include files *
+ ****************/
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -26,8 +26,8 @@
 #include "world.hpp"
 
 /************
-* functions *
-************/
+ * functions *
+ ************/
 int main(int argc, char *argv[])
 {
 	float locx, locy, locz;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 		world.dump_masters();
 		world.dump_instances();
 	}
-	
+
 	/* now let's start the really interesting bit */
 	printf("\nENTERING ANOTHER WORLD...\n");
 
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 		auto tp2 = std::chrono::system_clock::now();
 		std::chrono::duration<float> elapsed_time = tp2 - tp1;
 		bool quit = false;
-		
+
 		/* set the initial starting position of the mouse */
 		mpos_x = getmaxx() / 2;
 		mpos_y = getmaxy() / 2;
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 		locy = world.user().loc.y();
 		locz = world.user().loc.z();
 
-		bool key_state[keyboard_state::KEY_MAX] = { false };
+		bool key_state[keyboard_state::KEY_MAX] = {false};
 		float move;
 
 		while (!quit)
@@ -304,8 +304,7 @@ int main(int argc, char *argv[])
 			{
 				/* turn to the left */
 				world.user().ang.y(world.user().ang.y() - (move * elapsed_time.count()));
-				if (world.user().ang.y() < 0.0)
-					world.user().ang.y(world.user().ang.y() + 360.0);
+				if (world.user().ang.y() < 0.0) world.user().ang.y(world.user().ang.y() + 360.0);
 			}
 
 			if (key_state[keyboard_state::KEY_RIGHT] && key_state[keyboard_state::KEY_LALT])
@@ -325,15 +324,14 @@ int main(int argc, char *argv[])
 			{
 				/* turn to the right */
 				world.user().ang.y(world.user().ang.y() + (move * elapsed_time.count()));
-				if (world.user().ang.y() > 360.0)
-					world.user().ang.y(world.user().ang.y() - 360.0);
+				if (world.user().ang.y() > 360.0) world.user().ang.y(world.user().ang.y() - 360.0);
 			}
 
 			if (key_state[keyboard_state::KEY_QUIT])
 			{
 				quit = true;
 			}
-			
+
 			/* draw the new image */
 			world.render();
 

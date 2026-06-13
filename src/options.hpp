@@ -5,16 +5,28 @@
 
 class Options
 {
-public:
-	Options(int argc, char **argv) : m_argc(argc), m_argv(argv) { process(); }
+  public:
+	Options(int argc, char **argv) : m_argc(argc), m_argv(argv)
+	{
+		process();
+	}
 	~Options() {}
 
-	std::string get_file() { return file; }
-	bool get_debug_mode() { return debug_mode; }
-	bool get_dump_mode() { return dump_mode; }
+	std::string get_file()
+	{
+		return file;
+	}
+	bool get_debug_mode()
+	{
+		return debug_mode;
+	}
+	bool get_dump_mode()
+	{
+		return dump_mode;
+	}
 
-private:
-	Options() =delete;
+  private:
+	Options() = delete;
 
 	void print_help();
 	void process();

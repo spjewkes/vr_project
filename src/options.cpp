@@ -13,14 +13,11 @@ void Options::print_help()
 
 void Options::process()
 {
-	static struct option long_options[] =
-        {
-			{ "help",     no_argument,       0, 'h' },
-			{ "debug",    no_argument,       0, 'b' },
-			{ "dump",     no_argument,       0, 'd' },
-			{ "file",     required_argument, 0, 'f' },
-			{ 0, 0, 0, 0 }
-		};
+	static struct option long_options[] = {{"help", no_argument, 0, 'h'},
+	                                       {"debug", no_argument, 0, 'b'},
+	                                       {"dump", no_argument, 0, 'd'},
+	                                       {"file", required_argument, 0, 'f'},
+	                                       {0, 0, 0, 0}};
 
 	int c;
 
@@ -47,7 +44,7 @@ void Options::process()
 		case 'd':
 			dump_mode = true;
 			break;
-			
+
 		case 'f':
 			file = optarg;
 			break;

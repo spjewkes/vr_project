@@ -5,9 +5,9 @@
 #include "world.hpp"
 #include "color.hpp"
 
-#define X  0
-#define Y  1
-#define Z  2
+#define X 0
+#define Y 1
+#define Z 2
 
 World::World(std::string _filename)
 {
@@ -21,14 +21,12 @@ World::World(std::string _filename)
 	m_light.pos = Vector3d(0.0f, 50.0f, 0.0f);
 	m_light.col = Color(0.5f, 0.5f, 0.5f);
 }
-World::~World()
-{
-}
+World::~World() {}
 
 /****************************************************************************
-* clipt() - function is based on pseudo code in Foley and van Dam book page *
-*           122                                                             *
-****************************************************************************/
+ * clipt() - function is based on pseudo code in Foley and van Dam book page *
+ *           122                                                             *
+ ****************************************************************************/
 bool clipt(float denom, float num, float *tE, float *tL)
 {
 	float t;
@@ -79,11 +77,11 @@ bool clipt(float denom, float num, float *tE, float *tL)
 }
 
 /*****************************************************************************
-* clip3dpara() - function to clip a line to a 3d viewing volume - based on   *
-*                the pseudo code in the Foley and van Dam book page 274      *
-*                this function is for a canonical parallel-projection        *
-*                viewing volume                                              *
-*****************************************************************************/
+ * clip3dpara() - function to clip a line to a 3d viewing volume - based on   *
+ *                the pseudo code in the Foley and van Dam book page 274      *
+ *                this function is for a canonical parallel-projection        *
+ *                viewing volume                                              *
+ *****************************************************************************/
 int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
 {
 	float tmin, tmax;
@@ -99,15 +97,15 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
 	for (loop = 0; loop < 5; loop += 2)
 	{
 		/* first we set the values for dx, dy and dz */
-		dx = pre_array[loop+1][X] - pre_array[loop][0];
-		dy = pre_array[loop+1][Y] - pre_array[loop][1];
-		dz = pre_array[loop+1][Z] - pre_array[loop][2];
+		dx = pre_array[loop + 1][X] - pre_array[loop][0];
+		dy = pre_array[loop + 1][Y] - pre_array[loop][1];
+		dz = pre_array[loop + 1][Z] - pre_array[loop][2];
 		/* now we initialise the values for train and tmax */
 		tmin = 0.0;
 		tmax = 1.0;
 
 		/* now clip edge with the front plane */
-		if (clipt(0.0-dz, pre_array[loop][2]-minz, &tmin, &tmax))
+		if (clipt(0.0 - dz, pre_array[loop][2] - minz, &tmin, &tmax))
 		{
 			/* edge is visible and has now been clipped */
 			/* if endpoint 0 (t=0) is not in the region */
@@ -115,9 +113,9 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
 			if (tmin > 0.0)
 			{
 				/* store them in the post_array */
-				post_array[no_pnts][X] = pre_array[loop][X] + (tmin*dx);
-				post_array[no_pnts][Y] = pre_array[loop][Y] + (tmin*dy);
-				post_array[no_pnts][Z] = pre_array[loop][Z] + (tmin*dz);
+				post_array[no_pnts][X] = pre_array[loop][X] + (tmin * dx);
+				post_array[no_pnts][Y] = pre_array[loop][Y] + (tmin * dy);
+				post_array[no_pnts][Z] = pre_array[loop][Z] + (tmin * dz);
 			}
 			else
 			{
@@ -133,16 +131,16 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
 			if (tmax < 1.0)
 			{
 				/* store them in the post_array */
-				post_array[no_pnts][X] = pre_array[loop][X] + (tmax*dx);
-				post_array[no_pnts][Y] = pre_array[loop][Y] + (tmax*dy);
-				post_array[no_pnts][Z] = pre_array[loop][Z] + (tmax*dz);
+				post_array[no_pnts][X] = pre_array[loop][X] + (tmax * dx);
+				post_array[no_pnts][Y] = pre_array[loop][Y] + (tmax * dy);
+				post_array[no_pnts][Z] = pre_array[loop][Z] + (tmax * dz);
 			}
 			else
 			{
 				/* we don't need any recalculation just copy straight over */
-				post_array[no_pnts][X] = pre_array[loop+1][X];
-				post_array[no_pnts][Y] = pre_array[loop+1][Y];
-				post_array[no_pnts][Z] = pre_array[loop+1][Z];
+				post_array[no_pnts][X] = pre_array[loop + 1][X];
+				post_array[no_pnts][Y] = pre_array[loop + 1][Y];
+				post_array[no_pnts][Z] = pre_array[loop + 1][Z];
 			}
 			/* increment the number of points the final array has */
 			no_pnts++;
@@ -153,13 +151,12 @@ int clip3dpara(float pre_array[][3], float post_array[][3], float minz)
 }
 
 /****************************************************************************
-* clip3d() - function to clip a line to a 3d viewing volume - based on the  *
-*            pseudo code in the Foley and van Dam book page 274             *
-*            this function is for a canonical perspective-projection        *
-*            viewing volume                                                 *
-****************************************************************************/
-bool clip3d(float *xs, float *ys, float *zs,
-			float *xe, float *ye, float *ze, float minz)
+ * clip3d() - function to clip a line to a 3d viewing volume - based on the  *
+ *            pseudo code in the Foley and van Dam book page 274             *
+ *            this function is for a canonical perspective-projection        *
+ *            viewing volume                                                 *
+ ****************************************************************************/
+bool clip3d(float *xs, float *ys, float *zs, float *xe, float *ye, float *ze, float minz)
 {
 	float tmin, tmax;
 	float dx, dy, dz;
@@ -171,27 +168,27 @@ bool clip3d(float *xs, float *ys, float *zs,
 	dx = *xe - *xs;
 	dz = *ze - *zs;
 
-	if (clipt(-dx-dz, *xs+*zs, &tmin, &tmax))
+	if (clipt(-dx - dz, *xs + *zs, &tmin, &tmax))
 	{
 		/* right side */
-		if (clipt(dx-dz, -*xs+*zs, &tmin, &tmax))
+		if (clipt(dx - dz, -*xs + *zs, &tmin, &tmax))
 		{
 			/* left side */
 			/* if we get this far then part of the line is in -z<=x<=z */
 			dy = *ye - *ys;
-			if (clipt(dy-dz, -*ys+*zs, &tmin, &tmax))
+			if (clipt(dy - dz, -*ys + *zs, &tmin, &tmax))
 			{
 				/* bottom part */
-				if (clipt(-dy-dz, *ys+*zs, &tmin, &tmax))
+				if (clipt(-dy - dz, *ys + *zs, &tmin, &tmax))
 				{
 					/* top part */
 					/* if we get this far then part of the line
 					   is visible in: */
 					/* -z<=x<=z, -z<=y<=z */
-					if (clipt(-dz, *zs-minz, &tmin, &tmax))
+					if (clipt(-dz, *zs - minz, &tmin, &tmax))
 					{
 						/* front plane */
-						if (clipt(dz, -*zs-400.0, &tmin, &tmax))
+						if (clipt(dz, -*zs - 400.0, &tmin, &tmax))
 						{
 							/* back plane */
 							/* if we get this far then part of */
@@ -249,7 +246,7 @@ static bool compare_tri(const triangle &t1, const triangle &t2)
 
 void World::render()
 {
-	std::forward_list<Instance*> inst_list;
+	std::forward_list<Instance *> inst_list;
 
 	// Calculate middle of screen
 	int midx = getmaxx() / 2;
@@ -285,12 +282,12 @@ void World::render()
 		// Depending on the style, clip and project slightly differently
 		if (inst->style == RenderStyle::WIREFRAME)
 		{
-			for (size_t j=0; j<masterptr->poly0.size(); j++)
+			for (size_t j = 0; j < masterptr->poly0.size(); j++)
 			{
-				unsigned int edge0[3] = { masterptr->poly0[j], masterptr->poly1[j], masterptr->poly2[j] };
-				unsigned int edge1[3] = { masterptr->poly1[j], masterptr->poly2[j], masterptr->poly0[j] };
+				unsigned int edge0[3] = {masterptr->poly0[j], masterptr->poly1[j], masterptr->poly2[j]};
+				unsigned int edge1[3] = {masterptr->poly1[j], masterptr->poly2[j], masterptr->poly0[j]};
 
-				for (size_t e=0; e<3; e++)
+				for (size_t e = 0; e < 3; e++)
 				{
 					// Get the first vertex
 					float x1 = inst->view_vert[edge0[e]].x();
@@ -306,42 +303,42 @@ void World::render()
 					if (clip3d(&x1, &y1, &z1, &x2, &y2, &z2, zmin))
 					{
 						// Project line
-						int ix1 = static_cast<int>((((x1*-1.0)/z1) * midx) + midx);
-						int iy1 = static_cast<int>((((y1*-1.0)/z1) * midy) + midy);
-						int ix2 = static_cast<int>((((x2*-1.0)/z2) * midx) + midx);
-						int iy2 = static_cast<int>((((y2*-1.0)/z2) * midy) + midy);
-					
+						int ix1 = static_cast<int>((((x1 * -1.0) / z1) * midx) + midx);
+						int iy1 = static_cast<int>((((y1 * -1.0) / z1) * midy) + midy);
+						int ix2 = static_cast<int>((((x2 * -1.0) / z2) * midx) + midx);
+						int iy2 = static_cast<int>((((y2 * -1.0) / z2) * midy) + midy);
+
 						// Store triangle for later
-						tri_list.push_front({ix1,iy1, ix2,iy2, ix2,iy2, inst->poly_color[j], (z1+z2)/2.0f});
+						tri_list.push_front({ix1, iy1, ix2, iy2, ix2, iy2, inst->poly_color[j], (z1 + z2) / 2.0f});
 					}
 				}
 			}
 		}
 		else if (inst->style == RenderStyle::SOLID)
 		{
-			for (size_t j=0; j<masterptr->poly0.size(); j++)
+			for (size_t j = 0; j < masterptr->poly0.size(); j++)
 			{
 				// Get first vertex
 				float x1 = inst->view_vert[masterptr->poly0[j]].x();
 				float y1 = inst->view_vert[masterptr->poly0[j]].y();
 				float z1 = inst->view_vert[masterptr->poly0[j]].z();
-				
+
 				// Get second vertex
 				float x2 = inst->view_vert[masterptr->poly1[j]].x();
 				float y2 = inst->view_vert[masterptr->poly1[j]].y();
 				float z2 = inst->view_vert[masterptr->poly1[j]].z();
-				
+
 				// Get third vertex
 				float x3 = inst->view_vert[masterptr->poly2[j]].x();
 				float y3 = inst->view_vert[masterptr->poly2[j]].y();
 				float z3 = inst->view_vert[masterptr->poly2[j]].z();
 
 				// Do back-face culling
-				Vector3d v1(x2-x1, y2-y1, z2-z1);
-				Vector3d v2(x3-x2, y3-y2, z3-z2);
+				Vector3d v1(x2 - x1, y2 - y1, z2 - z1);
+				Vector3d v2(x3 - x2, y3 - y2, z3 - z2);
 				Vector3d normal = v1.cross(v2);
 
-				Vector3d viewer(x1,y1,z1);
+				Vector3d viewer(x1, y1, z1);
 				if (normal.dot(viewer) < 0.0f)
 				{
 					// Now we know that the surface is facing the viewer, so clip it
@@ -376,28 +373,25 @@ void World::render()
 					if (no_points > 0)
 					{
 						// Project points
-						for (auto k=0; k<no_points; k++)
+						for (auto k = 0; k < no_points; k++)
 						{
 							float x = post_array[k][X];
 							float y = post_array[k][Y];
 							float z = post_array[k][Z];
 
-							post_array[k][X] = (((x*-1.0)/z) * midx) + midx;
-							post_array[k][Y] = (((y*-1.0)/z) * midy) + midy;
+							post_array[k][X] = (((x * -1.0) / z) * midx) + midx;
+							post_array[k][Y] = (((y * -1.0) / z) * midy) + midy;
 						}
 
 						// Now create list of triangles
-						for (auto k=2; k<no_points; k++)
+						for (auto k = 2; k < no_points; k++)
 						{
-							tri_list.push_front(
-								{
-									static_cast<int>(post_array[0][X]), static_cast<int>(post_array[0][Y]),
-									static_cast<int>(post_array[k-1][X]), static_cast<int>(post_array[k-1][Y]),
-									static_cast<int>(post_array[k][X]), static_cast<int>(post_array[k][Y]),
-									inst->poly_color[j],
-									(post_array[0][Z] + post_array[k-1][Z] + post_array[k][Z]) / 3.0f
-								}
-								);
+							tri_list.push_front({static_cast<int>(post_array[0][X]), static_cast<int>(post_array[0][Y]),
+							                     static_cast<int>(post_array[k - 1][X]),
+							                     static_cast<int>(post_array[k - 1][Y]),
+							                     static_cast<int>(post_array[k][X]), static_cast<int>(post_array[k][Y]),
+							                     inst->poly_color[j],
+							                     (post_array[0][Z] + post_array[k - 1][Z] + post_array[k][Z]) / 3.0f});
 						}
 					}
 				}
@@ -434,13 +428,13 @@ void World::dump_masters()
 			std::cout << "Vertex: " << i++ << ": " << vertex << std::endl;
 		}
 
-
 		std::cout << "Number of triangles: " << mast.poly0.size() << std::endl;
 		for (size_t i = 0; i < mast.poly0.size(); i++)
 		{
-			std::cout << "Triangle: " << i << ": " << mast.poly0[i] << ", " << mast.poly1[i] << ", " << mast.poly2[i] << std::endl;
+			std::cout << "Triangle: " << i << ": " << mast.poly0[i] << ", " << mast.poly1[i] << ", " << mast.poly2[i]
+			          << std::endl;
 		}
-		
+
 		std::cout << "\n---------------------\n";
 	}
 }
@@ -469,7 +463,7 @@ void World::dump_instances()
 		{
 			std::cout << "Vertex number: " << j++ << ": " << vertex << std::endl;
 		}
-		
+
 		std::cout << "Style number: " << inst.style << std::endl;
 		std::cout << "Solid?: " << inst.is_solid << std::endl;
 		std::cout << "Outcome string: " << inst.outcome.c_str() << std::endl;

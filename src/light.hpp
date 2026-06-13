@@ -6,7 +6,7 @@
 
 class Light
 {
-public:
+  public:
 	Light(Vector3d pos, Color col);
 	Light() {}
 	virtual ~Light();

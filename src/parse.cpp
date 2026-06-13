@@ -1,15 +1,15 @@
 /*****************************************
-*                                        *
-* ####   ###  ####   #### #####     #### *
-* ## ## ## ## ## ## ##    ##       ##    *
-* ####  ##### ####  ##### ####     ##    *
-* ##    ## ## ## ##    ## ##       ##    *
-* ##    ## ## ## ## ####  ##### ##  #### *
-*                                        *
-*****************************************/
+ *                                        *
+ * ####   ###  ####   #### #####     #### *
+ * ## ## ## ## ## ## ##    ##       ##    *
+ * ####  ##### ####  ##### ####     ##    *
+ * ##    ## ## ## ##    ## ##       ##    *
+ * ##    ## ## ## ## ####  ##### ##  #### *
+ *                                        *
+ *****************************************/
 /****************
-* include files *
-****************/
+ * include files *
+ ****************/
 #include <cstdlib>
 #include <limits>
 #include "defs.hpp"
@@ -19,25 +19,21 @@
 
 namespace
 {
-	const int InvalidNumber = std::numeric_limits<int>::min();
+const int InvalidNumber = std::numeric_limits<int>::min();
 }
 
 /* Constructor */
-Parser::Parser(const std::string &_filename, World &_world) : filename(_filename), world(_world)
-{
-}
+Parser::Parser(const std::string &_filename, World &_world) : filename(_filename), world(_world) {}
 
 /* Destructor */
-Parser::~Parser()
-{
-}
+Parser::~Parser() {}
 
 /****************************************************************************
-* parse() - main function to initiate the parsing of a text file for the    *
-*           virtual reality program.                                        *
-*           Returns a pointer to a datastructure that contains the virtual  *
-*           world to be manipulated.                                        *
-****************************************************************************/
+ * parse() - main function to initiate the parsing of a text file for the    *
+ *           virtual reality program.                                        *
+ *           Returns a pointer to a datastructure that contains the virtual  *
+ *           world to be manipulated.                                        *
+ ****************************************************************************/
 Status Parser::parse()
 {
 	MatchResult retcode;
@@ -80,11 +76,11 @@ Status Parser::parse()
 }
 
 /****************************************************************************
-* process() - function to process any commands that may occur in the file   *
-*             at this level it searches for one of three headers:           *
-*             ".masterdefs", ".instance defs" or ".userdefs"                *
-*             any other strings will-result in a syntax error               *
-****************************************************************************/
+ * process() - function to process any commands that may occur in the file   *
+ *             at this level it searches for one of three headers:           *
+ *             ".masterdefs", ".instance defs" or ".userdefs"                *
+ *             any other strings will-result in a syntax error               *
+ ****************************************************************************/
 Status Parser::process(void)
 {
 	std::string word;
@@ -114,9 +110,9 @@ Status Parser::process(void)
 }
 
 /****************************************************************************
-* process_master() - process a text block which contains definitions for    *
-*                    the master objects                                     *
-****************************************************************************/
+ * process_master() - process a text block which contains definitions for    *
+ *                    the master objects                                     *
+ ****************************************************************************/
 Status Parser::process_master()
 {
 	Status result = Okay;
@@ -126,17 +122,13 @@ Status Parser::process_master()
 
 	skip_garbage();
 
-	if (check("no_objects") != Match)
-		return error("The no_objects definition is missing", lincnt);
+	if (check("no_objects") != Match) return error("The no_objects definition is missing", lincnt);
 
-	if (check("=") != Match)
-		return error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) return error("Missing assignment symbol", lincnt);
 
-	if ((no_masters = getnum()) == InvalidNumber)
-		return error("Cannot parse number", lincnt);
+	if ((no_masters = getnum()) == InvalidNumber) return error("Cannot parse number", lincnt);
 
-	if (check("") != Blank)
-		return error("Syntax error with no_objects command", lincnt);
+	if (check("") != Blank) return error("Syntax error with no_objects command", lincnt);
 
 	if (no_masters > 0)
 	{
@@ -145,8 +137,7 @@ Status Parser::process_master()
 
 		skip_garbage();
 		/* process the master objects */
-		if (process_objects(no_masters) != Okay)
-			result = error("Error with master object definitions", lincnt);
+		if (process_objects(no_masters) != Okay) result = error("Error with master object definitions", lincnt);
 	}
 	else if (no_masters < 0)
 		result = error("The no_objects is less than zero", lincnt);
@@ -171,9 +162,9 @@ Status Parser::process_master()
 }
 
 /****************************************************************************
-* process_instance() - process a text block which contains definitions for  *
-*                      the instance objects                                 *
-****************************************************************************/
+ * process_instance() - process a text block which contains definitions for  *
+ *                      the instance objects                                 *
+ ****************************************************************************/
 Status Parser::process_instance(void)
 {
 	Status result = Okay;
@@ -182,22 +173,17 @@ Status Parser::process_instance(void)
 	debug("process_instance()", 1);
 
 	/* error if the master objects haven't been defined */
-	if (world.masters().empty())
-		result = error("Master objects have not yet been defined", lincnt);
+	if (world.masters().empty()) result = error("Master objects have not yet been defined", lincnt);
 
 	skip_garbage();
 
-	if (check("no_instances") != Match)
-		return error("The no_instances definition is missing", lincnt);
+	if (check("no_instances") != Match) return error("The no_instances definition is missing", lincnt);
 
-	if (check("=") != Match)
-		return error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) return error("Missing assignment symbol", lincnt);
 
-	if ((no_instances = getnum()) == InvalidNumber)
-		return error("Cannot parse number", lincnt);
+	if ((no_instances = getnum()) == InvalidNumber) return error("Cannot parse number", lincnt);
 
-	if (check("") != Blank)
-		return error("Syntax error with no_instances command", lincnt);
+	if (check("") != Blank) return error("Syntax error with no_instances command", lincnt);
 
 	if (no_instances > 0)
 	{
@@ -231,16 +217,15 @@ Status Parser::process_instance(void)
 }
 
 /****************************************************************************
-* process_user() - process a text block which contains definitions for the  *
-*                  user object                                              *
-****************************************************************************/
+ * process_user() - process a text block which contains definitions for the  *
+ *                  user object                                              *
+ ****************************************************************************/
 Status Parser::process_user(void)
 {
 	debug("process_user()", 1);
 
 	/* error if the master objects have already been defined */
-	if (!world.masters().empty())
-		return (error("Master objects have already been defined", lincnt));
+	if (!world.masters().empty()) return (error("Master objects have already been defined", lincnt));
 
 	while (1)
 	{
@@ -252,48 +237,43 @@ Status Parser::process_user(void)
 		if (word == "location")
 		{
 			/* location command */
-			if (process_location(world.user().loc) == Error)
-				return Error;
+			if (process_location(world.user().loc) == Error) return Error;
 		}
 		else if (word == "direction")
 		{
 			/* direction command */
-			if (process_direction(world.user().ang) == Error)
-				return Error;
+			if (process_direction(world.user().ang) == Error) return Error;
 		}
 		else if (word == "radius")
 		{
 			/* radius command */
-			if (process_radius(&world.user().radius) == Error)
-				return Error;
+			if (process_radius(&world.user().radius) == Error) return Error;
 		}
 		else if (word == "sky")
 		{
 			/* sky command */
-			if (process_sky(&world.user().sky) == Error)
-				return Error;
+			if (process_sky(&world.user().sky) == Error) return Error;
 		}
 		else if (word == "ground")
 		{
 			/* ground command */
-			if (process_ground(&world.user().ground) == Error)
-				return Error;
+			if (process_ground(&world.user().ground) == Error) return Error;
 		}
-		else if (word ==".end_userdefs")
+		else if (word == ".end_userdefs")
 		{
 			/* end of user block */
 			return Okay;
 		}
 		else
-			return(error("Syntax error in block .userdefs", lincnt));
+			return (error("Syntax error in block .userdefs", lincnt));
 	}
 }
 
 /****************************************************************************
-* process_objects() - this function will parse through all the master       *
-*                     definitions and create the master data structure      *
-*                     this structure is pointed to by 'master array'        *
-****************************************************************************/
+ * process_objects() - this function will parse through all the master       *
+ *                     definitions and create the master data structure      *
+ *                     this structure is pointed to by 'master array'        *
+ ****************************************************************************/
 Status Parser::process_objects(int no_objects)
 {
 	int loop, master_no;
@@ -303,17 +283,13 @@ Status Parser::process_objects(int no_objects)
 
 	for (loop = 0; loop < no_objects; loop++)
 	{
-		if (check("master_no") != Match)
-			return error("Error with master no command", lincnt);
+		if (check("master_no") != Match) return error("Error with master no command", lincnt);
 
-		if (check("=") != Match)
-			return error("Missing assignment symbol", lincnt);
+		if (check("=") != Match) return error("Missing assignment symbol", lincnt);
 
-		if ((master_no = getnum()) == InvalidNumber)
-			return error("Cannot parse number", lincnt);
+		if ((master_no = getnum()) == InvalidNumber) return error("Cannot parse number", lincnt);
 
-		if ((master_no < 1) || (master_no > no_objects))
-			return error("The-master no is incorrect", lincnt);
+		if ((master_no < 1) || (master_no > no_objects)) return error("The-master no is incorrect", lincnt);
 
 		// Set its id
 		world.masters()[loop].id = master_no;
@@ -321,24 +297,22 @@ Status Parser::process_objects(int no_objects)
 		skip_garbage();
 
 		/* get the vertices, edges and polygons which define the object */
-		if (process_object_definition(master_no-1) != Okay)
-			result = Error;
+		if (process_object_definition(master_no - 1) != Okay) result = Error;
 
 		skip_garbage();
 
 		/* get any scale and angle commands */
-		if (check_object_values(master_no-1, loop, no_objects) != Okay)
-			result = Error;
+		if (check_object_values(master_no - 1, loop, no_objects) != Okay) result = Error;
 	}
 
 	return result;
 }
 
 /****************************************************************************
-* check_object_values() - process the optional angle and scale commands for *
-*                         the master object and see that it's definition is *
-*                         correctly terminated                              *
-****************************************************************************/
+ * check_object_values() - process the optional angle and scale commands for *
+ *                         the master object and see that it's definition is *
+ *                         correctly terminated                              *
+ ****************************************************************************/
 Status Parser::check_object_values(int object_no, int object_pos, int no_objects)
 {
 	Vector3d ang;
@@ -354,16 +328,14 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 		if (word == "angle")
 		{
 			/* get object angle values from script */
-			if (process_angle(ang) == Error)
-				return Error;
+			if (process_angle(ang) == Error) return Error;
 			/* load master structure with angle values */
 			world.masters()[object_no].angle = ang;
 		}
 		else if (word == "scale")
 		{
 			/* get object scale values from script */
-			if (process_scale(scl) == Error)
-				return Error;
+			if (process_scale(scl) == Error) return Error;
 
 			/* fill master structure with scale values */
 			world.masters()[object_no].scale = scl;
@@ -371,33 +343,33 @@ Status Parser::check_object_values(int object_no, int object_pos, int no_objects
 		else if (word == "master_no")
 		{
 			/* make sure that we need to process more master objects */
-			if ((object_pos+1) < no_objects)
+			if ((object_pos + 1) < no_objects)
 			{
 				lineptr = 0;
 				return Okay;
 			}
 			else
-				return(error("Too many master no definitions", lincnt));
+				return (error("Too many master no definitions", lincnt));
 		}
 		else if (word == ".end_masterdefs")
 		{
 			/* make sure that we have no more master objects to process */
-			if ((object_pos+1) == no_objects)
+			if ((object_pos + 1) == no_objects)
 				return Okay;
 			else
 				return (error("Not all master objects have been defined", lincnt));
 		}
 		else
-			return(error("Syntax error in block .masterdefs", lincnt));
+			return (error("Syntax error in block .masterdefs", lincnt));
 		skip_garbage();
 	}
 }
 
 /****************************************************************************
-* process_polygons() - this function reads in the data that describes the   *
-*                      construction of an object with sets of polygons      *
-*                      each polygon is three-sided                          *
-****************************************************************************/
+ * process_polygons() - this function reads in the data that describes the   *
+ *                      construction of an object with sets of polygons      *
+ *                      each polygon is three-sided                          *
+ ****************************************************************************/
 Status Parser::process_object_definition(int object_no)
 {
 	Status result = Okay;
@@ -406,20 +378,16 @@ Status Parser::process_object_definition(int object_no)
 	debug("process_polygons()", 1);
 
 	/* make sure that object block starts correctly */
-	if (check(".objectdef") != Match)
-		return error("Error with block .objectdef", lincnt);
+	if (check(".objectdef") != Match) return error("Error with block .objectdef", lincnt);
 
-	skip_garbage () ;
+	skip_garbage();
 
 	/* now retrieve the number of vertices that make up the object */
-	if (check("no_vertices") != Match)
-		return error("Error with no_vertices command", lincnt);
+	if (check("no_vertices") != Match) return error("Error with no_vertices command", lincnt);
 
-	if (check("=") != Match)
-		return error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) return error("Missing assignment symbol", lincnt);
 
-	if ((no_vert = getnum()) == InvalidNumber)
-		return error("Cannot parse number", lincnt);
+	if ((no_vert = getnum()) == InvalidNumber) return error("Cannot parse number", lincnt);
 
 	if (no_vert > 0)
 	{
@@ -435,14 +403,11 @@ Status Parser::process_object_definition(int object_no)
 	skip_garbage();
 
 	/* now retrieve the number of polygons that make up the object */
-	if (check("no_polygons") != Match)
-		return error("Error with the no_polygons command", lincnt);
+	if (check("no_polygons") != Match) return error("Error with the no_polygons command", lincnt);
 
-	if (check("=") != Match)
-		return error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) return error("Missing assignment symbol", lincnt);
 
-	if ((no_poly = getnum() ) == InvalidNumber)
-		return error("Cannot parse number", lincnt);
+	if ((no_poly = getnum()) == InvalidNumber) return error("Cannot parse number", lincnt);
 
 	if (no_poly > 0)
 	{
@@ -458,16 +423,15 @@ Status Parser::process_object_definition(int object_no)
 	skip_garbage();
 
 	/* check that the object definition block is properly terminated */
-	if (check(".objectend") != Match)
-		return error("Error terminating object definition", lincnt);
+	if (check(".objectend") != Match) return error("Error terminating object definition", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_object_instances () - function to process the list of instances   *
-*                               of master objects described                 *
-****************************************************************************/
+ * process_object_instances () - function to process the list of instances   *
+ *                               of master objects described                 *
+ ****************************************************************************/
 Status Parser::process_object_instances(int no_instances, int no_objects)
 {
 	int loop, master_no;
@@ -482,17 +446,13 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 		bool style_set = false;
 
 		/* check for the master no command */
-		if (check("master_no") != Match)
-			return error("The master no is incorrect", lincnt);
+		if (check("master_no") != Match) return error("The master no is incorrect", lincnt);
 
-		if (check("=") != Match)
-			return error("Missing assignment symbol", lincnt);
+		if (check("=") != Match) return error("Missing assignment symbol", lincnt);
 
-		if ((master_no = getnum()) == InvalidNumber)
-			return error("Cannot parse number", lincnt);
+		if ((master_no = getnum()) == InvalidNumber) return error("Cannot parse number", lincnt);
 
-		if ((master_no < 1) || (master_no > no_objects))
-			return error("The master_no is incorrect", lincnt);
+		if ((master_no < 1) || (master_no > no_objects)) return error("The master_no is incorrect", lincnt);
 
 		/* store the master no value in the instance */
 		/* take one away to-match internal format of master object references */
@@ -503,9 +463,7 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 		/* now get any other commands for that instance */
 		/* take one away from master no because that's the way they are */
 		/* stored in the master array */
-		if (check_instance_values(col_set, spec_set, style_set,
-								  loop, no_instances) != Okay)
-			result = Error;
+		if (check_instance_values(col_set, spec_set, style_set, loop, no_instances) != Okay) result = Error;
 		/* make sure that color, specularity & style have been specified */
 		if (!col_set || !spec_set || !style_set)
 		{
@@ -517,9 +475,9 @@ Status Parser::process_object_instances(int no_instances, int no_objects)
 }
 
 /****************************************************************************
-* check_instance_values() - process the optional and required commands for  *
-*                                  an instance of an object                 *
-****************************************************************************/
+ * check_instance_values() - process the optional and required commands for  *
+ *                                  an instance of an object                 *
+ ****************************************************************************/
 Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_set, int instance_pos, int no_instances)
 {
 	float specularity;
@@ -540,50 +498,43 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 		if (word == "location")
 		{
 			/* get the instance location from the file */
-			if (process_location(loc) == Error)
-				return Error;
+			if (process_location(loc) == Error) return Error;
 			/* fill instance location values into the instance structure */
 			world.instances()[instance_pos].pos = loc;
 		}
 		else if (word == "angle")
 		{
-			if (process_angle(ang) == Error)
-				return Error;
+			if (process_angle(ang) == Error) return Error;
 			world.instances()[instance_pos].angle = ang;
 		}
 		else if (word == "scale")
 		{
-			if (process_scale(scl) == Error)
-				return Error;
+			if (process_scale(scl) == Error) return Error;
 			world.instances()[instance_pos].scale = scl;
 		}
 		else if (word == "color")
 		{
 			/* process the color value */
-			if (process_color(&color) == Error)
-				return Error;
+			if (process_color(&color) == Error) return Error;
 			world.instances()[instance_pos].color = color;
 			col_set = true;
 		}
 		else if (word == "specularity")
 		{
 			/* process the specularity value */
-			if (process_specularity(&specularity) == Error)
-				return Error;
+			if (process_specularity(&specularity) == Error) return Error;
 			world.instances()[instance_pos].specularity = specularity;
 			spec_set = true;
 		}
 		else if (word == "style")
 		{
 			/* get the instance style from the file */
-			if (process_style(world.instances()[instance_pos].style) == Error)
-				return Error;
+			if (process_style(world.instances()[instance_pos].style) == Error) return Error;
 			style_set = true;
 		}
 		else if (word == "outcome")
 		{
-			if (!process_outcome(world.instances()[instance_pos].outcome))
-				return Error;
+			if (!process_outcome(world.instances()[instance_pos].outcome)) return Error;
 			/* now we should check whether we want
 			   the object to be solid or not */
 			if (world.instances()[instance_pos].outcome == "")
@@ -597,7 +548,7 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 		}
 		else if (word == "master_no")
 		{
-			if ((instance_pos+1) < no_instances)
+			if ((instance_pos + 1) < no_instances)
 			{
 				lineptr = 0;
 				world.instances()[instance_pos].local_to_world();
@@ -609,14 +560,14 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 		}
 		else if (word == ".end_instancedefs")
 		{
-			if ((instance_pos+1) == no_instances)
+			if ((instance_pos + 1) == no_instances)
 			{
 				world.instances()[instance_pos].local_to_world();
 				world.instances()[instance_pos].setup_bounds();
 				return Okay;
 			}
 			else
-				return(error("Not all instances have been defined", lincnt));
+				return (error("Not all instances have been defined", lincnt));
 		}
 		else
 			return (error("Syntax error in block .instancedefs", lincnt));
@@ -626,215 +577,189 @@ Status Parser::check_instance_values(bool &col_set, bool &spec_set, bool &style_
 }
 
 /****************************************************************************
-* process_location() - process the command which defines the user obJect's  *
-*                      initial location                                     *
-****************************************************************************/
+ * process_location() - process the command which defines the user obJect's  *
+ *                      initial location                                     *
+ ****************************************************************************/
 Status Parser::process_location(Vector3d &loc)
 {
 	Status result = Okay;
 
 	debug("process_location()", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
 
 	loc.x(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with location definition", lincnt);
+	if (check(",") != Match) result = error("Syntax error with location definition", lincnt);
 
 	loc.y(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with location definition", lincnt);
-        
+	if (check(",") != Match) result = error("Syntax error with location definition", lincnt);
+
 	loc.z(fgetnum());
 
-	if (check("") != Blank)
-		result = error("Syntax error with location definition", lincnt);
+	if (check("") != Blank) result = error("Syntax error with location definition", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_direction() - process the command which defines the user object's *
-*                       initial direction                                   *
-****************************************************************************/
+ * process_direction() - process the command which defines the user object's *
+ *                       initial direction                                   *
+ ****************************************************************************/
 Status Parser::process_direction(Vector3d &ang)
 {
 	Status result = Okay;
 
 	debug("process_direction", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
-        
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
+
 	ang.x(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with user direction definition", lincnt);
-        
+	if (check(",") != Match) result = error("Syntax error with user direction definition", lincnt);
+
 	ang.y(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with user direction definition", lincnt);
-        
+	if (check(",") != Match) result = error("Syntax error with user direction definition", lincnt);
+
 	ang.z(fgetnum());
 
-	if (check("") != Blank)
-		result = error("Syntax error with user direction definition", lincnt);
+	if (check("") != Blank) result = error("Syntax error with user direction definition", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_radius - process the command which defines the user object's      *
-*                  radius                                                   *
-****************************************************************************/
+ * process_radius - process the command which defines the user object's      *
+ *                  radius                                                   *
+ ****************************************************************************/
 Status Parser::process_radius(float *radius)
 {
 	Status result = Okay;
 
 	debug("process_radius()", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
-        
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
+
 	*radius = fgetnum();
 
-	if (check("") != Blank)
-		result = error("Syntax error with user radius definition", lincnt);
+	if (check("") != Blank) result = error("Syntax error with user radius definition", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_angle() - process the command which defines the master object's   *
-*                   initial angle                                           *
-****************************************************************************/
+ * process_angle() - process the command which defines the master object's   *
+ *                   initial angle                                           *
+ ****************************************************************************/
 Status Parser::process_angle(Vector3d &ang)
 {
 	Status result = Okay;
 
 	debug("process_angle()", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
 
 	ang.x(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with angle command", lincnt);
+	if (check(",") != Match) result = error("Syntax error with angle command", lincnt);
 
 	ang.y(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with angle command", lincnt);
+	if (check(",") != Match) result = error("Syntax error with angle command", lincnt);
 
 	ang.z(fgetnum());
 
-	if (check("") != Blank)
-		result = error("Syntax error with angle command", lincnt);
+	if (check("") != Blank) result = error("Syntax error with angle command", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_scale() - process the command which defines the master object's   *
-*                   initial scale                                           *
-****************************************************************************/
+ * process_scale() - process the command which defines the master object's   *
+ *                   initial scale                                           *
+ ****************************************************************************/
 Status Parser::process_scale(Vector3d &scl)
 {
 	Status result = Okay;
 
 	debug("process_scale()", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
 
 	scl.x(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with scale command", lincnt);
+	if (check(",") != Match) result = error("Syntax error with scale command", lincnt);
 
 	scl.y(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with scale command", lincnt);
+	if (check(",") != Match) result = error("Syntax error with scale command", lincnt);
 
 	scl.z(fgetnum());
 
-	if (check("") != Blank)
-		result = error("Syntax error with scale command", lincnt);
+	if (check("") != Blank) result = error("Syntax error with scale command", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process sky - process the command which defines the color of the sky      *
-****************************************************************************/
+ * process sky - process the command which defines the color of the sky      *
+ ****************************************************************************/
 Status Parser::process_sky(Color *color)
 {
 	Status result = Okay;
 
 	debug("process_sky()", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
 
 	color->r(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with sky color definition", lincnt);
+	if (check(",") != Match) result = error("Syntax error with sky color definition", lincnt);
 
 	color->g(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with sky color definition", lincnt);
+	if (check(",") != Match) result = error("Syntax error with sky color definition", lincnt);
 
 	color->b(fgetnum());
 
-	if (check("") != Blank)
-		result = error("Syntax error with sky color definition", lincnt);
+	if (check("") != Blank) result = error("Syntax error with sky color definition", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_ground - process the command which defines the color of the       *
-*                  ground                                                   *
-****************************************************************************/
+ * process_ground - process the command which defines the color of the       *
+ *                  ground                                                   *
+ ****************************************************************************/
 Status Parser::process_ground(Color *color)
 {
 	Status result = Okay;
 
 	debug("process_ground()", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
 
 	color->r(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with ground color definition", lincnt);
+	if (check(",") != Match) result = error("Syntax error with ground color definition", lincnt);
 
 	color->g(fgetnum());
 
-	if (check(",") != Match)
-		result = error("Syntax error with ground color definition", lincnt);
+	if (check(",") != Match) result = error("Syntax error with ground color definition", lincnt);
 
 	color->b(fgetnum());
 
-	if (check("") != Blank)
-		result = error("Syntax error with ground color definition", lincnt);
+	if (check("") != Blank) result = error("Syntax error with ground color definition", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_color() - process the command which defines the instance          *
-*                    object' s color                                        *
-****************************************************************************/
+ * process_color() - process the command which defines the instance          *
+ *                    object' s color                                        *
+ ****************************************************************************/
 Status Parser::process_color(Color *color)
 {
 	Status result = Okay;
@@ -842,8 +767,7 @@ Status Parser::process_color(Color *color)
 
 	debug("process_color()", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
 
 	getword(word);
 
@@ -883,16 +807,15 @@ Status Parser::process_color(Color *color)
 	else
 		result = error("Invalid color value", lincnt);
 
-	if (check("") != Blank)
-		result = error("Syntax error with color command", lincnt);
+	if (check("") != Blank) result = error("Syntax error with color command", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process specularity() - process the command which defines the instance    *
-*                         object' s specularity                             *
-****************************************************************************/
+ * process specularity() - process the command which defines the instance    *
+ *                         object' s specularity                             *
+ ****************************************************************************/
 Status Parser::process_specularity(float *specularity)
 {
 	Status result = Okay;
@@ -901,8 +824,7 @@ Status Parser::process_specularity(float *specularity)
 	debug("process_specularity()", 1);
 
 	/* make sure that there is an equals sign */
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
 
 	*specularity = fgetnum();
 
@@ -913,19 +835,18 @@ Status Parser::process_specularity(float *specularity)
 		result = error("Syntax error with specularity command", lincnt);
 
 	/* make sure the specularity value is a percentage */
-	if ((*specularity < 0.0) || (*specularity > 100.0))
-		result = error("Invalid specularity number", lincnt);
+	if ((*specularity < 0.0) || (*specularity > 100.0)) result = error("Invalid specularity number", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_outcome() - process the command which defines the instance        *
-*                     object's outcome string                               *
-*                     this can either make an object solid or not           *
-*                     there is also the possibility to execute DOS commands *
-*                     with this string                                      *
-****************************************************************************/
+ * process_outcome() - process the command which defines the instance        *
+ *                     object's outcome string                               *
+ *                     this can either make an object solid or not           *
+ *                     there is also the possibility to execute DOS commands *
+ *                     with this string                                      *
+ ****************************************************************************/
 bool Parser::process_outcome(std::string &outcome)
 {
 	debug("process_outcome()", 1);
@@ -936,7 +857,7 @@ bool Parser::process_outcome(std::string &outcome)
 		error("Missing assignment symbol", lincnt);
 		return false;
 	}
-	
+
 	outcome.clear();
 
 	/* if the string is in error then return error */
@@ -956,9 +877,9 @@ bool Parser::process_outcome(std::string &outcome)
 }
 
 /****************************************************************************
-* process_style() - process the command which defines the instance object's *
-*                   style                                                   *
-****************************************************************************/
+ * process_style() - process the command which defines the instance object's *
+ *                   style                                                   *
+ ****************************************************************************/
 Status Parser::process_style(RenderStyle &style)
 {
 	Status result = Okay;
@@ -966,8 +887,7 @@ Status Parser::process_style(RenderStyle &style)
 
 	debug("process_style()", 1);
 
-	if (check("=") != Match)
-		result = error("Missing assignment symbol", lincnt);
+	if (check("=") != Match) result = error("Missing assignment symbol", lincnt);
 
 	getword(word);
 
@@ -978,15 +898,14 @@ Status Parser::process_style(RenderStyle &style)
 	else
 		result = error("Unknown style type", lincnt);
 
-	if (check("") != Blank)
-		result = error("Syntax error with style command", lincnt);
+	if (check("") != Blank) result = error("Syntax error with style command", lincnt);
 
 	return result;
 }
 
 /****************************************************************************
-* process_vertices() - process the object's vertices                        *
-****************************************************************************/
+ * process_vertices() - process the object's vertices                        *
+ ****************************************************************************/
 Status Parser::process_verts(Master &mast, int no_vertices)
 {
 	Status result = Okay;
@@ -1001,39 +920,33 @@ Status Parser::process_verts(Master &mast, int no_vertices)
 		skip_garbage();
 
 		/* get the number of the vertex to set */
-		if ((vert_no = getnum()) == InvalidNumber)
-			return error("Syntax error with vertex command", lincnt);
+		if ((vert_no = getnum()) == InvalidNumber) return error("Syntax error with vertex command", lincnt);
 
-		if ((vert_no < 1) || (vert_no > no_vertices))
-			return error("Syntax error with vertex command", lincnt);
+		if ((vert_no < 1) || (vert_no > no_vertices)) return error("Syntax error with vertex command", lincnt);
 
-		if (check("=") != Match)
-			return error("Missing assignment symbol", lincnt);
+		if (check("=") != Match) return error("Missing assignment symbol", lincnt);
 
 		/* now we get the x, y and z values of the vertex */
-		mast.vert[vert_no-1].x(fgetnum());
+		mast.vert[vert_no - 1].x(fgetnum());
 
-		if (check(",") != Match)
-			return error("Syntax error with vertex command", lincnt);
+		if (check(",") != Match) return error("Syntax error with vertex command", lincnt);
 
-		mast.vert[vert_no-1].y(fgetnum());
+		mast.vert[vert_no - 1].y(fgetnum());
 
-		if (check(",") != Match)
-			return error("Syntax error with vertex command", lincnt);
+		if (check(",") != Match) return error("Syntax error with vertex command", lincnt);
 
-		mast.vert[vert_no-1].z(fgetnum());
+		mast.vert[vert_no - 1].z(fgetnum());
 
 		/* make sure there is no more text on the end of the line */
-		if (check("") != Blank)
-			return error("Syntax error with vertex command", lincnt);
+		if (check("") != Blank) return error("Syntax error with vertex command", lincnt);
 	}
 
 	return result;
 }
 
 /****************************************************************************
-* process_polygons() - process the object's polygons                        *
-****************************************************************************/
+ * process_polygons() - process the object's polygons                        *
+ ****************************************************************************/
 Status Parser::process_polys(Master &mast, int no_polygons)
 {
 	Status result = Okay;
@@ -1051,70 +964,61 @@ Status Parser::process_polys(Master &mast, int no_polygons)
 		skip_garbage();
 
 		/* get the number of the polygon to set */
-		if ((poly_no = getnum()) == InvalidNumber)
-			return error("Syntax error with polygon command", lincnt);
+		if ((poly_no = getnum()) == InvalidNumber) return error("Syntax error with polygon command", lincnt);
 
-		if ((poly_no < 1) || (poly_no > no_polygons))
-			return error("Syntax error with polygon command", lincnt);
+		if ((poly_no < 1) || (poly_no > no_polygons)) return error("Syntax error with polygon command", lincnt);
 
-		if (check("=") != Match)
-			return error("Missing assignment symbol", lincnt);
+		if (check("=") != Match) return error("Missing assignment symbol", lincnt);
 
 		/* now we get the three edges that make up the polygon */
 		tmp = getnum();
 
 		/* now make sure that it is a valid vertex reference */
-		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size()))
-			return error("Illegal polygon value", lincnt);
+		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size())) return error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		mast.poly0[poly_no-1] = tmp - 1;
+		mast.poly0[poly_no - 1] = tmp - 1;
 
-		if (check(",") != Match)
-			return error("Syntax error with edge command", lincnt);
+		if (check(",") != Match) return error("Syntax error with edge command", lincnt);
 
 		/* next edge reference */
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size()))
-			return error("Illegal polygon value", lincnt);
+		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size())) return error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		mast.poly1[poly_no-1] = tmp - 1;
-		
-		if (check(",") != Match)
-			return error("Syntax error with edge command", lincnt);
+		mast.poly1[poly_no - 1] = tmp - 1;
+
+		if (check(",") != Match) return error("Syntax error with edge command", lincnt);
 
 		/* final edge reference */
 		tmp = getnum();
 
 		/* now make sure that it is a valid edge reference */
-		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size()))
-			return error("Illegal polygon value", lincnt);
+		if ((tmp < 1) || (static_cast<size_t>(tmp) > mast.vert.size())) return error("Illegal polygon value", lincnt);
 
 		/* remember to take one from values to match array structure */
-		mast.poly2[poly_no-1] = tmp - 1;
+		mast.poly2[poly_no - 1] = tmp - 1;
 
 		/* make sure there is no more text on the end of the line */
-		if (check("") != Blank)
-			return error("Syntax error with edge command", lincnt);
+		if (check("") != Blank) return error("Syntax error with edge command", lincnt);
 	}
 
 	return result;
 }
 
 /****************************************************************************
-* getline() - function takes the next line from the file pointed to by '*fp'*
-*             and stores it in the char array 'LINE'                        *
-*             A return code tells if the line is a comment, blank,          *
-*             end-of-file or something else.                                *
-*             returns: EoF if the file is at the end                        *
-*                      Comment if the line is a comment                     *
-*                      Blank if the line contains nothing                   *
-*                      Other if the line contains something other than a    *
-*                      comment                                              *
-****************************************************************************/
+ * getline() - function takes the next line from the file pointed to by '*fp'*
+ *             and stores it in the char array 'LINE'                        *
+ *             A return code tells if the line is a comment, blank,          *
+ *             end-of-file or something else.                                *
+ *             returns: EoF if the file is at the end                        *
+ *                      Comment if the line is a comment                     *
+ *                      Blank if the line contains nothing                   *
+ *                      Other if the line contains something other than a    *
+ *                      comment                                              *
+ ****************************************************************************/
 MatchResult Parser::getline(void)
 {
 	debug("getline()", 1);
@@ -1143,9 +1047,9 @@ MatchResult Parser::getline(void)
 }
 
 /****************************************************************************
-* skip_garbage() - function to simply skip over those lines that are either *
-*                  comments (i.e. lines starting with a '#') or blank       *
-****************************************************************************/
+ * skip_garbage() - function to simply skip over those lines that are either *
+ *                  comments (i.e. lines starting with a '#') or blank       *
+ ****************************************************************************/
 void Parser::skip_garbage(void)
 {
 	int retcode;
@@ -1166,25 +1070,23 @@ void Parser::skip_garbage(void)
 }
 
 /****************************************************************************
-* check() - function to check that the next string in the array 'LINE'      *
-*           matches with a string passed into the function.                 *
-*           returns: Match if there is a match                              *
-*                    NoMatch is there is a string but it does not match     *
-*                    Blank if there is nothing in the LINE to match         *
-****************************************************************************/
+ * check() - function to check that the next string in the array 'LINE'      *
+ *           matches with a string passed into the function.                 *
+ *           returns: Match if there is a match                              *
+ *                    NoMatch is there is a string but it does not match     *
+ *                    Blank if there is nothing in the LINE to match         *
+ ****************************************************************************/
 MatchResult Parser::check(const std::string &string)
 {
 	debug("check()", 1);
 
 	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
-		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
+	       ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
-	if (static_cast<std::string::size_type>(lineptr) >= line.size())
-		return Blank;
+	if (static_cast<std::string::size_type>(lineptr) >= line.size()) return Blank;
 
-	if (string.empty())
-		return NoMatch;
+	if (string.empty()) return NoMatch;
 
 	if (line.compare(static_cast<std::string::size_type>(lineptr), string.size(), string) == 0)
 	{
@@ -1198,10 +1100,10 @@ MatchResult Parser::check(const std::string &string)
 }
 
 /****************************************************************************
-* getword() - function retrieves next word in the array 'LINE'              *
-*             a word is defined as a string of characters surrounded by     *
-*             white space characters and end-of-line characters             *
-****************************************************************************/
+ * getword() - function retrieves next word in the array 'LINE'              *
+ *             a word is defined as a string of characters surrounded by     *
+ *             white space characters and end-of-line characters             *
+ ****************************************************************************/
 void Parser::getword(std::string &word)
 {
 	debug("getword()", 1);
@@ -1209,21 +1111,20 @@ void Parser::getword(std::string &word)
 	word.clear();
 
 	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
-		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
+	       ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
 	while (static_cast<std::string::size_type>(lineptr) < line.size())
 	{
-		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t'))
-			break;
+		if ((line[lineptr] == '\n') || (line[lineptr] == ' ') || (line[lineptr] == '\t')) break;
 		word.push_back(line[lineptr++]);
 	}
 }
 
 /****************************************************************************
-* getstring() - function retrieves a string - this is defined as a series   *
-*               characters inside a pair of double quotes                   *
-****************************************************************************/
+ * getstring() - function retrieves a string - this is defined as a series   *
+ *               characters inside a pair of double quotes                   *
+ ****************************************************************************/
 Status Parser::getstring(std::string &word)
 {
 	Status result = Error;
@@ -1233,30 +1134,26 @@ Status Parser::getstring(std::string &word)
 
 	/* skip any spaces or tabs before the string starts */
 	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
-		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
+	       ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
 	debug("now check for double quote mark", 2);
 
 	/* check that there's a double quote character there */
-	if (static_cast<std::string::size_type>(lineptr) >= line.size())
-		return result;
+	if (static_cast<std::string::size_type>(lineptr) >= line.size()) return result;
 
-	if (line[lineptr++] != '\"')
-		return result;
+	if (line[lineptr++] != '\"') return result;
 
 	debug("now get the string", 2);
 
 	/* now put the rest of the line into char array pointed to by tptr */
-	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
-		   (line[lineptr] != '\"'))
+	while ((static_cast<std::string::size_type>(lineptr) < line.size()) && (line[lineptr] != '\"'))
 	{
 		/* otherwise we put the value into the char array pointed to by tptr */
 		word.push_back(line[lineptr++]);
 	}
 
-	if (static_cast<std::string::size_type>(lineptr) >= line.size())
-		return result;
+	if (static_cast<std::string::size_type>(lineptr) >= line.size()) return result;
 
 	lineptr++;
 
@@ -1268,63 +1165,58 @@ Status Parser::getstring(std::string &word)
 }
 
 /****************************************************************************
-* getnum() - function retrieves an integer number from the char array 'LINE'*
-****************************************************************************/
+ * getnum() - function retrieves an integer number from the char array 'LINE'*
+ ****************************************************************************/
 int Parser::getnum(void)
 {
 	debug("getnum()", 1);
 
 	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
-		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
+	       ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
-	if (static_cast<std::string::size_type>(lineptr) >= line.size())
-		return InvalidNumber;
+	if (static_cast<std::string::size_type>(lineptr) >= line.size()) return InvalidNumber;
 
 	char *endptr = nullptr;
 	const char *start = line.c_str() + lineptr;
 	long value = std::strtol(start, &endptr, 10);
 
-	if (endptr == start)
-		return InvalidNumber;
+	if (endptr == start) return InvalidNumber;
 
-	if ((value < std::numeric_limits<int>::min()) || (value > std::numeric_limits<int>::max()))
-		return InvalidNumber;
+	if ((value < std::numeric_limits<int>::min()) || (value > std::numeric_limits<int>::max())) return InvalidNumber;
 
 	lineptr += static_cast<int>(endptr - start);
 	return static_cast<int>(value);
 }
 
 /****************************************************************************
-* fgetnum() - function retrieves a floating point number from the char      *
-*             array 'LINE'                                                  *
-****************************************************************************/
+ * fgetnum() - function retrieves a floating point number from the char      *
+ *             array 'LINE'                                                  *
+ ****************************************************************************/
 float Parser::fgetnum(void)
 {
 	debug("fgetnum()", 1);
 
 	while ((static_cast<std::string::size_type>(lineptr) < line.size()) &&
-		   ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
+	       ((line[lineptr] == ' ') || (line[lineptr] == '\t')))
 		lineptr++;
 
-	if (static_cast<std::string::size_type>(lineptr) >= line.size())
-		return 0.0f;
+	if (static_cast<std::string::size_type>(lineptr) >= line.size()) return 0.0f;
 
 	char *endptr = nullptr;
 	const char *start = line.c_str() + lineptr;
 	float value = std::strtof(start, &endptr);
 
-	if (endptr == start)
-		return 0.0f;
+	if (endptr == start) return 0.0f;
 
 	lineptr += static_cast<int>(endptr - start);
 	return value;
 }
 
 /****************************************************************************
-* get_point - function to retrieve point definition which is an X, Y and Z  *
-*             coordinate - three of these describe a polygon in 3d space    *
-****************************************************************************/
+ * get_point - function to retrieve point definition which is an X, Y and Z  *
+ *             coordinate - three of these describe a polygon in 3d space    *
+ ****************************************************************************/
 Status Parser::get_point(float *pntx, float *pnty, float *pntz)
 {
 	Status result = Okay;
@@ -1333,18 +1225,15 @@ Status Parser::get_point(float *pntx, float *pnty, float *pntz)
 
 	*pntx = fgetnum();
 
-	if (check(",") != Match)
-		result = Error;
+	if (check(",") != Match) result = Error;
 
 	*pnty = fgetnum();
 
-	if (check(",") != Match)
-		result = Error;
+	if (check(",") != Match) result = Error;
 
 	*pntz = fgetnum();
 
-	if (check("") != Blank)
-		result = Error;
+	if (check("") != Blank) result = Error;
 
 	return result;
 }

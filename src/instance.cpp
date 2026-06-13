@@ -80,24 +80,20 @@ void Instance::world_to_viewer(Viewer &user)
 
 		// normalize the points ready for perspective projection
 		// (-2.0 here to make the y value correct - i.e. -y down and +y up)
-		vertex.scale((2.0 * vrp) / (100.0 * (vrp+BACK)),
-					 (-2.0 * vrp) / (75.0 * (vrp+BACK)),
-					 -1.0 / (vrp+BACK));
+		vertex.scale((2.0 * vrp) / (100.0 * (vrp + BACK)), (-2.0 * vrp) / (75.0 * (vrp + BACK)), -1.0 / (vrp + BACK));
 
 		view_vert.push_back(vertex);
 	}
 
 	// Calculate length of centre of object relative to viewer
-	Vector3d v[2] = { min, max };
+	Vector3d v[2] = {min, max};
 	for (auto &vertex : v)
 	{
 		vertex -= user.loc;
 		vertex.rotate(-user.ang);
 
 		// Normalize the points
-		vertex.scale((2.0 * vrp) / (100.0 * (vrp+BACK)),
-					 (-2.0 * vrp) / (75.0 * (vrp+BACK)),
-					 -1.0 / (vrp+BACK));
+		vertex.scale((2.0 * vrp) / (100.0 * (vrp + BACK)), (-2.0 * vrp) / (75.0 * (vrp + BACK)), -1.0 / (vrp + BACK));
 	}
 
 	// Use the furthest point of the object
@@ -137,7 +133,7 @@ void Instance::setup_color(Viewer &user, Light &light)
 
 		// Apply just ambient light to start with
 		poly_color[loop] = user.ambient * user.ambient_intensity * color;
-		
+
 		// Calulate specular highlight
 		Vector3d view = world_vert[poly_no[0]] - user.loc;
 		view.normalize();
@@ -145,7 +141,7 @@ void Instance::setup_color(Viewer &user, Light &light)
 		Vector3d ref = user.g_light_dir.reflect(normal);
 
 		float specular = (specularity / 100.0f) * view.dot(ref);
-		
+
 		// Now do global 'sun' light
 		float cos_theta = normal.dot(user.g_light_dir);
 		if (cos_theta > 0.0)

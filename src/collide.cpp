@@ -1,15 +1,15 @@
 /*****************************************************
-*                                                    *
-*  ####  ###  ##    ##    ####  ####  #####     #### *
-* ##    ## ## ##    ##     ##   ## ## ##       ##    *
-* ##    ## ## ##    ##     ##   ## ## ####     ##    *
-* ##    ## ## ##    ##     ##   ## ## ##       ##    *
-*  ####  ###  ##### ##### ####  ####  ##### ##  #### *
-*                                                    *
-*****************************************************/
+ *                                                    *
+ *  ####  ###  ##    ##    ####  ####  #####     #### *
+ * ##    ## ## ##    ##     ##   ## ## ##       ##    *
+ * ##    ## ## ##    ##     ##   ## ## ####     ##    *
+ * ##    ## ## ##    ##     ##   ## ## ##       ##    *
+ *  ####  ###  ##### ##### ####  ####  ##### ##  #### *
+ *                                                    *
+ *****************************************************/
 /****************
-* include files *
-****************/
+ * include files *
+ ****************/
 #include "defs.hpp"
 #include "graphics.hpp"
 #include "instance.hpp"
@@ -17,9 +17,9 @@
 #include "viewer.hpp"
 
 /****************************************************************************
-* collision() - checks to see if the location is not inside any objects     *
-*               boundary boxes                                              *
-****************************************************************************/
+ * collision() - checks to see if the location is not inside any objects     *
+ *               boundary boxes                                              *
+ ****************************************************************************/
 int collision(float pntx, float pnty, float pntz, std::vector<Instance> &instances)
 {
 	int idx = 0;
@@ -29,12 +29,8 @@ int collision(float pntx, float pnty, float pntz, std::vector<Instance> &instanc
 		if (inst.is_solid)
 		{
 			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
-			if ((pntx >= inst.min.x()) &&
-			    (pnty >= inst.min.y()) &&
-			    (pntz >= inst.min.z()) &&
-			    (pntx <= inst.max.x()) &&
-			    (pnty <= inst.max.y()) &&
-			    (pntz <= inst.max.z()))
+			if ((pntx >= inst.min.x()) && (pnty >= inst.min.y()) && (pntz >= inst.min.z()) && (pntx <= inst.max.x()) &&
+			    (pnty <= inst.max.y()) && (pntz <= inst.max.z()))
 			{
 				/* we have collided with a collision box */
 				/* send the number of the instance */
@@ -49,13 +45,13 @@ int collision(float pntx, float pnty, float pntz, std::vector<Instance> &instanc
 }
 
 /*****************************************************************************
-* hit_object() - function that is initially called to start checking for     *
-*                any objects selected by the current mouse location          *
-*****************************************************************************/
+ * hit_object() - function that is initially called to start checking for     *
+ *                any objects selected by the current mouse location          *
+ *****************************************************************************/
 int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &instances)
 {
 	float mouse_z;
-	float midx , midy;
+	float midx, midy;
 	float t;
 	float vrp = -50.0;
 	int which_instance;
@@ -64,14 +60,13 @@ int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &inst
 	mouse_z = vrp;
 
 	/* set the floating point value of the mid values of the size of the screen in pixels */
-	midx = (float) (getmaxx()/2);
-	midy = (float) (getmaxy()/2);
+	midx = (float)(getmaxx() / 2);
+	midy = (float)(getmaxy() / 2);
 
 	/* now normalize the x and y coordinates */
 	/* reserve the polarity of y to make up when y is +re and down when y is -ve */
 	Vector3d mousepnt((static_cast<float>(mpos_x) - midx) * (mouse_z / -midx),
-					  (static_cast<float>(mpos_y) - midy) * (mouse_z / midy),
-					  vrp);
+	                  (static_cast<float>(mpos_y) - midy) * (mouse_z / midy), vrp);
 
 	/* now make the final Jump into making the mouse coordinates into real world coordinates */
 	/* now rotate the point around user */
@@ -102,9 +97,9 @@ int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &inst
 }
 
 /****************************************************************************
-* check col() - checks to see if the location is not inside any objects     *
-*               boundary boxes                                              *
-****************************************************************************/
+ * check col() - checks to see if the location is not inside any objects     *
+ *               boundary boxes                                              *
+ ****************************************************************************/
 bool check_col(float locx, float locy, float locz, Viewer &user, std::vector<Instance> &instances)
 {
 	bool collide = false;
@@ -114,12 +109,9 @@ bool check_col(float locx, float locy, float locz, Viewer &user, std::vector<Ins
 		if (inst.is_solid)
 		{
 			/* the object is solid so we check to make sure that the user's location is not within the boundary box */
-			if (((locx+user.radius) >= inst.min.x()) &&
-			    ((locy+user.radius) >= inst.min.y()) &&
-			    ((locz+user.radius) >= inst.min.z()) &&
-			    ((locx-user.radius) <= inst.max.x()) &&
-			    ((locy-user.radius) <= inst.max.y()) &&
-			    ((locz-user.radius) <= inst.max.z()))
+			if (((locx + user.radius) >= inst.min.x()) && ((locy + user.radius) >= inst.min.y()) &&
+			    ((locz + user.radius) >= inst.min.z()) && ((locx - user.radius) <= inst.max.x()) &&
+			    ((locy - user.radius) <= inst.max.y()) && ((locz - user.radius) <= inst.max.z()))
 			{
 				/* we have collided with the collision box */
 				/* make a beep */

@@ -1,15 +1,15 @@
 /******************************************
-*                                         *
-* ##### ####  ####   ###   ####      #### *
-* ##    ## ## ## ## ## ##  ## ##    ##    *
-* ####  ####  ####  ## ##  ####     ##    *
-* ##    ## ## ## ## ## ##  ## ##    ##    *
-* ##### ## ## ## ##  ###   ## ## ##  #### *
-*                                         *
-******************************************/
+ *                                         *
+ * ##### ####  ####   ###   ####      #### *
+ * ##    ## ## ## ## ## ##  ## ##    ##    *
+ * ####  ####  ####  ## ##  ####     ##    *
+ * ##    ## ## ## ## ## ##  ## ##    ##    *
+ * ##### ## ## ## ##  ###   ## ## ##  #### *
+ *                                         *
+ ******************************************/
 /****************
-* include files *
-****************/
+ * include files *
+ ****************/
 #include <iostream>
 #include <stdio.h>
 #include "defs.hpp"
@@ -25,11 +25,11 @@ void set_debug_mode(bool debug_mode)
 }
 
 /*****************************************************************************
-* error() - all error messages come through here                             *
-*           simply pass in a string containing the error number, a string    *
-*           containing the error message and a relevant line number          *
-*           keeps the same format for all error messages                     *
-*****************************************************************************/
+ * error() - all error messages come through here                             *
+ *           simply pass in a string containing the error number, a string    *
+ *           containing the error message and a relevant line number          *
+ *           keeps the same format for all error messages                     *
+ *****************************************************************************/
 Status error(const std::string &message, int line_no)
 {
 	debug("error()", 1);
@@ -40,9 +40,9 @@ Status error(const std::string &message, int line_no)
 }
 
 /*****************************************************************************
-* warn() - in principle the same as error() only it displays just warnings   *
-*          and does not return anything                                      *
-*****************************************************************************/
+ * warn() - in principle the same as error() only it displays just warnings   *
+ *          and does not return anything                                      *
+ *****************************************************************************/
 void warn(const std::string &message, int line_no)
 {
 	debug("warn()", 1);
@@ -51,9 +51,9 @@ void warn(const std::string &message, int line_no)
 }
 
 /*****************************************************************************
-* debug() - function to be used to debug programs - global variable 'stage'  *
-*           should be set to TEST for it to work                             *
-*****************************************************************************/
+ * debug() - function to be used to debug programs - global variable 'stage'  *
+ *           should be set to TEST for it to work                             *
+ *****************************************************************************/
 void debug(const std::string &string, int level)
 {
 	if (g_debug_mode)
@@ -68,7 +68,7 @@ void debug(const std::string &string, int level)
 		}
 		default:
 		{
-			for (auto i=0; i<level; i++)
+			for (auto i = 0; i < level; i++)
 			{
 				std::cout << "\t";
 			}
@@ -81,4 +81,3 @@ void debug(const std::string &string, int level)
 		/* we do nothing here because this is final stage of the program */
 	}
 }
-

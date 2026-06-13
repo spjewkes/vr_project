@@ -31,7 +31,7 @@ if __name__ == "__main__":
             print("Number of vertices: {}".format(len(vertices)))
             print("Number of faces: {}".format(len(faces)))
 
-    # Now output converted 
+    # Now output converted
     print("master_no = 1")
     print(".objectdef")
 
@@ -46,4 +46,4 @@ if __name__ == "__main__":
     print(".objectend")
     print("\tscale = 1.0 , 1.0 , 1.0")
     print
-    
+

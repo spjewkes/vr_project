@@ -16,12 +16,24 @@
 //
 // Define type for returning a status from functions
 //
-typedef enum status { Error, Okay } Status;
+typedef enum status
+{
+	Error,
+	Okay
+} Status;
 
 //
 // Define type for checking string matches
 //
-typedef enum match_result { Match, NoMatch, Blank, Comment, Other, EoF } MatchResult;
+typedef enum match_result
+{
+	Match,
+	NoMatch,
+	Blank,
+	Comment,
+	Other,
+	EoF
+} MatchResult;
 
 //
 // Define object's render style
@@ -33,8 +45,8 @@ enum RenderStyle
 };
 
 /*************************
-* Define Keyboard events *
-*************************/
+ * Define Keyboard events *
+ *************************/
 enum keyboard_state
 {
 	KEY_UP = 0,

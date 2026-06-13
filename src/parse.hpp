@@ -11,13 +11,13 @@
 
 class Parser
 {
-public:
+  public:
 	Parser(const std::string &_filename, World &_world);
 	~Parser();
 
-    Status parse();
+	Status parse();
 
-private:
+  private:
 	Status process(void);
 	Status process_master(void);
 	Status process_instance(void);

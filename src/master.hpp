@@ -7,14 +7,14 @@
 
 class Master
 {
-public:
+  public:
 	Master() {}
 	~Master() {}
 
-	unsigned int id = { 0 };
-	
-	Vector3d scale = { 1.0f, 1.0f, 1.0f };
-	Vector3d angle = { 0.0f, 0.0f, 0.0f };
+	unsigned int id = {0};
+
+	Vector3d scale = {1.0f, 1.0f, 1.0f};
+	Vector3d angle = {0.0f, 0.0f, 0.0f};
 
 	std::vector<Vector3d> vert;
 

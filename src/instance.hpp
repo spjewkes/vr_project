@@ -12,30 +12,30 @@
 
 class Instance
 {
-public:
+  public:
 	Instance() {}
 	~Instance() {}
 
 	void setup_bounds();
 
-	Master *masterptr = { nullptr };
+	Master *masterptr = {nullptr};
 
-	Vector3d pos = { 0.0f, 0.0f, 0.0f };
-	Vector3d min = { 0.0f, 0.0f, 0.0f };
-	Vector3d max = { 0.0f, 0.0f, 0.0f };
-	Vector3d angle = { 0.0f, 0.0f, 0.0f };
-	Vector3d scale = { 1.0f, 1.0f, 1.0f };
+	Vector3d pos = {0.0f, 0.0f, 0.0f};
+	Vector3d min = {0.0f, 0.0f, 0.0f};
+	Vector3d max = {0.0f, 0.0f, 0.0f};
+	Vector3d angle = {0.0f, 0.0f, 0.0f};
+	Vector3d scale = {1.0f, 1.0f, 1.0f};
 
 	Color color;
-	
-	float specularity = { 0.0f };
+
+	float specularity = {0.0f};
 
 	std::vector<Color> poly_color;
 
-	RenderStyle style = { RenderStyle::WIREFRAME };
-	bool is_solid = { false };
+	RenderStyle style = {RenderStyle::WIREFRAME};
+	bool is_solid = {false};
 
-	std::string outcome = { "" };
+	std::string outcome = {""};
 
 	void local_to_world();
 	void world_to_viewer(Viewer &user);
@@ -47,4 +47,3 @@ public:
 };
 
 #endif // __INSTANCE_HPP__
-
