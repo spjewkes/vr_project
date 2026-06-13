@@ -1,7 +1,7 @@
 #ifndef __GRAPHICS_HPP__
 #define __GRAPHICS_HPP__
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "color.hpp"
 
 int create_graphics(int width, int height);

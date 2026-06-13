@@ -1,0 +1,5 @@
+/obj/
+/build/
+/run_vr_project
+*~
+.DS_Store

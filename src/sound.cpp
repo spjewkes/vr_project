@@ -1,6 +1,6 @@
 #include <cassert>
 #include <iostream>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "sound.hpp"
 
 static Uint32 wav_len;
@@ -82,5 +82,4 @@ void stop_blip()
 {
 	SDL_CloseAudio();
 }
-
 

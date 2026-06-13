@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #ifndef __SOUND_HPP__
 #define __SOUND_HPP__

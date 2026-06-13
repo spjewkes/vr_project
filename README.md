@@ -12,12 +12,23 @@ The new code has been refactored to make use of SDL as its graphics base. I have
 
 # Using program
 
-Build by using make. Currently it is only set-up to build for the Mac OSX but as it is using SDL2, porting should not be tricky.
+Build with CMake. The project looks for SDL2 using CMake package config first, then falls back to pkg-config on systems such as macOS with Homebrew.
+
+```
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+```
+
+The Makefile is kept as a small wrapper around CMake, so this also works:
+
+```
+make
+```
 
 There is an example test script to try out. Run the program as follows:
 
 ```
-./run_vr_project ./test_script.txt
+./build/run_vr_project --file res/cube.txt
 ```
 
 Keys:
