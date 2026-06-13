@@ -52,6 +52,12 @@ Run pre-commit:
 pre-commit run --all-files
 ```
 
+Run tests:
+
+```sh
+ctest --test-dir build/debug --output-on-failure
+```
+
 Install hooks in a fresh checkout:
 
 ```sh
@@ -85,16 +91,17 @@ pre-commit install
   with current parse flow, but it is fragile if ownership or vector mutation
   changes.
 - Graphics and sound systems use global/static SDL state.
-- There is no automated test suite yet.
+- There is an initial CTest suite covering world loading for the bundled sample
+  files.
 
 ## Improvement Roadmap
 
 ### First Priority
 
-1. Add automated tests.
-   Start with parser/smoke tests for `res/cube.txt`, `res/office.txt`, and
-   `res/teapot.txt`, then add unit tests for `Vector3d`, `Color`, clipping, and
-   collision boxes.
+1. Expand automated tests.
+   The first world-loading CTest is in place. Next add targeted unit tests for
+   `Vector3d`, `Color`, clipping, collision boxes, parser failures, and invalid
+   world data.
 
 2. Add CI.
    Use GitHub Actions to run pre-commit, configure/build Debug and Release, and
@@ -179,6 +186,6 @@ pre-commit install
 
 ## Recommended Next Step
 
-The best next piece of work is a small test harness focused on parsing and smoke
-loading sample worlds without entering the SDL event loop. That gives useful
-coverage before refactoring parser, resource loading, or rendering internals.
+The best next piece of work is CI. Run pre-commit, Debug/Release builds, and the
+CTest world-loading suite on Linux and macOS before deeper parser or rendering
+refactors.

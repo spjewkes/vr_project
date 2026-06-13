@@ -25,6 +25,12 @@ The Makefile is kept as a small wrapper around CMake, so this also works:
 make
 ```
 
+Run tests with CTest after building:
+
+```
+ctest --test-dir build/debug --output-on-failure
+```
+
 # Development hooks
 
 Install the pre-commit hooks before making changes:

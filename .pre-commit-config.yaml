@@ -19,7 +19,7 @@ repos:
         name: Format C++ with clang-format
         entry: clang-format -i
         language: system
-        files: ^src/.*\.(c|cc|cpp|cxx|h|hh|hpp|hxx)$
+        files: ^(src|tests)/.*\.(c|cc|cpp|cxx|h|hh|hpp|hxx)$
 
       - id: cmake-format
         name: Format CMake files
