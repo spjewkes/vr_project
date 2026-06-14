@@ -5,7 +5,7 @@
 #include "instance.hpp"
 #include "viewer.hpp"
 
-int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &instances);
-bool check_col(float locx, float locy, float locz, Viewer &user, std::vector<Instance> &instances);
+int hit_object(int mpos_x, int mpos_y, const Viewer &user, const std::vector<Instance> &instances);
+bool check_col(float locx, float locy, float locz, const Viewer &user, const std::vector<Instance> &instances);
 
 #endif // __COLLIDE_HPP__

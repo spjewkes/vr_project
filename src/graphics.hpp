@@ -14,7 +14,7 @@ void update_graphics();
 int getmaxx();
 int getmaxy();
 
-void setcolor(Color &col);
+void setcolor(const Color &col);
 void line(int x0, int y0, int x1, int y1);
 void bar(int x0, int y0, int x1, int y1);
 void fillpoly(int num_points, int *points);

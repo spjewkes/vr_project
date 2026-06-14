@@ -1,5 +1,6 @@
-#include <forward_list>
+#include <algorithm>
 #include <iostream>
+#include <vector>
 #include "graphics.hpp"
 #include "parse.hpp"
 #include "world.hpp"
@@ -246,11 +247,14 @@ static bool compare_tri(const triangle &t1, const triangle &t2)
 
 void World::render()
 {
-	std::forward_list<Instance *> inst_list;
+	std::vector<Instance *> inst_list;
+	inst_list.reserve(m_instances.size());
 
 	// Calculate middle of screen
-	int midx = getmaxx() / 2;
-	int midy = getmaxy() / 2;
+	int width = getmaxx();
+	int height = getmaxy();
+	int midx = width / 2;
+	int midy = height / 2;
 
 	// The front plane of the view screen - must be less than zero
 	// float zmin = -1.0 * (vrp-1.0) / (vrp+BACK);
@@ -258,26 +262,35 @@ void World::render()
 
 	// Clear screen with sky and ground
 	setcolor(m_user.sky);
-	bar(0, 0, getmaxx(), midy);
+	bar(0, 0, width, midy);
 	setcolor(m_user.ground);
-	bar(0, midy, getmaxx(), getmaxy());
+	bar(0, midy, width, height);
 
 	// Prepare objects in the scene so they are relative to user
 	for (auto &inst : m_instances)
 	{
 		inst.world_to_viewer(m_user);
-		inst_list.push_front(&inst);
+		inst_list.push_back(&inst);
 		inst.setup_color(m_user, m_light);
 	}
 
 	// Sort instances
-	inst_list.sort(compare_inst);
+	std::sort(inst_list.begin(), inst_list.end(), compare_inst);
 
 	// Now loop through all instances and collect triangles to render
 	for (auto inst : inst_list)
 	{
-		std::forward_list<triangle> tri_list;
 		Master *masterptr = inst->masterptr;
+		std::vector<triangle> tri_list;
+
+		if (inst->style == RenderStyle::WIREFRAME)
+		{
+			tri_list.reserve(masterptr->poly0.size() * 3);
+		}
+		else if (inst->style == RenderStyle::SOLID)
+		{
+			tri_list.reserve(masterptr->poly0.size() * 4);
+		}
 
 		// Depending on the style, clip and project slightly differently
 		if (inst->style == RenderStyle::WIREFRAME)
@@ -309,7 +322,7 @@ void World::render()
 						int iy2 = static_cast<int>((((y2 * -1.0) / z2) * midy) + midy);
 
 						// Store triangle for later
-						tri_list.push_front({ix1, iy1, ix2, iy2, ix2, iy2, inst->poly_color[j], (z1 + z2) / 2.0f});
+						tri_list.push_back({ix1, iy1, ix2, iy2, ix2, iy2, inst->poly_color[j], (z1 + z2) / 2.0f});
 					}
 				}
 			}
@@ -386,12 +399,12 @@ void World::render()
 						// Now create list of triangles
 						for (auto k = 2; k < no_points; k++)
 						{
-							tri_list.push_front({static_cast<int>(post_array[0][X]), static_cast<int>(post_array[0][Y]),
-							                     static_cast<int>(post_array[k - 1][X]),
-							                     static_cast<int>(post_array[k - 1][Y]),
-							                     static_cast<int>(post_array[k][X]), static_cast<int>(post_array[k][Y]),
-							                     inst->poly_color[j],
-							                     (post_array[0][Z] + post_array[k - 1][Z] + post_array[k][Z]) / 3.0f});
+							tri_list.push_back({static_cast<int>(post_array[0][X]), static_cast<int>(post_array[0][Y]),
+							                    static_cast<int>(post_array[k - 1][X]),
+							                    static_cast<int>(post_array[k - 1][Y]),
+							                    static_cast<int>(post_array[k][X]), static_cast<int>(post_array[k][Y]),
+							                    inst->poly_color[j],
+							                    (post_array[0][Z] + post_array[k - 1][Z] + post_array[k][Z]) / 3.0f});
 						}
 					}
 				}
@@ -399,9 +412,9 @@ void World::render()
 		}
 
 		// Sort triangles according to their z-value and then render
-		tri_list.sort(compare_tri);
+		std::sort(tri_list.begin(), tri_list.end(), compare_tri);
 
-		for (auto tri : tri_list)
+		for (const auto &tri : tri_list)
 		{
 			setcolor(tri.color);
 			drawtri(tri.x0, tri.y0, tri.x1, tri.y1, tri.x2, tri.y2);

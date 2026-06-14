@@ -20,11 +20,11 @@
  * collision() - checks to see if the location is not inside any objects     *
  *               boundary boxes                                              *
  ****************************************************************************/
-int collision(float pntx, float pnty, float pntz, std::vector<Instance> &instances)
+int collision(float pntx, float pnty, float pntz, const std::vector<Instance> &instances)
 {
 	int idx = 0;
 
-	for (auto inst : instances)
+	for (const auto &inst : instances)
 	{
 		if (inst.is_solid)
 		{
@@ -48,7 +48,7 @@ int collision(float pntx, float pnty, float pntz, std::vector<Instance> &instanc
  * hit_object() - function that is initially called to start checking for     *
  *                any objects selected by the current mouse location          *
  *****************************************************************************/
-int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &instances)
+int hit_object(int mpos_x, int mpos_y, const Viewer &user, const std::vector<Instance> &instances)
 {
 	float mouse_z;
 	float midx, midy;
@@ -100,11 +100,11 @@ int hit_object(int mpos_x, int mpos_y, Viewer &user, std::vector<Instance> &inst
  * check col() - checks to see if the location is not inside any objects     *
  *               boundary boxes                                              *
  ****************************************************************************/
-bool check_col(float locx, float locy, float locz, Viewer &user, std::vector<Instance> &instances)
+bool check_col(float locx, float locy, float locz, const Viewer &user, const std::vector<Instance> &instances)
 {
 	bool collide = false;
 
-	for (auto inst : instances)
+	for (const auto &inst : instances)
 	{
 		if (inst.is_solid)
 		{

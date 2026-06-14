@@ -60,7 +60,7 @@ int getmaxy()
 	return g_height;
 }
 
-void setcolor(Color &col)
+void setcolor(const Color &col)
 {
 	int retcode = SDL_SetRenderDrawColor(g_renderer, col.r(), col.g(), col.b(), SDL_ALPHA_OPAQUE);
 	assert(retcode == 0);

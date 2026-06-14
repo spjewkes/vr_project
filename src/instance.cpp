@@ -20,7 +20,7 @@ void Instance::setup_bounds()
 
 	/* now look at other values in the instances vertex list and alter the
 	   minimum and maximum values accordingly */
-	for (auto vertex : world_vert)
+	for (const auto &vertex : world_vert)
 	{
 		xmin = std::fmin(xmin, vertex.x());
 		ymin = std::fmin(ymin, vertex.y());
@@ -45,13 +45,13 @@ void Instance::setup_bounds()
 
 void Instance::local_to_world()
 {
-	int no_verts = masterptr->vert.size();
+	size_t no_verts = masterptr->vert.size();
 
 	// Local coordinates are held by the master, convert and store the world
 	// coordinates in this instance
 	world_vert.resize(no_verts);
 
-	for (int loop = 0; loop < no_verts; loop++)
+	for (size_t loop = 0; loop < no_verts; loop++)
 	{
 		world_vert[loop] = masterptr->vert[loop];
 
@@ -71,18 +71,23 @@ void Instance::world_to_viewer(Viewer &user)
 	// The back plane position
 	float BACK = -75.0;
 
-	view_vert.clear();
+	const float scale_x = (2.0 * vrp) / (100.0 * (vrp + BACK));
+	const float scale_y = (-2.0 * vrp) / (75.0 * (vrp + BACK));
+	const float scale_z = -1.0 / (vrp + BACK);
 
-	for (auto vertex : world_vert)
+	view_vert.resize(world_vert.size());
+
+	for (size_t loop = 0; loop < world_vert.size(); loop++)
 	{
+		Vector3d vertex = world_vert[loop];
 		vertex -= user.loc;
 		vertex.rotate(-user.ang);
 
 		// normalize the points ready for perspective projection
 		// (-2.0 here to make the y value correct - i.e. -y down and +y up)
-		vertex.scale((2.0 * vrp) / (100.0 * (vrp + BACK)), (-2.0 * vrp) / (75.0 * (vrp + BACK)), -1.0 / (vrp + BACK));
+		vertex.scale(scale_x, scale_y, scale_z);
 
-		view_vert.push_back(vertex);
+		view_vert[loop] = vertex;
 	}
 
 	// Calculate length of centre of object relative to viewer
@@ -93,7 +98,7 @@ void Instance::world_to_viewer(Viewer &user)
 		vertex.rotate(-user.ang);
 
 		// Normalize the points
-		vertex.scale((2.0 * vrp) / (100.0 * (vrp + BACK)), (-2.0 * vrp) / (75.0 * (vrp + BACK)), -1.0 / (vrp + BACK));
+		vertex.scale(scale_x, scale_y, scale_z);
 	}
 
 	// Use the furthest point of the object
@@ -107,23 +112,18 @@ void Instance::world_to_viewer(Viewer &user)
 
 void Instance::setup_color(Viewer &user, Light &light)
 {
-	int no_polygons, loop;
-	int poly_no[3];
-
-	no_polygons = masterptr->poly0.size();
+	size_t no_polygons = masterptr->poly0.size();
 
 	/* create the arrays that will hold the color values */
 	poly_color.resize(no_polygons);
 
 	/* Fill the polygon array with color values */
-	for (loop = 0; loop < no_polygons; loop++)
+	for (size_t loop = 0; loop < no_polygons; loop++)
 	{
 		/* we want to find the direction of the normal first */
 		/* so we know which light intensity to apply to the polygon */
 		/* get the two of the edges that build up the polygon */
-		poly_no[0] = masterptr->poly0[loop];
-		poly_no[1] = masterptr->poly1[loop];
-		poly_no[2] = masterptr->poly2[loop];
+		unsigned int poly_no[3] = {masterptr->poly0[loop], masterptr->poly1[loop], masterptr->poly2[loop]};
 
 		Vector3d v1 = world_vert[poly_no[2]] - world_vert[poly_no[1]];
 		Vector3d v2 = world_vert[poly_no[1]] - world_vert[poly_no[0]];
@@ -155,9 +155,10 @@ void Instance::setup_color(Viewer &user, Light &light)
 		Vector3d light_dir = light.pos - world_vert[poly_no[0]];
 		light_dir.normalize();
 
-		if (light_dir.dot(normal) > 0.0)
+		float light_dot = light_dir.dot(normal);
+		if (light_dot > 0.0)
 		{
-			Color diffuse = color * light.col * light_dir.dot(normal);
+			Color diffuse = color * light.col * light_dot;
 			poly_color[loop] += diffuse + Color(specular, specular, specular);
 		}
 	}
