@@ -1,7 +1,9 @@
 #include <iostream>
+#include <getopt.h>
 #include <string>
 #include <vector>
 
+#include "options.hpp"
 #include "world.hpp"
 
 #ifndef VR_PROJECT_SOURCE_DIR
@@ -65,10 +67,51 @@ void check_world(const std::string &world_file, int expected_masters, int expect
 		instance_index++;
 	}
 }
+
+Options parse_options(std::vector<std::string> args)
+{
+	std::vector<char *> argv;
+	argv.reserve(args.size());
+
+	for (auto &arg : args)
+	{
+		argv.push_back(&arg[0]);
+	}
+
+	optind = 1;
+	opterr = 0;
+
+	return Options(static_cast<int>(argv.size()), argv.data());
+}
+
+void check_options()
+{
+	{
+		Options options = parse_options({"run_vr_project", "--help"});
+		expect(options.get_help_mode(), "--help should enable help mode");
+		expect(options.get_file().empty(), "--help should not require a world file");
+	}
+
+	{
+		Options options = parse_options({"run_vr_project", "-h"});
+		expect(options.get_help_mode(), "-h should enable help mode");
+	}
+
+	{
+		Options options = parse_options({"run_vr_project", "res/cube.txt"});
+		expect(options.get_file() == "res/cube.txt", "positional world file should be accepted");
+	}
+
+	{
+		Options options = parse_options({"run_vr_project", "--file", "res/cube.txt", "res/office.txt"});
+		expect(options.get_file() == "res/cube.txt", "--file should take priority over positional world file");
+	}
+}
 } // namespace
 
 int main()
 {
+	check_options();
 	check_world("res/cube.txt", 1, 2);
 	check_world("res/office.txt", 3, 26);
 	check_world("res/teapot.txt", 1, 2);

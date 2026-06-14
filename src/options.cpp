@@ -4,9 +4,10 @@
 
 void Options::print_help()
 {
-	std::cout << "Run: " << m_argv[0] << "[--help] [--debug] [--dump] [--file <filename>]\n";
+	std::cout << "Run: " << m_argv[0] << " [--help] [--debug] [--dump] [--file <filename>] [filename]\n";
 	std::cout << "\t--help            - displays this help\n";
 	std::cout << "\t--file <filename> - run world with specified file\n";
+	std::cout << "\tfilename          - run world with specified file\n";
 	std::cout << "\t--debug           - switched on debug output\n";
 	std::cout << "\t--dump            - dump world data\n";
 }
@@ -25,7 +26,7 @@ void Options::process()
 	{
 		int option_index = 0;
 
-		c = getopt_long(m_argc, m_argv, "bdf:", long_options, &option_index);
+		c = getopt_long(m_argc, m_argv, "hbdf:", long_options, &option_index);
 
 		if (c == -1)
 		{
@@ -35,6 +36,7 @@ void Options::process()
 		switch (c)
 		{
 		case 'h':
+			help_mode = true;
 			print_help();
 			break;
 		case 'b':
@@ -49,5 +51,10 @@ void Options::process()
 			file = optarg;
 			break;
 		}
+	}
+
+	if (file.empty() && (optind < m_argc))
+	{
+		file = m_argv[optind];
 	}
 }

@@ -12,17 +12,21 @@ class Options
 	}
 	~Options() {}
 
-	std::string get_file()
+	std::string get_file() const
 	{
 		return file;
 	}
-	bool get_debug_mode()
+	bool get_debug_mode() const
 	{
 		return debug_mode;
 	}
-	bool get_dump_mode()
+	bool get_dump_mode() const
 	{
 		return dump_mode;
+	}
+	bool get_help_mode() const
+	{
+		return help_mode;
 	}
 
   private:
@@ -37,6 +41,7 @@ class Options
 	std::string file = "";
 	bool debug_mode = false;
 	bool dump_mode = false;
+	bool help_mode = false;
 };
 
 #endif // __OPTIONS_HPP__

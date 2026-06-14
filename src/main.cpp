@@ -45,6 +45,11 @@ int main(int argc, char *argv[])
 	debug("START OF PROGRAM", 3);
 	debug("main()", 1);
 
+	if (options.get_help_mode())
+	{
+		return 0;
+	}
+
 	/* set mode to a value of 0 - resolution 320x200 */
 	mode = 4;
 
@@ -52,13 +57,13 @@ int main(int argc, char *argv[])
 	if (options.get_file().empty())
 	{
 		error("No world specified to load", 0);
-		exit(-1);
+		return 1;
 	}
 
 	World world(options.get_file());
 	if (!world.is_ready())
 	{
-		exit(-1);
+		return 1;
 	}
 
 	if (options.get_dump_mode())
@@ -71,7 +76,15 @@ int main(int argc, char *argv[])
 	printf("\nENTERING ANOTHER WORLD...\n");
 
 	/* open up the graphics screen */
-	if ((init_audio() == Okay) && (screen_open(mode) == Okay))
+	Status audio_status = init_audio();
+	Status screen_status = Error;
+
+	if (audio_status == Okay)
+	{
+		screen_status = screen_open(mode);
+	}
+
+	if ((audio_status == Okay) && (screen_status == Okay))
 	{
 		/* draw the initial position of all the objects */
 		world.render();
@@ -348,6 +361,14 @@ int main(int argc, char *argv[])
 		}
 		close_graphics();
 		term_audio();
+	}
+	else
+	{
+		if (audio_status == Okay)
+		{
+			term_audio();
+		}
+		return 1;
 	}
 
 	debug("END OF PROGRAM", 3);
