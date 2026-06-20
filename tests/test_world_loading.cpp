@@ -80,10 +80,13 @@ Options parse_options(std::vector<std::string> args)
 	}
 	argv.push_back(nullptr);
 
-	// glibc uses zero to fully reinitialize getopt's internal state. BSD
-	// implementations restart at one, which is also the normal initial value.
-#if defined(__GLIBC__)
+	// Linux getopt implementations use zero to fully reinitialize internal
+	// state. BSD implementations expose optreset and restart optind at one.
+#if defined(__linux__)
 	optind = 0;
+#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+	optind = 1;
+	optreset = 1;
 #else
 	optind = 1;
 #endif
