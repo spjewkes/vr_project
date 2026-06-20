@@ -1,5 +1,4 @@
 #include <iostream>
-#include <getopt.h>
 #include "options.hpp"
 
 void Options::print_help()
@@ -14,47 +13,95 @@ void Options::print_help()
 
 void Options::process()
 {
-	static struct option long_options[] = {{"help", no_argument, 0, 'h'},
-	                                       {"debug", no_argument, 0, 'b'},
-	                                       {"dump", no_argument, 0, 'd'},
-	                                       {"file", required_argument, 0, 'f'},
-	                                       {0, 0, 0, 0}};
+	std::string positional_file;
+	bool parse_options = true;
 
-	int c;
-
-	while (1)
+	for (int index = 1; index < m_argc; index++)
 	{
-		int option_index = 0;
-
-		c = getopt_long(m_argc, m_argv, "hbdf:", long_options, &option_index);
-
-		if (c == -1)
+		if (m_argv[index] == nullptr)
 		{
-			break;
+			continue;
 		}
 
-		switch (c)
+		std::string argument = m_argv[index];
+
+		if (parse_options && argument == "--")
 		{
-		case 'h':
-			help_mode = true;
-			print_help();
-			break;
-		case 'b':
-			debug_mode = true;
-			break;
+			parse_options = false;
+			continue;
+		}
 
-		case 'd':
-			dump_mode = true;
-			break;
+		if (!parse_options || argument.size() < 2 || argument[0] != '-' || argument == "-")
+		{
+			if (positional_file.empty())
+			{
+				positional_file = argument;
+			}
+			continue;
+		}
 
-		case 'f':
-			file = optarg;
-			break;
+		if (argument.compare(0, 2, "--") == 0)
+		{
+			if (argument == "--help")
+			{
+				help_mode = true;
+				print_help();
+			}
+			else if (argument == "--debug")
+			{
+				debug_mode = true;
+			}
+			else if (argument == "--dump")
+			{
+				dump_mode = true;
+			}
+			else if (argument == "--file")
+			{
+				if ((index + 1 < m_argc) && (m_argv[index + 1] != nullptr))
+				{
+					file = m_argv[++index];
+				}
+			}
+			else if (argument.compare(0, 7, "--file=") == 0)
+			{
+				file = argument.substr(7);
+			}
+			continue;
+		}
+
+		for (std::string::size_type offset = 1; offset < argument.size(); offset++)
+		{
+			switch (argument[offset])
+			{
+			case 'h':
+				help_mode = true;
+				print_help();
+				break;
+			case 'b':
+				debug_mode = true;
+				break;
+			case 'd':
+				dump_mode = true;
+				break;
+			case 'f':
+				if (offset + 1 < argument.size())
+				{
+					file = argument.substr(offset + 1);
+				}
+				else if ((index + 1 < m_argc) && (m_argv[index + 1] != nullptr))
+				{
+					file = m_argv[++index];
+				}
+				offset = argument.size();
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
-	if (file.empty() && (optind < m_argc))
+	if (file.empty())
 	{
-		file = m_argv[optind];
+		file = positional_file;
 	}
 }

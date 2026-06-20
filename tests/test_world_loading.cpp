@@ -1,5 +1,4 @@
 #include <iostream>
-#include <getopt.h>
 #include <string>
 #include <vector>
 
@@ -80,18 +79,6 @@ Options parse_options(std::vector<std::string> args)
 	}
 	argv.push_back(nullptr);
 
-	// Linux getopt implementations use zero to fully reinitialize internal
-	// state. BSD implementations expose optreset and restart optind at one.
-#if defined(__linux__)
-	optind = 0;
-#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
-	optind = 1;
-	optreset = 1;
-#else
-	optind = 1;
-#endif
-	opterr = 0;
-
 	return Options(argc, argv.data());
 }
 
@@ -116,6 +103,23 @@ void check_options()
 	{
 		Options options = parse_options({"run_vr_project", "--file", "res/cube.txt", "res/office.txt"});
 		expect(options.get_file() == "res/cube.txt", "--file should take priority over positional world file");
+	}
+
+	{
+		Options options = parse_options({"run_vr_project", "-bd", "res/cube.txt"});
+		expect(options.get_debug_mode(), "clustered -b should enable debug mode");
+		expect(options.get_dump_mode(), "clustered -d should enable dump mode");
+		expect(options.get_file() == "res/cube.txt", "clustered flags should preserve the positional world file");
+	}
+
+	{
+		Options options = parse_options({"run_vr_project", "--file=res/office.txt"});
+		expect(options.get_file() == "res/office.txt", "--file=<filename> should be accepted");
+	}
+
+	{
+		Options options = parse_options({"run_vr_project", "--", "-world.txt"});
+		expect(options.get_file() == "-world.txt", "-- should allow a positional filename beginning with a dash");
 	}
 }
 } // namespace
