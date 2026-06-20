@@ -51,6 +51,9 @@ There is an example test script to try out. Run the program as follows:
 ./build/run_vr_project --file res/cube.txt
 ```
 
+See [World File Format](docs/world-format.md) for the syntax used by the
+bundled worlds and instructions for creating new ones.
+
 Keys:
 
 * Cursor key left - turn left
