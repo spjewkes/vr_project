@@ -70,18 +70,26 @@ void check_world(const std::string &world_file, int expected_masters, int expect
 
 Options parse_options(std::vector<std::string> args)
 {
+	const int argc = static_cast<int>(args.size());
 	std::vector<char *> argv;
-	argv.reserve(args.size());
+	argv.reserve(args.size() + 1);
 
 	for (auto &arg : args)
 	{
 		argv.push_back(&arg[0]);
 	}
+	argv.push_back(nullptr);
 
+	// glibc uses zero to fully reinitialize getopt's internal state. BSD
+	// implementations restart at one, which is also the normal initial value.
+#if defined(__GLIBC__)
+	optind = 0;
+#else
 	optind = 1;
+#endif
 	opterr = 0;
 
-	return Options(static_cast<int>(argv.size()), argv.data());
+	return Options(argc, argv.data());
 }
 
 void check_options()
