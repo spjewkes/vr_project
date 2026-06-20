@@ -5,22 +5,22 @@
 #include "defs.hpp"
 
 /**
- * Class defining a color type.
+ * @brief Floating-point RGB colour used by materials and lighting.
+ *
+ * Components conventionally use the range 0.0 to 1.0. Arithmetic and setters
+ * may produce values outside that range; conversion to an 8-bit channel clamps
+ * the result rather than modifying the stored value.
  */
 class Color
 {
   public:
-	/// Constructors
 	Color() : m_r(0.0f), m_g(0.0f), m_b(0.0f) {}
 	Color(float r, float g, float b) : m_r(r), m_g(g), m_b(b) {}
 
-	/// Destructors
 	~Color() {}
 
-	/// Copy constructor
 	Color(const Color &rhs);
 
-	/// Overridden operators
 	inline Color &operator=(const Color &rhs)
 	{
 		if (this == &rhs) return *this;
@@ -84,27 +84,32 @@ class Color
 		return *this;
 	}
 
-	/// Set and get operators.
+	/** @return Red component converted and clamped to an 8-bit channel. */
 	uint8_t r() const
 	{
 		return clamp(m_r * UINT8_MAX);
 	}
+	/** @return Green component converted and clamped to an 8-bit channel. */
 	uint8_t g() const
 	{
 		return clamp(m_g * UINT8_MAX);
 	}
+	/** @return Blue component converted and clamped to an 8-bit channel. */
 	uint8_t b() const
 	{
 		return clamp(m_b * UINT8_MAX);
 	}
+	/** @brief Set the un-clamped floating-point red component. */
 	void r(float v)
 	{
 		m_r = v;
 	}
+	/** @brief Set the un-clamped floating-point green component. */
 	void g(float v)
 	{
 		m_g = v;
 	}
+	/** @brief Set the un-clamped floating-point blue component. */
 	void b(float v)
 	{
 		m_b = v;
@@ -113,7 +118,6 @@ class Color
   private:
 	uint8_t clamp(float val) const;
 
-	/// Properties of the color
 	float m_r;
 	float m_g;
 	float m_b;

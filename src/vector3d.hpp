@@ -7,22 +7,22 @@
 #include "defs.hpp"
 
 /**
- * Class defining a 3d vector type.
+ * @brief Mutable three-component vector used for positions, directions, and
+ * transforms.
+ *
+ * Rotation angles are expressed in degrees. Arithmetic is component-wise except
+ * for the explicit dot(), cross(), and reflect() operations.
  */
 class Vector3d
 {
   public:
-	/// Constructors
 	Vector3d() : m_x(0.0f), m_y(0.0f), m_z(0.0f) {}
 	Vector3d(float x, float y, float z) : m_x(x), m_y(y), m_z(z) {}
 
-	/// Destructors
 	~Vector3d() {}
 
-	/// Copy constructor
 	Vector3d(const Vector3d &rhs);
 
-	/// Overridden operators
 	inline Vector3d &operator=(const Vector3d &rhs)
 	{
 		if (this == &rhs) return *this;
@@ -100,14 +100,21 @@ class Vector3d
 		return Vector3d(-m_x, -m_y, -m_z);
 	}
 
+	/**
+	 * @name Component-wise comparisons
+	 *
+	 * Ordering operators require the relationship to hold for every component;
+	 * they do not define lexicographical or magnitude ordering.
+	 * @{
+	 */
 	bool operator==(const Vector3d &rhs) const;
 	bool operator!=(const Vector3d &rhs) const;
 	bool operator<(const Vector3d &rhs) const;
 	bool operator<=(const Vector3d &rhs) const;
 	bool operator>(const Vector3d &rhs) const;
 	bool operator>=(const Vector3d &rhs) const;
+	/** @} */
 
-	/// Set and get operators.
 	float x() const
 	{
 		return m_x;
@@ -133,7 +140,10 @@ class Vector3d
 		m_z = z;
 	}
 
-	/// Rotate point about 0,0,0 axis by Vector3d angle.
+	/**
+	 * @brief Rotate this vector around the origin.
+	 * @param angle Rotation around the X, Y, and Z axes in degrees.
+	 */
 	inline void rotate(const Vector3d &angle)
 	{
 		// Convert x, y and z coords from degrees to radians
@@ -155,6 +165,7 @@ class Vector3d
 		m_x = (D * caz) + (B * saz);
 	}
 
+	/** @brief Apply independent scale factors to the three components. */
 	inline void scale(float x, float y, float z)
 	{
 		m_x *= x;
@@ -162,13 +173,17 @@ class Vector3d
 		m_z *= z;
 	}
 
-	/// Get length of vector.
+	/** @return Euclidean length of the vector. */
 	float length() const;
 
-	/// Get squared length of vector.
+	/** @return Squared Euclidean length without a square-root operation. */
 	float length2() const;
 
-	/// Normalize the vector.
+	/**
+	 * @brief Normalize this vector in place.
+	 * @return Length before normalization.
+	 * @note A zero-length vector remains the zero vector.
+	 */
 	inline float normalize()
 	{
 		float len = length();
@@ -190,20 +205,24 @@ class Vector3d
 		return len;
 	}
 
-	/// Cross product of vectors.
+	/** @return Cross product of this vector and rhs. */
 	inline Vector3d cross(const Vector3d &rhs) const
 	{
 		return Vector3d((m_y * rhs.m_z) - (m_z * rhs.m_y), (m_z * rhs.m_x) - (m_x * rhs.m_z),
 		                (m_x * rhs.m_y) - (m_y * rhs.m_x));
 	}
 
-	/// Dot product of vectors.
+	/** @return Dot product of this vector and rhs. */
 	inline float dot(const Vector3d &rhs) const
 	{
 		return (m_x * rhs.m_x) + (m_y * rhs.m_y) + (m_z * rhs.m_z);
 	}
 
-	/// Reflect vector to normal.
+	/**
+	 * @brief Reflect this vector about a surface normal.
+	 * @param normal Unit-length surface normal.
+	 * @return Reflected vector.
+	 */
 	inline Vector3d reflect(const Vector3d &normal) const
 	{
 		float k = dot(normal) * 2.0f;
@@ -211,7 +230,6 @@ class Vector3d
 	}
 
   private:
-	/// Properties of the 3d vector
 	float m_x;
 	float m_y;
 	float m_z;

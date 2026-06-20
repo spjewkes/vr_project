@@ -9,12 +9,27 @@
 #include "world.hpp"
 #include "color.hpp"
 
+/**
+ * @brief Parses the line-oriented world format into an existing World.
+ *
+ * The parser holds a non-owning reference to its destination. That World must
+ * outlive the parser and should not be used as a complete scene unless parse()
+ * succeeds.
+ */
 class Parser
 {
   public:
+	/**
+	 * @param _filename Path to the world file to read.
+	 * @param _world Destination mutated during parsing.
+	 */
 	Parser(const std::string &_filename, World &_world);
 	~Parser();
 
+	/**
+	 * @brief Parse the complete input file into the destination world.
+	 * @return Okay on success or Error after reporting a parsing or I/O failure.
+	 */
 	Status parse();
 
   private:

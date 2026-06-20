@@ -3,6 +3,13 @@
 
 #include "defs.hpp"
 
+/**
+ * @brief Parsed command-line configuration for the application.
+ *
+ * Construction processes the argument vector immediately and prints usage when
+ * help is requested. An explicit `--file` value takes precedence over a
+ * positional world path.
+ */
 class Options
 {
   public:

@@ -4,6 +4,7 @@
 #include "vector3d.hpp"
 #include "color.hpp"
 
+/** @brief Positional light represented by a world-space position and colour. */
 class Light
 {
   public:
@@ -11,8 +12,8 @@ class Light
 	Light() {}
 	virtual ~Light();
 
-	Vector3d pos;
-	Color col;
+	Vector3d pos; /**< World-space light position. */
+	Color col;    /**< RGB light colour and intensity. */
 };
 
 #endif

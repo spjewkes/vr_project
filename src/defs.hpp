@@ -13,18 +13,14 @@
 
 #define MOVE_SPEED (25.0f)
 
-//
-// Define type for returning a status from functions
-//
+/** Result used by legacy-style operations that report success or failure. */
 typedef enum status
 {
 	Error,
 	Okay
 } Status;
 
-//
-// Define type for checking string matches
-//
+/** Classification returned by the line-oriented parser helpers. */
 typedef enum match_result
 {
 	Match,
@@ -35,18 +31,14 @@ typedef enum match_result
 	EoF
 } MatchResult;
 
-//
-// Define object's render style
-//
+/** Rendering path selected for an Instance. */
 enum RenderStyle
 {
 	SOLID,
 	WIREFRAME
 };
 
-/*************************
- * Define Keyboard events *
- *************************/
+/** Indices used by the main loop's pressed-key state array. */
 enum keyboard_state
 {
 	KEY_UP = 0,
