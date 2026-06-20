@@ -1,6 +1,7 @@
 #include <cassert>
 #include <algorithm>
 #include <cstdio>
+#include <cstdlib>
 #include "graphics.hpp"
 
 static int g_width = 0;
@@ -76,7 +77,7 @@ void line(int x0, int y0, int x1, int y1)
 
 void bar(int x0, int y0, int x1, int y1)
 {
-	SDL_Rect rect = {std::min(x0, x1), std::min(y0, y1), abs(x0 - x1), abs(y0 - y1)};
+	SDL_Rect rect = {std::min(x0, x1), std::min(y0, y1), std::abs(x0 - x1), std::abs(y0 - y1)};
 	int retcode = SDL_RenderFillRect(g_renderer, &rect);
 	assert(retcode == 0);
 	(void)retcode;

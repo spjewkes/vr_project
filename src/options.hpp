@@ -1,6 +1,7 @@
 #ifndef __OPTIONS_HPP__
 #define __OPTIONS_HPP__
 
+#include <string>
 #include "defs.hpp"
 
 /**

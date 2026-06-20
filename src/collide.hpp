@@ -1,6 +1,7 @@
 #ifndef __COLLIDE_HPP__
 #define __COLLIDE_HPP__
 
+#include <vector>
 #include "defs.hpp"
 #include "instance.hpp"
 #include "viewer.hpp"

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <cmath>
 #include "instance.hpp"
 #include "graphics.hpp"
 

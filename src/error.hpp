@@ -1,6 +1,8 @@
 #ifndef __ERROR_HPP__
 #define __ERROR_HPP__
 
+#include <string>
+#include <vector>
 #include "defs.hpp"
 #include "instance.hpp"
 #include "master.hpp"

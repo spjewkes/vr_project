@@ -86,17 +86,17 @@ class Color
 	}
 
 	/** @return Red component converted and clamped to an 8-bit channel. */
-	uint8_t r() const
+	std::uint8_t r() const
 	{
 		return clamp(m_r * UINT8_MAX);
 	}
 	/** @return Green component converted and clamped to an 8-bit channel. */
-	uint8_t g() const
+	std::uint8_t g() const
 	{
 		return clamp(m_g * UINT8_MAX);
 	}
 	/** @return Blue component converted and clamped to an 8-bit channel. */
-	uint8_t b() const
+	std::uint8_t b() const
 	{
 		return clamp(m_b * UINT8_MAX);
 	}
@@ -117,7 +117,7 @@ class Color
 	}
 
   private:
-	uint8_t clamp(float val) const;
+	std::uint8_t clamp(float val) const;
 
 	float m_r;
 	float m_g;

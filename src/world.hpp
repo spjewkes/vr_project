@@ -2,6 +2,7 @@
 #define __WORLD_HPP__
 
 #include <string>
+#include <vector>
 #include "defs.hpp"
 #include "instance.hpp"
 #include "master.hpp"

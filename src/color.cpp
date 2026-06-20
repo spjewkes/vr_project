@@ -12,7 +12,7 @@ Color::Color(const Color &rhs)
 	m_b = rhs.m_b;
 }
 
-uint8_t Color::clamp(float val) const
+std::uint8_t Color::clamp(float val) const
 {
 	int ival = static_cast<int>(val);
 	return val < 0 ? 0 : ival > UINT8_MAX ? UINT8_MAX : ival;
