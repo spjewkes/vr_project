@@ -1,6 +1,7 @@
 #ifndef __COLOR_HPP__
 #define __COLOR_HPP__
 
+#include <cstdint>
 #include <iostream>
 #include "defs.hpp"
 
